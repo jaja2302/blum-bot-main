@@ -63,7 +63,8 @@ else:
     click_counter = 0
     running = True
     game_start_time = time.time()
-    game_active = True  # Set to True initially to start auto-clicking after first play
+    game_active = True
+    last_scan_time = time.time()  # Track scan time properly
 
     def click(x, y):
         mouse.position = (x, y + random.randint(1, 3))
@@ -103,9 +104,9 @@ else:
                     play_x, play_y = pyautogui.center(play_button)
                     click(play_x, play_y)
                     print(f"{hijau}Found and clicked Play button! Starting game #{play_counter}...{reset}")
-                    game_start_time = current_time  # Reset the timer
-                    game_active = True  # Enable auto-clicking for the new game
-                    time.sleep(2)  # Wait for game to start
+                    game_start_time = current_time
+                    game_active = True
+                    time.sleep(2)
             except:
                 pass
             continue
@@ -113,33 +114,34 @@ else:
         # Auto-clicking logic during active game
         if game_active:
             try:
-                scrn = pyautogui.screenshot(region=window_rect)
-                width, height = scrn.size
-                clicks_this_scan = 0
-                last_click_time = time.time()
+                current_time = time.time()
+                if current_time - last_scan_time >= 0.1:
+                    scrn = pyautogui.screenshot(region=window_rect)
+                    width, height = scrn.size
+                    clicks_this_scan = 0
 
-                for x in range(0, width, 5):
-                    for y in range(0, height, 5):
-                        # Get current pixel color
-                        r, g, b = scrn.getpixel((x, y))
-                        
-                        # Convert RGB to hex for bomb detection
-                        hex_color = '#{:02x}{:02x}{:02x}'.format(r, g, b)
-                        
-                        # Skip if color matches any bomb colors
-                        if hex_color in ['#8b8383', '#696666', '#a4a4a4', '#8c8c8c', '#9c9494']:
-                            continue
+                    for x in range(0, width, 15):
+                        for y in range(0, height, 15):
+                            r, g, b = scrn.getpixel((x, y))
                             
-                        # Check for green stars (original color detection)
-                        if (b in range(0, 125)) and (r in range(102, 220)) and (g in range(200, 255)):
-                            screen_x = window_rect[0] + x
-                            screen_y = window_rect[1] + y
-                            click(screen_x, screen_y)
-                            clicks_this_scan += 1
-                
-                if clicks_this_scan == 0:
-                    time.sleep(0.1)
+                            hex_color = '#{:02x}{:02x}{:02x}'.format(r, g, b)
+                            if hex_color in ['#8b8383', '#696666', '#a4a4a4', '#8c8c8c', '#9c9494']:
+                                continue
+                                
+                            if b < 125 and 102 <= r <= 220 and g >= 200:
+                                screen_x = window_rect[0] + x
+                                screen_y = window_rect[1] + y
+                                click(screen_x, screen_y)
+                                clicks_this_scan += 1
+                                time.sleep(0.01)
                     
-            except Exception as e:
-                print(f"{merah}Error during pixel detection: {e}{reset}")
+                    last_scan_time = current_time
+                    
+                    if clicks_this_scan == 0:
+                        time.sleep(0.1)
+                else:
+                    time.sleep(0.01)
+                    
+            except Exception:
+                # Removed error logging to prevent terminal flood
                 continue
