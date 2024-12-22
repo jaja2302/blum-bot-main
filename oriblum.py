@@ -116,22 +116,30 @@ else:
                 scrn = pyautogui.screenshot(region=window_rect)
                 width, height = scrn.size
                 clicks_this_scan = 0
+                last_click_time = time.time()
 
-                for x in range(0, width, 10):
-                    for y in range(0, height, 10):
-                        if clicks_this_scan >= 5:
-                            break
-                        
+                for x in range(0, width, 5):
+                    for y in range(0, height, 5):
+                        # Get current pixel color
                         r, g, b = scrn.getpixel((x, y))
+                        
+                        # Convert RGB to hex for bomb detection
+                        hex_color = '#{:02x}{:02x}{:02x}'.format(r, g, b)
+                        
+                        # Skip if color matches any bomb colors
+                        if hex_color in ['#8b8383', '#696666', '#a4a4a4', '#8c8c8c', '#9c9494']:
+                            continue
+                            
+                        # Check for green stars (original color detection)
                         if (b in range(0, 125)) and (r in range(102, 220)) and (g in range(200, 255)):
                             screen_x = window_rect[0] + x
                             screen_y = window_rect[1] + y
                             click(screen_x, screen_y)
                             clicks_this_scan += 1
-                            time.sleep(0.001)
                 
                 if clicks_this_scan == 0:
                     time.sleep(0.1)
+                    
             except Exception as e:
                 print(f"{merah}Error during pixel detection: {e}{reset}")
                 continue
