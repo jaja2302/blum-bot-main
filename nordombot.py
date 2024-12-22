@@ -44,41 +44,130 @@ def find_and_click_button(image_name, confidence=0.8, should_click=True):
     except Exception as e:
         return (False, None)
 
-def click_random_door():
-    if len(doors) == 3:
-        door_num = random.randint(0, 2)
-        door_pos = doors[door_num]
+def click_door(door_number):
+    if 1 <= door_number <= 3 and len(doors) == 3:
+        door_pos = doors[door_number - 1]  # Convert to 0-based index
         click(door_pos[0], door_pos[1])
-        return door_num + 1  # Return which door was clicked (1, 2, or 3)
-    return 0
+        return True
+    return False
+
+def analyze_patterns(door_stats, winning_combinations):
+    try:
+        # Analyze door success rates
+        door_success_rates = {}
+        for door, stats in door_stats.items():
+            success_rate = (stats['successes'] / stats['clicks'] * 100) if stats['clicks'] > 0 else 0
+            door_success_rates[door] = success_rate
+        
+        # Analyze winning combinations
+        stage_success = {1: {}, 2: {}, 3: {}}
+        for combo in winning_combinations:
+            for stage, door in enumerate(combo, 1):
+                if door not in stage_success[stage]:
+                    stage_success[stage][door] = 0
+                stage_success[stage][door] += 1
+        
+        return door_success_rates, stage_success
+    except Exception as e:
+        print(f"Analysis error: {e}")
+        return {1: 0, 2: 0, 3: 0}, {1: {}, 2: {}, 3: {}}
+
+def get_smart_door(stage, door_stats, winning_combinations, learning_phase):
+    if learning_phase:
+        # During learning phase, use pure random
+        return random.randint(1, 3)
+    
+    # After learning, use success rates to make smarter choices
+    door_success_rates, stage_success = analyze_patterns(door_stats, winning_combinations)
+    
+    # Get best door for current stage
+    stage_doors = stage_success.get(stage, {})
+    if stage_doors:
+        best_doors = [door for door, count in stage_doors.items() 
+                     if count == max(stage_doors.values())]
+        return random.choice(best_doors)
+    
+    # Fallback to overall best performing door
+    best_doors = [door for door, rate in door_success_rates.items() 
+                 if rate == max(door_success_rates.values())]
+    return random.choice(best_doors)
 
 def play_game():
     global running
     attempts = 0
+    total_attempts = 0
     current_stage = 1
     successful_runs = 0
     door_stats = {1: {'clicks': 0, 'successes': 0}, 
                  2: {'clicks': 0, 'successes': 0}, 
                  3: {'clicks': 0, 'successes': 0}}
-    current_run_doors = []  # Track doors used in current run
+    winning_combinations = []
+    current_run_doors = []
+    learning_phase = True
+    learning_attempts = 30
+    best_pattern = None
     
     target = get_target_stage()
     print(f"\nBot will claim at stage {target}")
+    print("Starting Learning Phase")
     time.sleep(2)
     
     while running:
         attempts += 1
-        print(f"\nAttempt #{attempts} - Stage {current_stage}/{target} (Successful runs: {successful_runs})")
+        total_attempts += 1
         
-        # Click random door and track it
-        door_clicked = click_random_door()
-        door_stats[door_clicked]['clicks'] += 1
-        current_run_doors.append(door_clicked)
-        print(f"Clicked Door #{door_clicked}")
+        # Check if we need to switch phases
+        if attempts >= learning_attempts:
+            success_rate = (successful_runs / attempts) * 100
+            print(f"\n=== Phase Complete ===")
+            print(f"Success Rate: {success_rate:.2f}%")
+            
+            if success_rate >= 50:
+                print("Found successful pattern! Continuing with best doors.")
+                print(f"Best pattern found: {winning_combinations[-1]}")
+                learning_phase = False
+                best_pattern = winning_combinations[-1] if winning_combinations else None
+            else:
+                print("Success rate too low. Starting new learning phase.")
+                learning_phase = True
+                door_stats = {1: {'clicks': 0, 'successes': 0}, 
+                            2: {'clicks': 0, 'successes': 0}, 
+                            3: {'clicks': 0, 'successes': 0}}
+                winning_combinations = []
+            
+            attempts = 0
+            successful_runs = 0
+        
+        print(f"\nAttempt #{total_attempts} - Stage {current_stage}/{target}")
+        print(f"Phase: {'Learning' if learning_phase else 'Using Best Pattern'}")
+        
+        # Choose door
+        if not learning_phase and best_pattern and current_stage <= len(best_pattern):
+            door_clicked = best_pattern[current_stage - 1]
+        else:
+            door_clicked = random.randint(1, 3)
+        
+        print(f"Selecting Door #{door_clicked}")
+        time.sleep(2)  # Delay before clicking
+            
+        if click_door(door_clicked):
+            door_stats[door_clicked]['clicks'] += 1
+            current_run_doors.append(door_clicked)
+            print(f"Clicked Door #{door_clicked}")
+        else:
+            print("Error clicking door! Retrying...")
+            time.sleep(2)
+            if click_door(door_clicked):
+                door_stats[door_clicked]['clicks'] += 1
+                current_run_doors.append(door_clicked)
+                print(f"Successfully clicked Door #{door_clicked} on retry")
+            else:
+                print("Failed to click door twice, continuing...")
+                continue
         
         print("Waiting for result...")
-        time.sleep(2)
-        time.sleep(1)
+        time.sleep(2)  # Wait for door animation
+        time.sleep(1)  # Wait for status
         
         upcoming_found, _ = find_and_click_button('upcoming_stage', confidence=0.7, should_click=False)
         
@@ -91,39 +180,42 @@ def play_game():
                 if multiply_found:
                     current_stage += 1
                     print("🎯 Moving to final stage")
-                    time.sleep(1)
+                    time.sleep(2)  # Extra delay before final stage
             
             elif current_stage == target:
                 print("🎉 Clicking claim button!")
+                time.sleep(1)  # Delay before claiming
                 click(claim_pos[0], claim_pos[1])
                 successful_runs += 1
-                print(f"Claimed at stage {target}!")
+                winning_combinations.append(current_run_doors.copy())
+                
                 print(f"\n=== Current Statistics ===")
-                print(f"Total attempts: {attempts}")
+                print(f"Total attempts in this phase: {attempts}")
                 print(f"Successful runs: {successful_runs}")
-                print(f"Target stage: {target}")
-                print(f"Success rate: {(successful_runs/attempts)*100:.2f}%")
+                print(f"Current success rate: {(successful_runs/attempts)*100:.2f}%")
                 print("\nDoor Statistics:")
                 for door, stats in door_stats.items():
                     success_rate = (stats['successes'] / stats['clicks'] * 100) if stats['clicks'] > 0 else 0
-                    print(f"Door #{door}: {stats['clicks']} clicks, {stats['successes']} successes ({success_rate:.2f}% success rate)")
+                    print(f"Door #{door}: {stats['clicks']} clicks, {stats['successes']} successes ({success_rate:.2f}%)")
                 print(f"\nWinning combination: {current_run_doors}")
-                print(f"=======================")
+                print("=======================")
+                
                 time.sleep(2)
                 current_stage = 1
-                current_run_doors = []  # Reset doors for new run
+                current_run_doors = []
                 continue
             
             else:
                 multiply_found, _ = find_and_click_button('multiply_button', confidence=0.7)
                 if multiply_found:
                     current_stage += 1
-                    time.sleep(1)
+                    time.sleep(2)  # Extra delay between stages
         
         else:
             failed_found, _ = find_and_click_button('failed_stage', confidence=0.7, should_click=False)
             if failed_found:
                 print(f"❌ Failed at stage {current_stage} (Using Door #{door_clicked})")
+                time.sleep(1)  # Delay before clicking back
                 if current_stage == 1:
                     click(claim_pos[0], claim_pos[1])
                     print("Clicked First Stage Go Back")
@@ -131,8 +223,8 @@ def play_game():
                     click(go_back_pos[0], go_back_pos[1])
                     print("Clicked Go Back")
                 current_stage = 1
-                current_run_doors = []  # Reset doors on failure
-                time.sleep(1)
+                current_run_doors = []
+                time.sleep(2)  # Extra delay after going back
             time.sleep(1)
             continue
 
