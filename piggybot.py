@@ -17,9 +17,10 @@ class BasketballBot:
         self.mouse = Controller()
         self.shot_delay = 1.0
         self.basket_history = []
-        self.history_max = 3
+        self.history_max = 5
         self.last_detection_time = None
         self.mode = None  # For storing current mode
+        self.movement_log = []  # Added back to fix error
 
     def get_mode(self):
         while True:
@@ -44,20 +45,29 @@ class BasketballBot:
                 print("Invalid input")
 
     def swipe(self, start_x, start_y, end_x, end_y):
-        """Perform ultra-fast swipe action with minimal delays"""
+        """Perform swipe action with mode-specific speed"""
         try:
-            # Ultra-fast swipe duration
-            duration = 0.05  # Reduced to 0.05s
+            # Different timing for each mode
+            if self.mode == 'matching':
+                duration = 0.08  # Ultra fast for matching
+                steps = 8       # Fewer steps for speed
+                wait_start = 0.02
+                wait_end = 0.02
+                curve_height = 1.5
+            else:  # daily mode
+                duration = 0.2   # Normal speed for daily
+                steps = 15      # More steps for smoothness
+                wait_start = 0.05
+                wait_end = 0.05
+                curve_height = 2
             
             self.mouse.position = (start_x, start_y)
-            time.sleep(0.01)  # Minimum practical delay
+            time.sleep(wait_start)
             self.mouse.press(Button.left)
             
-            # Minimal steps for maximum speed
-            steps = 5  # Reduced to 5 steps
             for i in range(steps):
                 progress = i / steps
-                curve = math.sin(progress * math.pi)  # Reduced curve
+                curve = math.sin(progress * math.pi) * curve_height
                 
                 current_x = start_x + (end_x - start_x) * progress
                 current_y = start_y + (end_y - start_y) * progress + curve
@@ -66,32 +76,41 @@ class BasketballBot:
                 time.sleep(duration / steps)
             
             self.mouse.position = (end_x, end_y)
-            time.sleep(0.01)
+            time.sleep(wait_end)
             self.mouse.release(Button.left)
             
-            # Absolute minimum delay between shots
-            time.sleep(max(0.01, self.shot_delay))  # Won't go lower than 0.01s
+            # Ultra minimal delay for matching mode
+            if self.mode == 'matching':
+                time.sleep(max(0.01, self.shot_delay))  # As fast as possible
+            else:
+                time.sleep(max(0.05, self.shot_delay))  # Normal daily delay
             
         except Exception as e:
             print(f"Swipe error: {e}")
 
     def get_basket_position(self):
-        """Find basket position using color detection with movement prediction"""
+        """Find basket position using red rim color detection"""
         try:
             screenshot = np.array(pyautogui.screenshot())
             current_time = time.time()
             
-            # Define color ranges for basket detection
-            white_lower = np.array([200, 200, 200])
-            white_upper = np.array([255, 255, 255])
-            blue_lower = np.array([80, 120, 170])
-            blue_upper = np.array([130, 170, 220])
+            # BGR format for OpenCV
+            # For #cc0c04 (RGB: 204, 12, 4)
+            # In BGR: 4, 12, 204
+            red_lower = np.array([0, 0, 180])    # BGR format
+            red_upper = np.array([10, 20, 255])  # BGR format
             
-            white_mask = cv2.inRange(screenshot, white_lower, white_upper)
-            blue_mask = cv2.inRange(screenshot, blue_lower, blue_upper)
-            combined_mask = cv2.bitwise_or(white_mask, blue_mask)
+            # Create mask for red rim
+            red_mask = cv2.inRange(cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR), red_lower, red_upper)
             
-            contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            # Add some morphological operations to clean up the mask
+            kernel = np.ones((3,3), np.uint8)
+            red_mask = cv2.dilate(red_mask, kernel, iterations=1)
+            
+            # Find contours
+            contours, _ = cv2.findContours(red_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            
+            print(f"Found {len(contours)} contours")  # Debug print
             
             if contours:
                 valid_contours = []
@@ -100,8 +119,10 @@ class BasketballBot:
                     M = cv2.moments(cnt)
                     if M["m00"] > 0:
                         cy = int(M["m01"] / M["m00"])
-                        if cy < height/2:
+                        if cy < height/2:  # Only consider upper half of screen
                             valid_contours.append(cnt)
+                
+                print(f"Found {len(valid_contours)} valid contours")  # Debug print
                 
                 if valid_contours:
                     largest_contour = max(valid_contours, key=cv2.contourArea)
@@ -110,31 +131,48 @@ class BasketballBot:
                         cx = int(M["m10"] / M["m00"])
                         cy = int(M["m01"] / M["m00"])
                         
-                        # Store position with timestamp
+                        print(f"Found basket at: ({cx}, {cy})")  # Debug print
+                        
+                        # Store position for prediction
                         self.basket_history.append((cx, cy, current_time))
                         if len(self.basket_history) > self.history_max:
                             self.basket_history.pop(0)
                         
-                        # Predict movement if we have enough history
-                        if len(self.basket_history) >= 2:
-                            # Calculate velocity from last two positions
-                            prev_x, prev_y, prev_time = self.basket_history[-2]
-                            dt = current_time - prev_time
-                            if dt > 0:
-                                dx = (cx - prev_x) / dt
-                                dy = (cy - prev_y) / dt
+                        if len(self.basket_history) >= 3:
+                            velocities = []
+                            weights = [0.5, 0.7, 1.0]
+                            
+                            for i in range(1, len(self.basket_history)):
+                                prev_x, prev_y, prev_time = self.basket_history[i-1]
+                                curr_x, curr_y, curr_time = self.basket_history[i]
+                                dt = curr_time - prev_time
+                                if dt > 0:
+                                    dx = (curr_x - prev_x) / dt
+                                    dy = (curr_y - prev_y) / dt
+                                    weight = weights[min(i-1, len(weights)-1)]
+                                    velocities.append((dx * weight, dy * weight))
+                            
+                            if velocities:
+                                total_weight = sum(weights[:len(velocities)])
+                                avg_dx = sum(v[0] for v in velocities) / total_weight
+                                avg_dy = sum(v[1] for v in velocities) / total_weight
                                 
-                                # Predict position after 0.2s (typical shot time)
-                                predict_time = 0.2
-                                predicted_x = int(cx + dx * predict_time)
-                                predicted_y = int(cy + dy * predict_time)
+                                predict_time = 0.12
+                                predicted_x = int(cx + avg_dx * predict_time)
+                                predicted_y = int(cy + avg_dy * predict_time)
                                 
-                                print(f"Current: ({cx}, {cy}), Predicted: ({predicted_x}, {predicted_y})")
+                                if abs(avg_dx) > 1:
+                                    direction_correction = int(3 * math.copysign(1, avg_dx))
+                                    predicted_x += direction_correction
+                                
+                                predicted_y -= 2
+                                
+                                print(f"Predicted position: ({predicted_x}, {predicted_y})")  # Debug print
                                 return (predicted_x, predicted_y)
                         
                         return (cx, cy)
             
-            print("Basket not found")
+            print("No basket found")  # Debug print
             return None
             
         except Exception as e:
@@ -174,13 +212,25 @@ class BasketballBot:
         return self.ball_pos is not None
 
     def play_game(self):
-        """Main game loop with improved aiming"""
+        """Main game loop with enhanced aiming"""
         try:
             basket_pos = self.get_basket_position()
             if basket_pos:
-                # Add small random variation to make shots more natural
-                aim_x = basket_pos[0] + random.randint(-2, 2)
-                aim_y = basket_pos[1] + random.randint(-2, 2)
+                # Dynamic aim variation based on movement
+                if len(self.basket_history) >= 2:
+                    _, _, prev_time = self.basket_history[-2]
+                    _, _, curr_time = self.basket_history[-1]
+                    if curr_time - prev_time > 0:
+                        movement_speed = abs(basket_pos[0] - self.basket_history[-2][0]) / (curr_time - prev_time)
+                        # Reduce variation when basket is moving faster
+                        variation = max(1, 3 - int(movement_speed * 0.1))
+                    else:
+                        variation = 2
+                else:
+                    variation = 2
+                    
+                aim_x = basket_pos[0] + random.randint(-variation, variation)
+                aim_y = basket_pos[1] + random.randint(-1, 1)  # Keep vertical variation minimal
                 
                 self.swipe(self.ball_pos[0], self.ball_pos[1], aim_x, aim_y)
             else:
@@ -189,6 +239,14 @@ class BasketballBot:
         except Exception as e:
             print(f"Game error: {e}")
             time.sleep(0.1)
+
+    def save_movement_log(self):
+        """Save movement log to file"""
+        if self.movement_log:
+            with open('basket_movement.txt', 'w') as f:
+                for x, y, t in self.movement_log:
+                    f.write(f"{x},{y},{t}\n")
+            print("\nMovement log saved to basket_movement.txt")
 
 def main():
     bot = BasketballBot()
@@ -217,6 +275,7 @@ def main():
             try:
                 if keyboard.is_pressed('s'):
                     print("\nBot stopped by user")
+                    bot.save_movement_log()  # Save log when stopping
                     bot.running = False
                     break
                 
