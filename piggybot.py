@@ -26,7 +26,7 @@ class BasketballBot:
         while True:
             print("\nSelect mode:")
             print("1. Daily (0.5s delay)")
-            print("2. Matching (0.01s delay)")
+            print("2. Matching (Ultra-fast)")
             try:
                 choice = input("Enter choice (1 or 2): ")
                 if choice == '1':
@@ -35,9 +35,9 @@ class BasketballBot:
                     print("\nDaily mode selected (0.5s delay)")
                     return
                 elif choice == '2':
-                    self.shot_delay = 0.01
+                    self.shot_delay = 0.005  # Ultra minimal delay
                     self.mode = 'matching'
-                    print("\nMatching mode selected (0.01s delay)")
+                    print("\nMatching mode selected (Ultra-fast)")
                     return
                 else:
                     print("Please enter 1 or 2")
@@ -45,84 +45,96 @@ class BasketballBot:
                 print("Invalid input")
 
     def swipe(self, start_x, start_y, end_x, end_y):
-        """Perform swipe action with mode-specific speed"""
+        """Perform fast swipe action with balanced speed and accuracy"""
         try:
-            # Different timing for each mode
+            # Get current basket movement speed from history
+            basket_speed = 0
+            if len(self.basket_history) >= 2:
+                prev_x = self.basket_history[-2][0]
+                curr_x = self.basket_history[-1][0]
+                basket_speed = abs(curr_x - prev_x)
+
+            # Adaptive settings based on basket movement
             if self.mode == 'matching':
-                duration = 0.08  # Ultra fast for matching
-                steps = 8       # Fewer steps for speed
-                wait_start = 0.02
-                wait_end = 0.02
-                curve_height = 1.5
+                if basket_speed > 5:  # Moving basket
+                    duration = 0.06    # Slightly slower than before
+                    steps = 6 
+                    wait_start = 0.015
+                    wait_end = 0.015
+                    curve_height = 1.2
+                else:  # Stationary or slow-moving basket
+                    duration = 0.08    # More controlled for accuracy
+                    steps = 8
+                    wait_start = 0.02
+                    wait_end = 0.02
+                    curve_height = 1.5
             else:  # daily mode
-                duration = 0.2   # Normal speed for daily
-                steps = 15      # More steps for smoothness
+                duration = 0.2
+                steps = 15
                 wait_start = 0.05
                 wait_end = 0.05
                 curve_height = 2
             
+            # Pre-position mouse
             self.mouse.position = (start_x, start_y)
             time.sleep(wait_start)
+            
+            # Press and initial hold
             self.mouse.press(Button.left)
             
+            # Smooth movement
             for i in range(steps):
                 progress = i / steps
                 curve = math.sin(progress * math.pi) * curve_height
                 
-                current_x = start_x + (end_x - start_x) * progress
-                current_y = start_y + (end_y - start_y) * progress + curve
+                current_x = int(start_x + (end_x - start_x) * progress)
+                current_y = int(start_y + (end_y - start_y) * progress + curve)
                 
-                self.mouse.position = (int(current_x), int(current_y))
+                self.mouse.position = (current_x, current_y)
                 time.sleep(duration / steps)
             
+            # Ensure final position and release
             self.mouse.position = (end_x, end_y)
             time.sleep(wait_end)
             self.mouse.release(Button.left)
             
-            # Ultra minimal delay for matching mode
+            # Adaptive delay between shots
             if self.mode == 'matching':
-                time.sleep(max(0.01, self.shot_delay))  # As fast as possible
+                if basket_speed > 5:
+                    time.sleep(0.01)   # Slightly longer delay
+                else:
+                    time.sleep(0.015)  # More controlled timing
             else:
-                time.sleep(max(0.05, self.shot_delay))  # Normal daily delay
+                time.sleep(max(0.05, self.shot_delay))
             
         except Exception as e:
             print(f"Swipe error: {e}")
 
     def get_basket_position(self):
-        """Find basket position using red rim color detection"""
+        """Find basket position using red rim color detection with 3D movement prediction"""
         try:
             screenshot = np.array(pyautogui.screenshot())
             current_time = time.time()
+            screen_width = screenshot.shape[1]
+            screen_height = screenshot.shape[0]
             
-            # BGR format for OpenCV
-            # For #cc0c04 (RGB: 204, 12, 4)
-            # In BGR: 4, 12, 204
-            red_lower = np.array([0, 0, 180])    # BGR format
-            red_upper = np.array([10, 20, 255])  # BGR format
+            red_lower = np.array([0, 0, 180])
+            red_upper = np.array([10, 20, 255])
             
-            # Create mask for red rim
             red_mask = cv2.inRange(cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR), red_lower, red_upper)
-            
-            # Add some morphological operations to clean up the mask
             kernel = np.ones((3,3), np.uint8)
             red_mask = cv2.dilate(red_mask, kernel, iterations=1)
             
-            # Find contours
             contours, _ = cv2.findContours(red_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            
-            print(f"Found {len(contours)} contours")  # Debug print
             
             if contours:
                 valid_contours = []
-                height = screenshot.shape[0]
                 for cnt in contours:
                     M = cv2.moments(cnt)
                     if M["m00"] > 0:
                         cy = int(M["m01"] / M["m00"])
-                        if cy < height/2:  # Only consider upper half of screen
+                        if cy < screen_height/2:
                             valid_contours.append(cnt)
-                
-                print(f"Found {len(valid_contours)} valid contours")  # Debug print
                 
                 if valid_contours:
                     largest_contour = max(valid_contours, key=cv2.contourArea)
@@ -131,16 +143,18 @@ class BasketballBot:
                         cx = int(M["m10"] / M["m00"])
                         cy = int(M["m01"] / M["m00"])
                         
-                        print(f"Found basket at: ({cx}, {cy})")  # Debug print
-                        
-                        # Store position for prediction
                         self.basket_history.append((cx, cy, current_time))
                         if len(self.basket_history) > self.history_max:
                             self.basket_history.pop(0)
                         
                         if len(self.basket_history) >= 3:
+                            # Analyze movement patterns
+                            horizontal_pattern = "none"  # left-to-right, right-to-left, none
+                            vertical_pattern = "none"    # up-to-down, down-to-up, none
+                            
+                            # Calculate velocities with enhanced vertical movement detection
                             velocities = []
-                            weights = [0.5, 0.7, 1.0]
+                            weights = [0.3, 0.5, 0.7, 1.0]
                             
                             for i in range(1, len(self.basket_history)):
                                 prev_x, prev_y, prev_time = self.basket_history[i-1]
@@ -151,28 +165,85 @@ class BasketballBot:
                                     dy = (curr_y - prev_y) / dt
                                     weight = weights[min(i-1, len(weights)-1)]
                                     velocities.append((dx * weight, dy * weight))
+                                    
+                                    # Detect movement patterns
+                                    if abs(dx) > abs(dy):  # Primarily horizontal movement
+                                        if dx > 0:
+                                            horizontal_pattern = "left-to-right"
+                                        else:
+                                            horizontal_pattern = "right-to-left"
+                                    else:  # Primarily vertical movement
+                                        if dy > 0:
+                                            vertical_pattern = "up-to-down"
+                                        else:
+                                            vertical_pattern = "down-to-up"
                             
                             if velocities:
                                 total_weight = sum(weights[:len(velocities)])
                                 avg_dx = sum(v[0] for v in velocities) / total_weight
                                 avg_dy = sum(v[1] for v in velocities) / total_weight
                                 
-                                predict_time = 0.12
+                                # Calculate overall speed and directions
+                                horizontal_speed = abs(avg_dx)
+                                vertical_speed = abs(avg_dy)
+                                horizontal_direction = math.copysign(1, avg_dx)
+                                vertical_direction = math.copysign(1, avg_dy)
+                                
+                                # Base prediction time
+                                predict_time = 0.15
+                                
+                                # Position-based prediction adjustments
+                                if cx < screen_width * 0.2 or cx > screen_width * 0.8:  # Near edges
+                                    predict_time = 0.18
+                                
+                                # Calculate predicted position
                                 predicted_x = int(cx + avg_dx * predict_time)
                                 predicted_y = int(cy + avg_dy * predict_time)
                                 
-                                if abs(avg_dx) > 1:
-                                    direction_correction = int(3 * math.copysign(1, avg_dx))
-                                    predicted_x += direction_correction
+                                # Enhanced diagonal movement prediction
+                                if abs(avg_dx) > 50 and abs(avg_dy) > 30:  # Significant diagonal movement
+                                    diagonal_speed = math.sqrt(horizontal_speed**2 + vertical_speed**2)
+                                    if diagonal_speed > 150:  # Fast diagonal
+                                        predicted_x += int(horizontal_direction * 15)
+                                        predicted_y += int(vertical_direction * 8)
+                                    elif diagonal_speed > 100:  # Medium diagonal
+                                        predicted_x += int(horizontal_direction * 12)
+                                        predicted_y += int(vertical_direction * 6)
+                                    else:  # Slow diagonal
+                                        predicted_x += int(horizontal_direction * 8)
+                                        predicted_y += int(vertical_direction * 4)
+                                else:  # Pure horizontal/vertical movement
+                                    if horizontal_speed > 150:
+                                        predicted_x += int(horizontal_direction * 15)
+                                    elif horizontal_speed > 100:
+                                        predicted_x += int(horizontal_direction * 12)
+                                    elif horizontal_speed > 50:
+                                        predicted_x += int(horizontal_direction * 8)
+                                    
+                                    if vertical_speed > 50:
+                                        predicted_y += int(vertical_direction * 6)
+                                    elif vertical_speed > 30:
+                                        predicted_y += int(vertical_direction * 4)
                                 
-                                predicted_y -= 2
+                                # Pattern-based corrections
+                                if horizontal_pattern == "left-to-right":
+                                    predicted_x += 5
+                                elif horizontal_pattern == "right-to-left":
+                                    predicted_x -= 5
+                                    
+                                if vertical_pattern == "up-to-down":
+                                    predicted_y += 3
+                                elif vertical_pattern == "down-to-up":
+                                    predicted_y -= 3
                                 
-                                print(f"Predicted position: ({predicted_x}, {predicted_y})")  # Debug print
+                                # Final height adjustment
+                                height_correction = min(6, int(math.sqrt(horizontal_speed**2 + vertical_speed**2) * 0.04))
+                                predicted_y -= height_correction
+                                
                                 return (predicted_x, predicted_y)
                         
                         return (cx, cy)
             
-            print("No basket found")  # Debug print
             return None
             
         except Exception as e:
