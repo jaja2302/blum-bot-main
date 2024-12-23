@@ -12,33 +12,35 @@ import math
 class BasketballBot:
     def __init__(self):
         self.ball_pos = None
-        self.basket_template = cv2.imread('basket_template.png')  # Load PNG template
-        self.template_size = (70, 70)
         self.running = True
         self.paused = False
         self.mouse = Controller()
+        self.shot_delay = 1.0  # Default delay between shots (1 second)
 
-    def swipe(self, start_x, start_y, end_x, end_y, duration=0.2):
-        """Perform swipe action with better accuracy"""
+    def get_shot_delay(self):
+        while True:
+            try:
+                delay = float(input("\nEnter delay between shots (0.1-2.0 seconds, default=1.0): "))
+                if 0.1 <= delay <= 2.0:
+                    return delay
+                else:
+                    print("Please enter a number between 0.1 and 2.0")
+            except ValueError:
+                print("Please enter a valid number")
+
+    def swipe(self, start_x, start_y, end_x, end_y):
+        """Perform swipe action with consistent speed but adjustable delay"""
         try:
-            # Calculate angle and adjust end position
-            dx = end_x - start_x
-            dy = end_y - start_y
+            # Fixed swipe duration for consistency
+            duration = 0.2
             
-            # Add slight randomization to make shots more natural
-            end_x += random.randint(-3, 3)
-            end_y += random.randint(-3, 3)
-            
-            # Start swipe
             self.mouse.position = (start_x, start_y)
-            time.sleep(random.uniform(0.05, 0.1))
+            time.sleep(0.05)
             self.mouse.press(Button.left)
             
-            # Smooth movement with more steps
-            steps = 15  # Increased from 10
+            steps = 15
             for i in range(steps):
                 progress = i / steps
-                # Add slight curve to the motion
                 curve = math.sin(progress * math.pi) * 2
                 
                 current_x = start_x + (end_x - start_x) * progress
@@ -47,13 +49,12 @@ class BasketballBot:
                 self.mouse.position = (int(current_x), int(current_y))
                 time.sleep(duration / steps)
             
-            # Hold briefly at end position
             self.mouse.position = (end_x, end_y)
-            time.sleep(random.uniform(0.05, 0.1))
+            time.sleep(0.05)
             self.mouse.release(Button.left)
             
-            # Small delay between shots
-            time.sleep(random.uniform(0.3, 0.5))
+            # Use configured delay between shots
+            time.sleep(self.shot_delay)
             
         except Exception as e:
             print(f"Swipe error: {e}")
@@ -170,6 +171,10 @@ def main():
     print("- Press 'S' to stop the bot")
     print("- Press 'K' to pause/resume")
     print("- Press 'ESC' to exit during calibration")
+    
+    # Get shot delay before starting
+    bot.shot_delay = bot.get_shot_delay()
+    print(f"\nShot delay set to: {bot.shot_delay} seconds")
     time.sleep(2)
     
     if not bot.calibrate():
