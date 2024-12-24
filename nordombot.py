@@ -44,35 +44,95 @@ def find_and_click_button(image_name, confidence=0.8, should_click=True):
     except Exception as e:
         return (False, None)
 
-def click_random_door():
-    if len(doors) == 3:
-        door_num = random.randint(0, 2)
-        door_pos = doors[door_num]
-        click(door_pos[0], door_pos[1])
-        return door_num + 1  # Return which door was clicked (1, 2, or 3)
-    return 0
+def algorithm_3(door_stats, current_stage, current_run_doors):
+    """Enhanced aggressive learning algorithm with success pattern recognition"""
+    door_weights = {}
+    
+    # Initialize base weights from success rates
+    for door_num in [1, 2, 3]:
+        stats = door_stats[door_num]
+        if stats['clicks'] == 0:
+            door_weights[door_num] = 1
+        else:
+            # Calculate stage-specific success rate
+            stage_success_rate = stats[f'stage_{current_stage}_success'] / stats[f'stage_{current_stage}_attempts'] if stats[f'stage_{current_stage}_attempts'] > 0 else 0
+            overall_success_rate = stats['successes'] / stats['clicks']
+            
+            # Combine rates with higher emphasis on stage-specific performance
+            door_weights[door_num] = (stage_success_rate * 0.8) + (overall_success_rate * 0.2)
+            
+            # Boost weight for doors that have led to higher stages
+            for stage in range(current_stage + 1, 5):
+                if stats[f'stage_{stage}_success'] > 0:
+                    door_weights[door_num] *= 1.3
+    
+    # Pattern recognition boost
+    if len(current_run_doors) >= 2:
+        # If we have two successful doors in a row, favor that pattern
+        if current_run_doors[-1] == current_run_doors[-2]:
+            door_weights[current_run_doors[-1]] *= 1.5
+    
+    # Success streak handling
+    if len(current_run_doors) > 0 and door_stats[current_run_doors[-1]]['successes'] > 0:
+        last_door = current_run_doors[-1]
+        success_rate = door_stats[last_door]['successes'] / door_stats[last_door]['clicks']
+        if success_rate > 0.7:  # If door has >70% success rate
+            door_weights[last_door] *= 1.4  # Increase chance to use it again
+    
+    # Ensure minimum weights
+    door_weights = {k: max(0.2, v) for k, v in door_weights.items()}
+    
+    return door_weights
+
+def click_random_door(door_stats, current_stage, current_run_doors, algorithm_num=3):
+    if len(doors) != 3:
+        return 0
+
+    door_weights = algorithm_3(door_stats, current_stage, current_run_doors)
+    
+    # Convert weights to probabilities
+    total_weight = sum(door_weights.values())
+    door_probabilities = [door_weights[i] / total_weight for i in [1, 2, 3]]
+    
+    # Select door based on weighted probabilities
+    door_num = random.choices([1, 2, 3], weights=door_probabilities)[0]
+    door_pos = doors[door_num - 1]
+    
+    print(f"Door weights: {', '.join([f'Door #{i}: {door_weights[i]:.2f}' for i in [1, 2, 3]])}")
+    click(door_pos[0], door_pos[1])
+    return door_num
 
 def play_game():
     global running
     attempts = 0
     current_stage = 1
     successful_runs = 0
-    door_stats = {1: {'clicks': 0, 'successes': 0}, 
-                 2: {'clicks': 0, 'successes': 0}, 
-                 3: {'clicks': 0, 'successes': 0}}
-    current_run_doors = []  # Track doors used in current run
+    door_stats = {
+        1: {'clicks': 0, 'successes': 0, 'stage_1_attempts': 0, 'stage_1_success': 0, 
+            'stage_2_attempts': 0, 'stage_2_success': 0, 'stage_3_attempts': 0, 
+            'stage_3_success': 0, 'stage_4_attempts': 0, 'stage_4_success': 0},
+        2: {'clicks': 0, 'successes': 0, 'stage_1_attempts': 0, 'stage_1_success': 0, 
+            'stage_2_attempts': 0, 'stage_2_success': 0, 'stage_3_attempts': 0, 
+            'stage_3_success': 0, 'stage_4_attempts': 0, 'stage_4_success': 0},
+        3: {'clicks': 0, 'successes': 0, 'stage_1_attempts': 0, 'stage_1_success': 0, 
+            'stage_2_attempts': 0, 'stage_2_success': 0, 'stage_3_attempts': 0, 
+            'stage_3_success': 0, 'stage_4_attempts': 0, 'stage_4_success': 0}
+    }
+    current_run_doors = []
     
     target = get_target_stage()
     print(f"\nBot will claim at stage {target}")
+    print(f"Bot will use resume button when failing at stage {target}")
     time.sleep(2)
     
     while running:
         attempts += 1
         print(f"\nAttempt #{attempts} - Stage {current_stage}/{target} (Successful runs: {successful_runs})")
         
-        # Click random door and track it
-        door_clicked = click_random_door()
+        # Update the door click to include current algorithm
+        door_clicked = click_random_door(door_stats, current_stage, current_run_doors)
         door_stats[door_clicked]['clicks'] += 1
+        door_stats[door_clicked][f'stage_{current_stage}_attempts'] += 1
         current_run_doors.append(door_clicked)
         print(f"Clicked Door #{door_clicked}")
         
@@ -85,6 +145,7 @@ def play_game():
         if upcoming_found:
             print(f"✅ Stage {current_stage} passed! (Using Door #{door_clicked})")
             door_stats[door_clicked]['successes'] += 1
+            door_stats[door_clicked][f'stage_{current_stage}_success'] += 1
             
             if current_stage == target - 1:
                 multiply_found, multiply_pos = find_and_click_button('multiply_button', confidence=0.7)
@@ -124,14 +185,56 @@ def play_game():
             failed_found, _ = find_and_click_button('failed_stage', confidence=0.7, should_click=False)
             if failed_found:
                 print(f"❌ Failed at stage {current_stage} (Using Door #{door_clicked})")
-                if current_stage == 1:
-                    click(claim_pos[0], claim_pos[1])
-                    print("Clicked First Stage Go Back")
+                
+                # Handle failures at target stage differently
+                if current_stage == target:
+                    # Try resume up to 2 times
+                    max_resume_attempts = 2
+                    resume_attempts = 0
+                    
+                    while resume_attempts < max_resume_attempts:
+                        resume_attempts += 1
+                        print(f"Resume attempt {resume_attempts}/{max_resume_attempts} at stage {target}")
+                        
+                        # Click resume (same position as claim button)
+                        click(claim_pos[0], claim_pos[1])
+                        print("Clicked Resume to try again")
+                        time.sleep(1)
+                        
+                        # Try another door
+                        door_clicked = click_random_door(door_stats, current_stage, current_run_doors)
+                        time.sleep(2)
+                        
+                        # Check if succeeded
+                        upcoming_found, _ = find_and_click_button('upcoming_stage', confidence=0.7, should_click=False)
+                        if upcoming_found:
+                            print(f"✅ Stage {current_stage} passed after resume! (Using Door #{door_clicked})")
+                            door_stats[door_clicked]['successes'] += 1
+                            door_stats[door_clicked][f'stage_{current_stage}_success'] += 1
+                            break
+                        
+                        # Check if failed again
+                        failed_again, _ = find_and_click_button('failed_stage', confidence=0.7, should_click=False)
+                        if failed_again and resume_attempts == max_resume_attempts:
+                            print(f"Failed {max_resume_attempts} times after resume, clicking Go Back")
+                            click(go_back_pos[0], go_back_pos[1])
+                            current_stage = 1
+                            current_run_doors = []
+                            break
+                        
+                        time.sleep(1)
+                    
                 else:
-                    click(go_back_pos[0], go_back_pos[1])
-                    print("Clicked Go Back")
-                current_stage = 1
-                current_run_doors = []  # Reset doors on failure
+                    # Handle failures for non-target stages as before
+                    if current_stage == 1:
+                        click(claim_pos[0], claim_pos[1])
+                        print("Clicked First Stage Go Back")
+                    else:
+                        click(go_back_pos[0], go_back_pos[1])
+                        print("Clicked Go Back")
+                    current_stage = 1
+                    current_run_doors = []
+                
                 time.sleep(1)
             time.sleep(1)
             continue
