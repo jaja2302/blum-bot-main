@@ -5,11 +5,13 @@ import time
 import keyboard
 import random
 from pynput.mouse import Button, Controller
-from hoop_detector import find_hoop
-from ai_piggy_bank import HoopTracker
+from ai_piggy_bank import HoopTracker, get_hoop_position
 
 mouse = Controller()
 time.sleep(0.5)
+
+# Initialize tracker
+tracker = HoopTracker()
 
 # Basic color codes for messages
 putih = '\033[1;97m'
@@ -19,7 +21,7 @@ kuning = '\033[1m\033[93m'
 biru = '\033[1;94m'
 reset = '\033[0m'
 
-window_name = "Telegram"
+window_name = "Telegram"  # Changed window name
 check = gw.getWindowsWithTitle(window_name)
 
 if not check:
@@ -40,59 +42,109 @@ else:
     print(f"{kuning}Position: ({window_rect[0]}, {window_rect[1]}){reset}")
     print(f"{kuning}Size: {window_rect[2]}x{window_rect[3]}{reset}")
     
-    # Initialize AI tracker
-    tracker = HoopTracker()
+    # Take a test screenshot to verify capture area
+    try:
+        test_screenshot = pyautogui.screenshot(region=window_rect)
+        print(f"{hijau}Successfully captured screenshot of size: {test_screenshot.size}{reset}")
+    except Exception as e:
+        print(f"{merah}Error capturing screenshot: {e}{reset}")
+        exit()
     
-    print(f"\n{putih}Select Mode:")
-    print(f"{kuning}1. Normal Mode")
-    print(f"{kuning}2. AI Training Mode")
-    print(f"{kuning}3. AI Game Mode{reset}")
-    mode = input(f"{putih}Enter mode (1/2/3): {reset}")
+    print(f"{hijau}Game window found! Starting bot...{reset}")
+    print(f"{hijau}Bot working... {putih}Press {kuning}'K'{putih} to pause.{reset}")
+    print(f"{putih}Press {kuning}'S'{putih} to stop the bot.{reset}")
     
+    def swipe_up(start_x, start_y, distance=200):
+        # Quick movement for match mode
+        if shot_delay == 0.2:  # If in match mode
+            hoop_pos = get_hoop_position(window_rect)
+            if hoop_pos:
+                # Get predicted position from AI
+                predicted_pos = tracker.predict_next_position(hoop_pos)
+                if predicted_pos:
+                    target_x, target_y = predicted_pos
+                else:
+                    target_x, target_y = hoop_pos
+            else:
+                target_x, target_y = start_x, start_y - distance
+                
+            mouse.position = (start_x, start_y)
+            time.sleep(0.02)  # [TIMING 1]
+            mouse.press(Button.left)
+            time.sleep(0.02)  # [TIMING 2]
+            mouse.position = (target_x, target_y)
+            time.sleep(0.02)  # [TIMING 3]
+            mouse.release(Button.left)
+            return
+
+        # Slower, more controlled movement for daily mode
+        mouse.position = (start_x, start_y)
+        time.sleep(0.05)
+        mouse.press(Button.left)
+        time.sleep(0.1)
+        for i in range(0, distance, 20):
+            mouse.position = (start_x, start_y - i)
+            time.sleep(0.01)
+        mouse.position = (start_x, start_y - distance)
+        time.sleep(0.05)
+        mouse.release(Button.left)
+
+    # Calculate fixed ball position once
+    ball_x = window_rect[0] + (window_rect[2] // 2)
+    ball_y = window_rect[1] + (window_rect[3] - 200)
+    print(f"{hijau}Ball position calibrated at: ({ball_x}, {ball_y}){reset}")
+    
+    # Game mode selection
+    print(f"\n{putih}Select Game Mode:")
+    print(f"{kuning}1. Daily Mode {putih}(1 shot/sec)")
+    print(f"{kuning}2. Match Mode {putih}(5+ shots/sec)")
+    mode = input(f"{putih}Enter mode (1 or 2): {reset}")
+    
+    # Set delay based on mode
+    shot_delay = 1.0 if mode == "1" else 0.2
+    mode_name = "Daily Mode" if mode == "1" else "Match Mode"
+    print(f"{hijau}Starting in {mode_name}{reset}")
+    
+    print(f"\n{putih}Controls:")
+    print(f"{kuning}K {putih}- Pause/Resume")
+    print(f"{kuning}S {putih}- Stop")
+    print(f"{kuning}M {putih}- Switch Mode{reset}\n")
+
     paused = False
     running = True
-    
+
     while running:
         if keyboard.is_pressed('K'):
             paused = not paused
             if paused:
                 print(f"{biru}Bot paused... Press 'K' to continue{reset}")
             else:
-                print(f'{biru}Bot continuing...{reset}')
+                print(f'{biru}Bot continuing in {mode_name}...{reset}')
             time.sleep(0.2)
 
         if keyboard.is_pressed('S'):
             print(f"{merah}Stopping bot...{reset}")
             running = False
             break
+            
+        if keyboard.is_pressed('M'):
+            # Switch modes
+            shot_delay = 1.0 if shot_delay == 0.2 else 0.2
+            mode_name = "Daily Mode" if shot_delay == 1.0 else "Match Mode"
+            print(f"{hijau}Switched to {mode_name}{reset}")
+            time.sleep(0.2)
 
         if paused:
             continue
 
         try:
-            if mode == "1":  # Normal Mode
-                # Your original shooting logic here
-                pass
-                
-            elif mode == "2":  # AI Training Mode
-                hoop_pos = find_hoop(window_rect)
-                if hoop_pos:
-                    # Move to hoop position
-                    mouse.position = hoop_pos
-                    # Store position for training
-                    tracker.update_history(hoop_pos, time.time())
-                time.sleep(0.01)
-                
-            elif mode == "3":  # AI Game Mode
-                hoop_pos = find_hoop(window_rect)
-                if hoop_pos:
-                    # Get predicted position
-                    predicted_pos = tracker.predict_next_position(hoop_pos)
-                    # Move to predicted position
-                    mouse.position = predicted_pos
-                    # Optional: Add shooting logic here
-                time.sleep(0.01)
-                
+            # Perform shooting action
+            swipe_up(ball_x, ball_y)
+            if shot_delay == 0.2:  # Match mode
+                time.sleep(0.02)  # [TIMING 4] Reduce this to 0.15-0.18 for faster shots
+            else:  # Daily mode
+                time.sleep(1.0)
+                        
         except Exception as e:
             print(f"{merah}Error: {e}{reset}")
             continue
