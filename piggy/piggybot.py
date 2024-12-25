@@ -111,7 +111,8 @@ else:
     print(f"\n{putih}Controls:")
     print(f"{kuning}K {putih}- Pause/Resume")
     print(f"{kuning}S {putih}- Stop")
-    print(f"{kuning}M {putih}- Switch Mode{reset}\n")
+    print(f"{kuning}M {putih}- Switch Mode")
+    print(f"{kuning}R {putih}- Restart/Choose Mode{reset}\n")
 
     paused = False
     running = True
@@ -130,6 +131,29 @@ else:
             running = False
             break
             
+        if keyboard.is_pressed('R'):
+            print(f"{hijau}Restarting and returning to mode selection...{reset}")
+            time.sleep(0.2)
+            # Re-display mode selection menu
+            print(f"\n{putih}Select Game Mode:")
+            print(f"{kuning}1. Daily Mode {putih}(1 shot/sec)")
+            print(f"{kuning}2. Match Mode {putih}(5+ shots/sec)")
+            print(f"{kuning}3. Testing Mode {putih}(Hoop tracking only)")
+            mode = input(f"{putih}Enter mode (1 or 2 or 3): {reset}")
+            
+            # Reset mode settings
+            if mode == "1":
+                shot_delay = 1.0
+                mode_name = "Daily Mode"
+            elif mode == "2":
+                shot_delay = 0.2
+                mode_name = "Match Mode"
+            else:
+                shot_delay = 0.1
+                mode_name = "Testing Mode"
+            print(f"{hijau}Starting in {mode_name}{reset}")
+            continue
+
         if keyboard.is_pressed('M'):
             # Switch modes
             shot_delay = 1.0 if shot_delay == 0.2 else 0.2
