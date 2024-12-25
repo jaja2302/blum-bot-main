@@ -107,22 +107,25 @@ def play_game():
     attempts = 0
     current_stage = 1
     successful_runs = 0
-    door_stats = {
-        1: {'clicks': 0, 'successes': 0, 'stage_1_attempts': 0, 'stage_1_success': 0, 
-            'stage_2_attempts': 0, 'stage_2_success': 0, 'stage_3_attempts': 0, 
-            'stage_3_success': 0, 'stage_4_attempts': 0, 'stage_4_success': 0},
-        2: {'clicks': 0, 'successes': 0, 'stage_1_attempts': 0, 'stage_1_success': 0, 
-            'stage_2_attempts': 0, 'stage_2_success': 0, 'stage_3_attempts': 0, 
-            'stage_3_success': 0, 'stage_4_attempts': 0, 'stage_4_success': 0},
-        3: {'clicks': 0, 'successes': 0, 'stage_1_attempts': 0, 'stage_1_success': 0, 
-            'stage_2_attempts': 0, 'stage_2_success': 0, 'stage_3_attempts': 0, 
-            'stage_3_success': 0, 'stage_4_attempts': 0, 'stage_4_success': 0}
-    }
-    current_run_doors = []
     
+    # Get target stage first
     target = get_target_stage()
     print(f"\nBot will claim at stage {target}")
     print(f"Bot will use resume button when failing at stage {target}")
+    
+    # Create door stats dynamically based on target stage
+    door_stats = {}
+    for door in [1, 2, 3]:
+        door_stats[door] = {
+            'clicks': 0,
+            'successes': 0
+        }
+        # Dynamically add stats for each stage up to target stage
+        for stage in range(1, target + 1):
+            door_stats[door][f'stage_{stage}_attempts'] = 0
+            door_stats[door][f'stage_{stage}_success'] = 0
+    current_run_doors = []
+    
     time.sleep(2)
     
     while running:
@@ -316,6 +319,7 @@ def main():
     print("Controls:")
     print("- Press 'S' to stop the bot")
     print("- Press 'K' to pause/resume")
+    print("- Press 'R' to restart (ask for new target stage)")
     print("- Press 'ESC' to exit during calibration")
     time.sleep(2)
     
@@ -336,6 +340,12 @@ def main():
                 paused = not paused
                 print(f"\nBot {'paused' if paused else 'resumed'}")
                 time.sleep(0.2)
+            
+            if keyboard.is_pressed('r'):
+                print("\nRestarting bot - asking for new target stage...")
+                time.sleep(0.2)
+                play_game()
+                continue
             
             if not paused:
                 play_game()

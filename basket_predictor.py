@@ -135,3 +135,60 @@ class BasketPredictor:
         except Exception as e:
             print(f"Error finding basket: {e}")
             return None 
+
+    def get_prediction(self, cx, cy, speed_ms, moving_right):
+        """Enhanced prediction with simple pattern matching"""
+        # Get current movement characteristics
+        speed_trend = self.analyze_movement()
+        
+        # Base prediction adjustments
+        if speed_trend == 'accelerating':
+            base_offset = 50 * (speed_ms / 80)  # More aggressive for acceleration
+            base_y_offset = 32
+        elif speed_trend == 'decelerating':
+            base_offset = 50 * (speed_ms / 100)  # Less aggressive for deceleration
+            base_y_offset = 28
+        else:
+            base_offset = 50 * (speed_ms / 90)
+            base_y_offset = 30
+
+        # Screen zone adjustments (make more dynamic)
+        screen_portion = cx / self.screen_width
+        if screen_portion < 0.3:  # Left zone
+            zone_multiplier = 1.2 if moving_right else 0.9
+        elif screen_portion > 0.7:  # Right zone
+            zone_multiplier = 0.9 if moving_right else 1.2
+        else:  # Middle zone
+            zone_multiplier = 1.0
+
+        predicted_x = cx + (base_offset * zone_multiplier * (1 if moving_right else -1))
+        predicted_y = cy - base_y_offset
+
+        # Edge protection
+        edge_buffer = 120
+        predicted_x = max(edge_buffer, min(self.screen_width - edge_buffer, predicted_x))
+
+        return int(predicted_x), int(predicted_y)
+
+    def analyze_movement(self):
+        """Better speed and movement analysis"""
+        if len(self.basket_history) < 3:
+            return None
+
+        # Calculate acceleration
+        speeds = []
+        for i in range(len(self.basket_history) - 1):
+            dx = self.basket_history[i+1][0] - self.basket_history[i][0]
+            dt = self.basket_history[i+1][2] - self.basket_history[i][2]
+            if dt > 0:
+                speeds.append(abs(dx/dt))
+
+        # Detect if speed is changing
+        speed_trend = 'steady'
+        if len(speeds) >= 2:
+            if speeds[-1] > speeds[-2] * 1.1:
+                speed_trend = 'accelerating'
+            elif speeds[-1] < speeds[-2] * 0.9:
+                speed_trend = 'decelerating'
+
+        return speed_trend
