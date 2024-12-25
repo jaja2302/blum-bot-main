@@ -93,11 +93,19 @@ else:
     print(f"\n{putih}Select Game Mode:")
     print(f"{kuning}1. Daily Mode {putih}(1 shot/sec)")
     print(f"{kuning}2. Match Mode {putih}(5+ shots/sec)")
-    mode = input(f"{putih}Enter mode (1 or 2): {reset}")
+    print(f"{kuning}3. Testing Mode {putih}(Hoop tracking only)")
+    mode = input(f"{putih}Enter mode (1 or 2 or 3): {reset}")
     
     # Set delay based on mode
-    shot_delay = 1.0 if mode == "1" else 0.2
-    mode_name = "Daily Mode" if mode == "1" else "Match Mode"
+    if mode == "1":
+        shot_delay = 1.0
+        mode_name = "Daily Mode"
+    elif mode == "2":
+        shot_delay = 0.2
+        mode_name = "Match Mode"
+    else:
+        shot_delay = 0.1
+        mode_name = "Testing Mode"
     print(f"{hijau}Starting in {mode_name}{reset}")
     
     print(f"\n{putih}Controls:")
@@ -133,12 +141,18 @@ else:
             continue
 
         try:
-            # Perform shooting action
-            swipe_up(ball_x, ball_y)
-            if shot_delay == 0.2:  # Match mode
-                time.sleep(0.02)  # [TIMING 4] Reduce this to 0.15-0.18 for faster shots
-            else:  # Daily mode
-                time.sleep(1.0)
+            if mode == "3":  # Testing mode
+                hoop_pos = get_hoop_position(window_rect)
+                if hoop_pos:
+                    mouse.position = hoop_pos
+                time.sleep(shot_delay)
+            else:
+                # Perform shooting action
+                swipe_up(ball_x, ball_y)
+                if shot_delay == 0.2:  # Match mode
+                    time.sleep(0.02)
+                else:  # Daily mode
+                    time.sleep(1.0)
                         
         except Exception as e:
             print(f"{merah}Error: {e}{reset}")
