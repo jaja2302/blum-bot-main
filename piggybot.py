@@ -21,6 +21,10 @@ class BasketballBot:
         self.shot_count = 0    
         self.log_file = 'basket_analysis.txt'  
         self.predictor = BasketPredictor()
+        
+        # Get the first screenshot to set the game window dimensions
+        screenshot = pyautogui.screenshot()
+        self.predictor.screen_width = screenshot.width
 
     def get_mode(self):
         while True:
@@ -45,56 +49,23 @@ class BasketballBot:
                 print("Invalid input")
 
     def swipe(self, start_x, start_y, end_x, end_y):
-        """Perform fast swipe action with balanced speed and accuracy"""
+        """Simple direct swipe from ball to hoop"""
         try:
-            # Get current basket movement speed and screen info
-            basket_speed = self.predictor.get_basket_speed()
-            is_stationary = basket_speed < 5
-            screen_width = pyautogui.size().width
-            is_middle = abs(end_x - (screen_width/2)) < 100  # Check if target is near middle
-
-            # Adjusted settings for better accuracy while maintaining speed
-            if self.mode == 'matching':
-                if is_stationary and is_middle:  # Stationary and middle target needs most precise swipe
-                    duration = 0.09    # Even slower for middle accuracy
-                    steps = 9         # More steps for smoother movement
-                    wait_start = 0.02  # Longer press time
-                    wait_end = 0.02
-                    curve_height = 1.5  # Higher curve for middle shots
-                elif is_stationary:    # Stationary but not middle
-                    duration = 0.08
-                    steps = 8
-                    wait_start = 0.015
-                    wait_end = 0.015
-                    curve_height = 1.4
-                else:                  # Moving basket
-                    duration = 0.06
-                    steps = 6
-                    wait_start = 0.015
-                    wait_end = 0.015
-                    curve_height = 1.2
-            else:  # daily mode unchanged
-                duration = 0.2
-                steps = 15
-                wait_start = 0.05
-                wait_end = 0.05
-                curve_height = 2
+            # Fixed timing for consistency
+            duration = 0.08
+            steps = 8
+            curve_height = 1.4
             
-            # Pre-position mouse and ensure proper press
+            # Start from ball position (middle)
             self.mouse.position = (start_x, start_y)
-            time.sleep(wait_start)
+            time.sleep(0.03)
             
             self.mouse.press(Button.left)
             
-            # More controlled movement with extra smoothing for middle shots
+            # Simple arc movement
             for i in range(steps):
                 progress = i / steps
-                
-                # Adjusted curve calculation for middle shots
-                if is_middle and is_stationary:
-                    curve = math.sin(progress * math.pi) * curve_height * 1.1  # Slightly higher arc for middle
-                else:
-                    curve = math.sin(progress * math.pi) * curve_height
+                curve = math.sin(progress * math.pi) * curve_height
                 
                 current_x = int(start_x + (end_x - start_x) * progress)
                 current_y = int(start_y + (end_y - start_y) * progress + curve)
@@ -102,21 +73,10 @@ class BasketballBot:
                 self.mouse.position = (current_x, current_y)
                 time.sleep(duration / steps)
             
-            # Ensure proper release
+            # Release at target
             self.mouse.position = (end_x, end_y)
-            time.sleep(wait_end)
             self.mouse.release(Button.left)
-            
-            # Adjusted delay between shots
-            if self.mode == 'matching':
-                if is_stationary and is_middle:
-                    time.sleep(0.02)   # Longer delay for middle shots
-                elif is_stationary:
-                    time.sleep(0.015)  # Normal delay for stationary
-                else:
-                    time.sleep(0.01)   # Fast for moving
-            else:
-                time.sleep(max(0.05, self.shot_delay))
+            time.sleep(0.02)
             
         except Exception as e:
             print(f"Swipe error: {e}")
