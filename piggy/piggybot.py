@@ -59,21 +59,16 @@ else:
         if shot_delay == 0.2:  # If in match mode
             hoop_pos = get_hoop_position(window_rect)
             if hoop_pos:
-                # Get predicted position from AI
-                predicted_pos = tracker.predict_next_position(hoop_pos)
-                if predicted_pos:
-                    target_x, target_y = predicted_pos
-                else:
-                    target_x, target_y = hoop_pos
+                target_x, target_y = hoop_pos
             else:
                 target_x, target_y = start_x, start_y - distance
                 
             mouse.position = (start_x, start_y)
-            time.sleep(0.02)  # [TIMING 1]
+            time.sleep(0.02)
             mouse.press(Button.left)
-            time.sleep(0.02)  # [TIMING 2]
+            time.sleep(0.02)
             mouse.position = (target_x, target_y)
-            time.sleep(0.02)  # [TIMING 3]
+            time.sleep(0.02)
             mouse.release(Button.left)
             return
 
