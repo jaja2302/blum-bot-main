@@ -4,11 +4,16 @@ import pyautogui
 import time
 
 class HoopTracker:
+    # Konstanta yang bisa diatur
+    OFFSET_DISTANCE = 35  # Jarak offset dalam pixel
+    VELOCITY_THRESHOLD = 0.3  # Threshold kecepatan untuk menerapkan offset
+
     def __init__(self):
         self.basket_history = []
         self.history_max = 6
         self.last_detection_time = None
         self.velocity = [0, 0]
+        self.direction_offset = 0
 
     def update_history(self, position, current_time):
         """Update position history dan hitung velocity"""
@@ -18,6 +23,15 @@ class HoopTracker:
                 # Hitung velocity
                 self.velocity[0] = (position[0] - self.basket_history[-1][0]) / dt
                 self.velocity[1] = (position[1] - self.basket_history[-1][1]) / dt
+                
+                # Menggunakan konstanta untuk offset dan threshold
+                if abs(self.velocity[0]) > self.VELOCITY_THRESHOLD:
+                    if self.velocity[0] > 0:
+                        self.direction_offset = self.OFFSET_DISTANCE
+                    else:
+                        self.direction_offset = -self.OFFSET_DISTANCE
+                else:
+                    self.direction_offset = 0
         
         self.basket_history.append((position[0], position[1], current_time))
         self.last_detection_time = current_time
@@ -38,6 +52,10 @@ class HoopTracker:
         predicted_y = last_pos[1] + self.velocity[1] * dt
         
         return (int(predicted_x), int(predicted_y))
+
+    def get_adjusted_position(self, position):
+        """Mengembalikan posisi yang sudah disesuaikan dengan offset"""
+        return (position[0] + self.direction_offset, position[1])
 
 def get_hoop_position(window_rect):
     """Main function to get hoop position"""
@@ -92,10 +110,13 @@ def get_hoop_position(window_rect):
                     
                     # Update tracker dengan posisi baru
                     get_hoop_position.tracker.update_history((screen_x, screen_y), current_time)
-                    return (screen_x, screen_y)
+                    # Return posisi yang sudah disesuaikan dengan offset
+                    return get_hoop_position.tracker.get_adjusted_position((screen_x, screen_y))
         
-        # Jika tidak ada deteksi, gunakan prediksi
+        # Jika menggunakan prediksi, tetap terapkan offset
         predicted_pos = get_hoop_position.tracker.predict_position(current_time)
+        if predicted_pos:
+            return get_hoop_position.tracker.get_adjusted_position(predicted_pos)
         return predicted_pos
         
     except Exception as e:
