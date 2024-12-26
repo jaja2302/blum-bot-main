@@ -1,61 +1,65 @@
-import win32gui
-import win32con
-import time
+from window_detector import WindowDetector
 from screen_capture import ScreenCapture
-from ai_hoop_detector import HoopDetector
-from ai_ball_controller import BallController
-from ai_rl_agent import RLAgent
+from game_detector import GameDetector
+from keyboard_controller import KeyboardController
+import time
 
-class PiggyBallAI:
-    def __init__(self):
-        self.window_detector = WindowDetector()
-        self.screen_capture = ScreenCapture()
-        self.hoop_detector = HoopDetector()
-        self.ball_controller = BallController()
-        self.rl_agent = RLAgent()
+def main():
+    detector = WindowDetector()
+    screen_capture = ScreenCapture()
+    game_detector = GameDetector()
+    keyboard_ctrl = KeyboardController()
+    
+    print("Mencari window Telegram...")
+    print("\nKontrol:")
+    print("S - Stop program")
+    print("P - Pause program")
+    print("R - Resume program")
+    print("Space - Play game")
+    
+    window_info = detector.find_window()
+    
+    if window_info:
+        print(f"Window Telegram ditemukan!")
         
-    def find_telegram_window(self):
-        # Find Telegram window
-        telegram_hwnd = self.window_detector.find_window("Telegram")
-        if telegram_hwnd:
-            # Bring window to front
-            win32gui.ShowWindow(telegram_hwnd, win32con.SW_RESTORE)
-            win32gui.SetForegroundWindow(telegram_hwnd)
-            return telegram_hwnd
-        return None
-
-    def run(self):
-        print("Starting Piggy Ball AI...")
+        # Aktifkan window
+        detector.activate_window(window_info)
         
-        # Find and focus Telegram window
-        telegram_hwnd = self.find_telegram_window()
-        if not telegram_hwnd:
-            print("Could not find Telegram window!")
-            return
-
-        # Set the game region
-        self.screen_capture.set_game_region((100, 100, 500, 700))
-
         try:
-            while True:
-                # Capture game screen
-                game_screen = self.screen_capture.get_game_screen(telegram_hwnd)
+            maintenance_count = 0
+            while not keyboard_ctrl.is_stopped():
+                if keyboard_ctrl.is_game_paused():
+                    time.sleep(0.1)
+                    continue
                 
-                # Detect hoop position
-                hoop_pos = self.hoop_detector.detect_hoop(game_screen)
-                
-                if hoop_pos:
-                    # Get action from RL agent
-                    action = self.rl_agent.get_action(game_screen, hoop_pos)
+                screenshot = screen_capture.capture_window(window_info)
+                if screenshot is not None:
+                    result = game_detector.detect_game_elements(screenshot)
                     
-                    # Execute action using ball controller
-                    self.ball_controller.execute_action(action)
-                
-                time.sleep(0.1)
+                    if result:
+                        if result['status'] == 'maintenance':
+                            maintenance_count += 1
+                            if maintenance_count == 1:  # Hanya print sekali
+                                print("\nGame sedang maintenance!")
+                                print("Tekan 'S' atau 'ESC' untuk stop")
+                                print("Tekan 'P' untuk pause")
+                            time.sleep(5)  # Tunggu lebih lama saat maintenance
+                        else:
+                            if maintenance_count > 0:  # Reset counter jika game aktif
+                                print("\nGame sudah aktif kembali!")
+                                maintenance_count = 0
+                            
+                            if result['status'] == 'active':
+                                print(f"Ring terdeteksi di: {result['hoop_position']}")
+                                print(f"Bola siap di posisi: {result['ball_position']}")
+                            
+                time.sleep(0.5)
                 
         except KeyboardInterrupt:
-            print("Stopping Piggy Ball AI...")
+            print("\nProgram dihentikan!")
+            
+    else:
+        print("Window Telegram tidak ditemukan!")
 
 if __name__ == "__main__":
-    ai = PiggyBallAI()
-    ai.run()
+    main()
