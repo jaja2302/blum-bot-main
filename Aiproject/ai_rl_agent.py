@@ -1,64 +1,72 @@
 import numpy as np
-import random
 import math
+import time
+from collections import deque
 
 class RLAgent:
     def __init__(self):
-        self.last_hoop_pos = None
-        self.last_shot_success = False
-        self.base_angles = [30, 45, 60]  # Sudut dasar untuk menembak
-        self.base_powers = [0.4, 0.6, 0.8]  # Power dasar untuk menembak
+        self.last_pos = None
+        self.last_time = None
+        self.movement_threshold = 1
+        self.last_log_time = 0
+        self.log_interval = 0.05
+        self.last_shot_time = 0
+        self.shot_cooldown = 0.1  # Ubah ke 0.1 untuk 10 tembakan/detik
         
     def get_action(self, game_screen, hoop_pos):
         """Tentukan parameter tembakan berdasarkan posisi ring"""
         try:
             x, y = hoop_pos
+            current_time = time.time()
             
-            # Prediksi pergerakan ring
-            hoop_direction = 0
-            if self.last_hoop_pos:
-                hoop_direction = x - self.last_hoop_pos[0]  # Positif = ke kanan, Negatif = ke kiri
-            self.last_hoop_pos = hoop_pos
+            # Deteksi pergerakan dan kecepatan
+            movement = "DIAM"
+            speed_category = "DIAM"
+            speed_value = 0
             
-            # Hitung jarak dari posisi bola (tengah bawah)
+            if self.last_pos:
+                dx = x - self.last_pos[0]
+                dt = current_time - self.last_time if self.last_time else 0
+                
+                if dt > 0:
+                    speed_value = abs(dx) / dt
+                    
+                    # Log lebih sering
+                    if current_time - self.last_log_time >= self.log_interval:
+                        if abs(dx) > self.movement_threshold:
+                            movement = "KANAN" if dx > 0 else "KIRI"
+                            if speed_value > 120:
+                                speed_category = "CEPAT"
+                            elif speed_value > 60:
+                                speed_category = "SEDANG"
+                            elif speed_value > 30:
+                                speed_category = "LAMBAT"
+                                
+                        print(f"Ring: ({x}, {y}) | {movement} | {speed_category} | {speed_value:.1f} px/s | dt={dt*1000:.0f}ms")
+                        self.last_log_time = current_time
+            
+            # Update posisi terakhir
+            self.last_pos = hoop_pos
+            self.last_time = current_time
+            
+            # Cek cooldown tembakan
+            if current_time - self.last_shot_time < self.shot_cooldown:
+                return None  # Skip tembakan jika masih dalam cooldown
+            
+            self.last_shot_time = current_time
+            
+            # Posisi bola dan perhitungan tembakan
             ball_x = game_screen.shape[1] // 2
             ball_y = game_screen.shape[0] - 200
+            
             dx = x - ball_x
-            dy = ball_y - y  # Dibalik karena koordinat y terbalik
-            
-            # Hitung sudut berdasarkan posisi ring
-            base_angle = math.degrees(math.atan2(dy, dx))
-            
-            # Sesuaikan sudut berdasarkan pergerakan ring
-            if abs(hoop_direction) > 5:  # Jika ring bergerak signifikan
-                prediction_factor = 15  # Seberapa jauh kita prediksi
-                if hoop_direction > 0:  # Ring bergerak ke kanan
-                    base_angle -= prediction_factor
-                else:  # Ring bergerak ke kiri
-                    base_angle += prediction_factor
-            
-            # Hitung power berdasarkan jarak
+            dy = ball_y - y
             distance = math.sqrt(dx*dx + dy*dy)
-            max_distance = math.sqrt(game_screen.shape[1]**2 + game_screen.shape[0]**2)
-            base_power = min(0.8, distance / max_distance + 0.3)  # Minimal 0.3, maksimal 0.8
-            
-            # Sesuaikan power berdasarkan ketinggian ring
-            height_factor = 1.0 - (y / game_screen.shape[0])  # 0 = atas, 1 = bawah
-            power = base_power * (1 + height_factor * 0.2)  # Tambah power untuk ring yang lebih tinggi
-            
-            # Tambah sedikit random untuk variasi (lebih kecil dari sebelumnya)
-            angle = base_angle + random.uniform(-2, 2)
-            power = power + random.uniform(-0.05, 0.05)
-            
-            # Batasi nilai
-            angle = max(20, min(70, angle))
-            power = max(0.3, min(0.9, power))
-            
-            print(f"\nRing bergerak: {'Kanan' if hoop_direction > 0 else 'Kiri' if hoop_direction < 0 else 'Diam'}")
-            print(f"Menembak dengan sudut {angle:.1f}° dan power {power:.2f}")
+            angle = math.degrees(math.atan2(dy, dx))
+            power = min(0.8, max(0.4, distance / 400))
             
             return (angle, power)
             
         except Exception as e:
             print(f"Error menghitung tembakan: {e}")
-            return (45, 0.6)  # Default values 
+            return (45, 0.6) 

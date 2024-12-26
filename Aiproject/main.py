@@ -36,46 +36,30 @@ def main():
         print(f"\nPosisi bola: ({ball_pos[0]}, {ball_pos[1]})")
         
         try:
-            last_shot_time = 0
-            SHOT_DELAY = 2.0  # Delay antara tembakan (2 detik)
-            
             print("\nTekan SPACE untuk memulai game!")
             
             while not keyboard_ctrl.is_stopped():
                 if keyboard_ctrl.is_game_paused():
-                    time.sleep(0.1)
+                    time.sleep(0.01)
                     continue
                     
-                # Cek tombol space untuk memulai game
                 if keyboard.is_pressed('space'):
                     game_detector.start_game()
-                    time.sleep(0.5)
+                    time.sleep(0.1)
                 
                 screenshot = screen_capture.capture_window(window_info)
                 if screenshot is not None:
                     result = game_detector.detect_game_elements(screenshot)
                     
                     if result and result['status'] == 'active':
-                        current_time = time.time()
+                        hoop_pos = result['hoop_position']
+                        action = ai_agent.get_action(screenshot, hoop_pos)
                         
-                        # Eksekusi tembakan jika sudah melewati delay
-                        if current_time - last_shot_time >= SHOT_DELAY:
-                            hoop_pos = result['hoop_position']
-                            
-                            # Dapatkan action dari AI
-                            action = ai_agent.get_action(screenshot, hoop_pos)
-                            
-                            # Eksekusi tembakan
+                        if action:  # Jika AI memutuskan untuk menembak
                             print(f"\nMenembak ke ring di posisi {hoop_pos}")
                             ball_controller.execute_action(action, ball_pos)
                             
-                            # Update waktu tembakan terakhir
-                            last_shot_time = current_time
-                            
-                            # Tunggu sebentar untuk melihat hasil tembakan
-                            time.sleep(0.5)
-                            
-                time.sleep(0.1)
+                time.sleep(0.01)
                 
         except KeyboardInterrupt:
             print("\nProgram dihentikan!")
