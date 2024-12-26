@@ -39,7 +39,7 @@ class BallController:
             print(f"Error executing shot: {e}")
             return False
 
-    def swipe(self, start_x, start_y, end_x, end_y, duration=0.06):
+    def swipe(self, start_x, start_y, end_x, end_y, duration=0.08):
         """Perform ultra-fast swipe action with validation"""
         try:
             # Add minimal randomization
@@ -51,7 +51,7 @@ class BallController:
             
             # Pre-position and press with validation
             self.mouse.position = (start_x, start_y)
-            time.sleep(0.015)
+            time.sleep(0.02)
             
             # Double-check position before pressing
             current_pos = self.mouse.position
@@ -62,7 +62,7 @@ class BallController:
             self.mouse.press(Button.left)
             
             # Fast movement with position checking
-            steps = 6
+            steps = 8
             curve_height = 1.2
             
             for i in range(steps):
@@ -77,7 +77,7 @@ class BallController:
             
             # Ensure we reach target position
             self.mouse.position = (end_x, end_y)
-            time.sleep(0.015)
+            time.sleep(0.02)
             
             # Validate final position before release
             current_pos = self.mouse.position
@@ -89,12 +89,12 @@ class BallController:
             self.mouse.release(Button.left)
             
             # Quick return to start
-            time.sleep(0.01)
+            time.sleep(0.015)
             self.mouse.position = (start_x, start_y)
             
             return True
             
         except Exception as e:
             print(f"Swipe error: {e}")
-            self.mouse.release(Button.left)  # Ensure mouse is released on error
+            self.mouse.release(Button.left)
             return False 
