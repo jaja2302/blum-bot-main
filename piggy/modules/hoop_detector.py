@@ -12,11 +12,15 @@ class HoopDetector:
         # Try color detection first
         result = self.detect_hoop_color(frame_bgr)
         if result:
+            # Draw target box
+            self.draw_target_box(frame_bgr, result)
             return result
         
         # If color fails, try shape detection
         result = self.detect_hoop_shape(frame_bgr)
         if result:
+            # Draw target box
+            self.draw_target_box(frame_bgr, result)
             return result
         
         return None
@@ -77,7 +81,7 @@ class HoopDetector:
                     return (cx, cy)
         return None
 
-    def draw_target_box(self, screenshot, position):
+    def draw_target_box(self, frame, position):
         """Draw targeting box around hoop"""
         cx, cy = position
         box_size = 72
@@ -85,7 +89,7 @@ class HoopDetector:
         target_y = cy - box_size//2
         
         # Draw main box
-        cv2.rectangle(screenshot, 
+        cv2.rectangle(frame, 
                     (target_x, target_y), 
                     (target_x + box_size, target_y + box_size), 
                     (0, 255, 0), 2)
@@ -93,14 +97,14 @@ class HoopDetector:
         # Draw corner markers
         marker_length = 10
         # Top-left
-        cv2.line(screenshot, (target_x, target_y), (target_x + marker_length, target_y), (0, 255, 0), 2)
-        cv2.line(screenshot, (target_x, target_y), (target_x, target_y + marker_length), (0, 255, 0), 2)
+        cv2.line(frame, (target_x, target_y), (target_x + marker_length, target_y), (0, 255, 0), 2)
+        cv2.line(frame, (target_x, target_y), (target_x, target_y + marker_length), (0, 255, 0), 2)
         # Top-right
-        cv2.line(screenshot, (target_x + box_size, target_y), (target_x + box_size - marker_length, target_y), (0, 255, 0), 2)
-        cv2.line(screenshot, (target_x + box_size, target_y), (target_x + box_size, target_y + marker_length), (0, 255, 0), 2)
+        cv2.line(frame, (target_x + box_size, target_y), (target_x + box_size - marker_length, target_y), (0, 255, 0), 2)
+        cv2.line(frame, (target_x + box_size, target_y), (target_x + box_size, target_y + marker_length), (0, 255, 0), 2)
         # Bottom-left
-        cv2.line(screenshot, (target_x, target_y + box_size), (target_x + marker_length, target_y + box_size), (0, 255, 0), 2)
-        cv2.line(screenshot, (target_x, target_y + box_size), (target_x, target_y + box_size - marker_length), (0, 255, 0), 2)
+        cv2.line(frame, (target_x, target_y + box_size), (target_x + marker_length, target_y + box_size), (0, 255, 0), 2)
+        cv2.line(frame, (target_x, target_y + box_size), (target_x, target_y + box_size - marker_length), (0, 255, 0), 2)
         # Bottom-right
-        cv2.line(screenshot, (target_x + box_size, target_y + box_size), (target_x + box_size - marker_length, target_y + box_size), (0, 255, 0), 2)
-        cv2.line(screenshot, (target_x + box_size, target_y + box_size), (target_x + box_size, target_y + box_size - marker_length), (0, 255, 0), 2) 
+        cv2.line(frame, (target_x + box_size, target_y + box_size), (target_x + box_size - marker_length, target_y + box_size), (0, 255, 0), 2)
+        cv2.line(frame, (target_x + box_size, target_y + box_size), (target_x + box_size, target_y + box_size - marker_length), (0, 255, 0), 2) 

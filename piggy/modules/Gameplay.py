@@ -1,17 +1,12 @@
-import cv2
 import numpy as np
-import pyautogui
 import win32gui
 import time
-import json
-from pynput.mouse import Button, Controller
-import pytesseract
 
 class WindowManager:
     def get_game_window(self):
         """Find the Telegram window"""
         def callback(hwnd, windows):
-            if "Telegram" in win32gui.GetWindowText(hwnd):
+            if "Telegram" in win32gui.GetWindowText(hwnd) and win32gui.IsWindowVisible(hwnd):
                 windows.append(hwnd)
             return True
         
@@ -23,118 +18,153 @@ class WindowManager:
             return None
             
         hwnd = windows[0]
+        
+        # Ensure window is not minimized
+        if win32gui.IsIconic(hwnd):
+            win32gui.ShowWindow(hwnd, 9)  # SW_RESTORE
+            time.sleep(0.5)  # Give window time to restore
+            
         rect = win32gui.GetWindowRect(hwnd)
         x, y, x2, y2 = rect
         w = x2 - x
         h = y2 - y
         
+        # Validate window dimensions
+        if w <= 0 or h <= 0:
+            print(f"Invalid window dimensions: {w}x{h}")
+            return None
+            
         print(f"Found Telegram window: {w}x{h} at ({x}, {y})")
         return (x, y, w, h)
+import cv2
+import numpy as np
+import pyautogui
+import time
+import json
 
 class BallDetector:
     def __init__(self):
-        self.window_manager = WindowManager()
-        self.mouse = Controller()
-        self.shot_delay = 0.2
-        self.start_time = time.time()
-        self.game_stats = self.load_game_stats()
-        self.current_game = {
-            'shots': [],
-            'score': 0,
-            'success_rate': 0
-        }
+        self.last_position = None
+        self.current_position = None
+        self.consecutive_failures = 0
+        self.max_failures = 5  # Maximum consecutive failures before warning
 
-    def load_game_stats(self):
-        try:
-            with open('modules/game_stats.json', 'r') as f:
-                return json.load(f)
-        except:
-            return {
-                'games_played': 0,
-                'high_score': 0,
-                'total_shots': 0,
-                'successful_shots': 0,
-                'best_positions': []
-            }
-
-    def save_game_stats(self):
-        with open('modules/game_stats.json', 'w') as f:
-            json.dump(self.game_stats, f, indent=4)
-
-    def record_shot(self, hoop_pos, score_changed):
-        """Record shot data"""
-        self.current_game['shots'].append({
-            'hoop_pos': hoop_pos,
-            'success': score_changed,
-            'time': time.time() - self.start_time
-        })
-
-    def analyze_game(self, final_score):
-        self.game_stats['games_played'] += 1
-        self.game_stats['high_score'] = max(self.game_stats['high_score'], final_score)
-        
-        successful_shots = len([shot for shot in self.current_game['shots'] if shot['success']])
-        total_shots = len(self.current_game['shots'])
-        
-        if successful_shots > 0:
-            # Tambahkan posisi ring yang berhasil ke best_positions
-            successful_positions = [shot['hoop_pos'] for shot in self.current_game['shots'] if shot['success']]
-            self.game_stats['best_positions'].extend(successful_positions)
-            # Batasi jumlah best_positions yang disimpan
-            self.game_stats['best_positions'] = self.game_stats['best_positions'][-100:]
-        
-        self.game_stats['total_shots'] += total_shots
-        self.game_stats['successful_shots'] += successful_shots
-        
-        self.save_game_stats()
-        return successful_shots, total_shots
-
-    def print_game_summary(self, final_score):
-        successful_shots, total_shots = self.analyze_game(final_score)
-        success_rate = (successful_shots / total_shots * 100) if total_shots > 0 else 0
-        
-        print("\n=== Game Summary ===")
-        print(f"Final Score: {final_score}")
-        print(f"Success Rate: {success_rate:.1f}%")
-        print(f"Total Games Played: {self.game_stats['games_played']}")
-        print(f"High Score: {self.game_stats['high_score']}")
-        
-        return success_rate > 50  # Return True jika success rate di atas 50%
-
-    def shoot_to_hoop(self, window_rect, hoop_pos):
-        """Shoot dari posisi bola tetap ke ring"""
+    def calibrate_position(self):
+        """Get initial ball position with improved error handling and validation"""
         try:
             with open('modules/coordinates.json', 'r') as f:
-                coordinates = json.load(f)
-            
-            if coordinates['ball_positions'] and hoop_pos:
-                ball_pos = coordinates['ball_positions'][0]
-                # Konversi ke koordinat layar
-                start_x = window_rect[0] + ball_pos['x']
-                start_y = window_rect[1] + ball_pos['y']
-                target_x = window_rect[0] + hoop_pos[0]
-                target_y = window_rect[1] + hoop_pos[1]
+                data = json.load(f)
+                if not data.get('ball_positions'):
+                    self.consecutive_failures += 1
+                    print(f"No ball positions found (attempt {self.consecutive_failures}/{self.max_failures})")
+                    return None
 
-                # Quick swipe
-                self.mouse.position = (start_x, start_y)
-                time.sleep(0.02)
-                self.mouse.press(Button.left)
-                time.sleep(0.02)
-                self.mouse.position = (target_x, target_y)
-                time.sleep(0.02)
-                self.mouse.release(Button.left)
-                time.sleep(0.02)
+                new_position = (
+                    data['ball_positions'][0]['x'],
+                    data['ball_positions'][0]['y']
+                )
+                
+                # Validate coordinates
+                if not all(isinstance(coord, (int, float)) for coord in new_position):
+                    print("Invalid coordinate types detected")
+                    return None
+                    
+                if not all(0 <= coord <= 2000 for coord in new_position):  # Reasonable screen bounds
+                    print("Coordinates out of reasonable bounds")
+                    return None
 
-                return True
+                # Reset failure counter on success
+                if new_position != self.current_position:
+                    self.last_position = self.current_position
+                    self.current_position = new_position
+                    print(f"Ball position updated: {self.current_position}")
+                
+                self.consecutive_failures = 0
+                return self.current_position
 
+        except FileNotFoundError:
+            print("coordinates.json not found. Please ensure file exists in modules directory")
+        except json.JSONDecodeError:
+            print("Error parsing coordinates.json. Please check file format")
         except Exception as e:
-            print(f"Error during shoot: {e}")
-        
-        return False
+            print(f"Error loading ball position: {str(e)}")
+            
+        self.consecutive_failures += 1
+        if self.consecutive_failures >= self.max_failures:
+            print("WARNING: Multiple consecutive failures in ball detection!")
+        return None
 
-    def reset_timer(self):
-        """Reset timer untuk game baru"""
-        self.start_time = time.time()
+    def execute_shot(self, window_rect, target_pos):
+        """Execute the shot with improved validation and error handling"""
+        if not self.current_position or not target_pos:
+            print("Missing current position or target position")
+            return False
+
+        if not window_rect or len(window_rect) != 4:
+            print("Invalid window rectangle")
+            return False
+
+        try:
+            # Validate window bounds
+            x = window_rect[0] + target_pos[0]
+            y = window_rect[1] + target_pos[1]
+            
+            if not (0 <= x <= pyautogui.size()[0] and 0 <= y <= pyautogui.size()[1]):
+                print("Target position outside screen bounds")
+                return False
+            
+            # Add small random variation to prevent detection
+            x += np.random.randint(-2, 3)
+            y += np.random.randint(-2, 3)
+            
+            # Smoother mouse movement
+            pyautogui.moveTo(x, y, duration=0.1)
+            time.sleep(0.05)
+            pyautogui.click()
+            
+            return True
+            
+        except Exception as e:
+            print(f"Error executing shot: {str(e)}")
+            return False
+
+    def update_learning(self, shot_info):
+        """Update learning data with validation"""
+        if not isinstance(shot_info, dict):
+            print("Invalid shot info format")
+            return False
+            
+        required_keys = ['ball_pos', 'target_pos', 'timestamp']
+        if not all(key in shot_info for key in required_keys):
+            print("Missing required shot information")
+            return False
+
+        try:
+            with open('modules/successful_shots.json', 'a+') as f:
+                try:
+                    f.seek(0)
+                    data = json.load(f)
+                except json.JSONDecodeError:
+                    data = {'shots': []}
+                
+                # Validate and clean shot data
+                shot_info = {
+                    'ball_pos': tuple(map(float, shot_info['ball_pos'])),
+                    'target_pos': tuple(map(float, shot_info['target_pos'])),
+                    'timestamp': float(shot_info['timestamp'])
+                }
+                
+                data['shots'].append(shot_info)
+                data['shots'] = data['shots'][-1000:]  # Keep last 1000 shots
+                
+                f.seek(0)
+                f.truncate()
+                json.dump(data, f, indent=4)
+                return True
+                
+        except Exception as e:
+            print(f"Error updating learning data: {str(e)}")
+            return False
 
 if __name__ == "__main__":
     detector = BallDetector()
