@@ -7,6 +7,7 @@ from modules.hoop_detector import HoopDetector
 from modules.score_detector import ScoreDetector
 from modules.data_manager import DataManager
 from modules.window_manager import WindowManager
+import pytesseract
 
 class AIPlayerPiggy:
     def __init__(self):
@@ -45,9 +46,15 @@ class AIPlayerPiggy:
                 frame_count += 1
                 current_time = time.time() - start_time
                 
-                # Detect hoop and score/time
+                # Detect hoop and score
                 hoop_pos = self.hoop_detector.detect_hoop(screenshot)
-                score, game_time = self.score_detector.detect_score_and_time(screenshot)
+                score = self.score_detector.detect_score(screenshot)
+                
+                # Check for game end
+                if self.score_detector.detect_game_end(screenshot):
+                    print("\nGame finished! Detected end game message")
+                    self.data_manager.save_patterns(frame_count, "game_end_save")
+                    break
                 
                 self.total_detections += 1
                 
@@ -64,7 +71,7 @@ class AIPlayerPiggy:
                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
                 
                 # Display stats
-                self.draw_stats(screenshot, frame_count, score, game_time)
+                self.draw_stats(screenshot, frame_count, score, current_time)
                 
                 # Auto-save every 5 minutes
                 if time.time() - last_save_time > 300:
@@ -95,10 +102,26 @@ class AIPlayerPiggy:
         key = cv2.waitKey(1) & 0xFF
         if key == ord('q') or key == 27:  # q or ESC
             print("\nStopping and saving data...")
+            self.data_manager.save_patterns(self.total_detections, "final_save")
             return True
         elif key == ord('s'):  # Manual save
             self.data_manager.save_patterns(self.total_detections, "manual_save")
         return False
+
+    def detect_game_end(self, screenshot):
+        """Detect if game ended by looking for 'Nice!' text"""
+        # Convert to grayscale
+        gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+        
+        # Threshold for white text
+        _, thresh = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
+        
+        # Use OCR to detect text
+        try:
+            text = pytesseract.image_to_string(thresh).lower().strip()
+            return "nice" in text or "ok" in text
+        except:
+            return False
 
 if __name__ == "__main__":
     ai_player = AIPlayerPiggy()

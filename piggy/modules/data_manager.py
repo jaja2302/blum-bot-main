@@ -11,17 +11,19 @@ class DataManager:
         self.load_existing_patterns()
 
     def load_existing_patterns(self):
-        """Load existing patterns from previous runs"""
+        """Load existing patterns and append new ones"""
         try:
             if os.path.exists('training_data/ai_learning.json'):
                 print("\nLoading existing patterns...")
                 with open('training_data/ai_learning.json', 'r') as f:
                     data = json.load(f)
-                    existing_patterns = data.get('patterns', [])
+                    # Hanya ambil patterns terakhir 1000 data untuk menghindari data terlalu besar
+                    existing_patterns = data.get('patterns', [])[-1000:]
                     self.movement_patterns = existing_patterns
                     print(f"Loaded {len(existing_patterns)} existing patterns")
         except Exception as e:
             print(f"Error loading existing patterns: {e}")
+            self.movement_patterns = []
 
     def update_history(self, position, current_time):
         """Update position history and learn movement patterns"""
@@ -52,27 +54,42 @@ class DataManager:
         """Save collected patterns to file"""
         try:
             os.makedirs('training_data', exist_ok=True)
+            
+            # Combine existing patterns with new ones
+            existing_data = []
+            if os.path.exists('training_data/ai_learning.json'):
+                with open('training_data/ai_learning.json', 'r') as f:
+                    try:
+                        existing_data = json.load(f).get('patterns', [])
+                    except:
+                        existing_data = []
+            
+            # Combine and keep only latest 3000 patterns
+            all_patterns = existing_data + self.movement_patterns
+            all_patterns = all_patterns[-3000:]
+            
             data = {
-                'patterns': self.movement_patterns,
+                'patterns': all_patterns,
                 'metadata': {
                     'total_frames': frame_count,
-                    'total_patterns': len(self.movement_patterns),
+                    'total_patterns': len(all_patterns),
                     'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 }
             }
             
-            filename = 'training_data/ai_learning.json'
-            with open(filename, 'w') as f:
+            with open('training_data/ai_learning.json', 'w') as f:
                 json.dump(data, f, indent=4)
             
             print(f"\n{save_type.title()} complete!")
             print(f"Total frames: {frame_count}")
-            print(f"Patterns learned: {len(self.movement_patterns)}")
-            print(f"Data saved to: {filename}")
+            print(f"New patterns: {len(self.movement_patterns)}")
+            print(f"Total patterns saved: {len(all_patterns)}")
+            
+            # Clear current patterns after saving
+            self.movement_patterns = []
             
         except Exception as e:
             print(f"\nError saving data: {e}")
             emergency_file = f'training_data/emergency_save_{int(time.time())}.json'
             with open(emergency_file, 'w') as f:
-                json.dump(data, f, indent=4)
-            print(f"Emergency save created: {emergency_file}") 
+                json.dump(data, f, indent=4) 
