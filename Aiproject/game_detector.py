@@ -71,7 +71,8 @@ class GameDetector:
                     'hoop_position': hoop_pos,
                     'direction': 'right' if hoop_pos[0] > 200 else 'left',
                     'height': hoop_pos[1],
-                    'remaining_time': int(remaining_time)
+                    'remaining_time': int(remaining_time),
+                    'scored': False
                 }
             
             return {
