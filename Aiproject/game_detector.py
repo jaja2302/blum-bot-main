@@ -21,13 +21,15 @@ class GameDetector:
         self.hoop_detector = HoopDetector()
         self.game_started = False
         self.game_start_time = None
-        self.GAME_DURATION = 45  # Durasi game 45 detik
+        self.GAME_DURATION = 45
+        self.last_hoop_pos = None
         
     def start_game(self):
         """Set flag game dimulai dan mulai timer"""
         self.game_started = True
         self.game_start_time = time.time()
         self.last_state = GameState.UNKNOWN
+        self.last_hoop_pos = None
         print("\nGame dimulai! Menunggu ring terdeteksi...")
         
     def stop_game(self):
@@ -39,7 +41,6 @@ class GameDetector:
     def detect_game_elements(self, screenshot):
         """Deteksi ring saat game aktif"""
         try:
-            # Jika game belum dimulai, tunggu
             if not self.game_started:
                 return {
                     'status': 'waiting',
@@ -50,8 +51,8 @@ class GameDetector:
             elapsed_time = current_time - self.game_start_time
             remaining_time = max(0, self.GAME_DURATION - elapsed_time)
             
-            # Cek game over hanya saat mendekati atau melewati batas waktu
-            if remaining_time <= 2:  # Cek 2 detik sebelum dan setelah game berakhir
+            # Cek game over di 2 detik terakhir
+            if remaining_time <= 2:
                 if self.is_game_over(screenshot):
                     if self.last_state != GameState.GAME_OVER:
                         print("\nGame selesai! Tekan SPACE untuk memulai game baru...")
@@ -62,29 +63,17 @@ class GameDetector:
                         'message': 'Game is over'
                     }
             
-            # Cek active game dengan mencari ring
+            # Deteksi ring tanpa spam log
             hoop_pos = self.hoop_detector.detect_hoop(screenshot)
             if hoop_pos:
-                if self.last_state != GameState.ACTIVE:
-                    print("\nRing terdeteksi! Memulai tracking...")
-                    self.last_state = GameState.ACTIVE
-                
-                # Log pergerakan ring dengan sisa waktu
-                x, y = hoop_pos
-                print(f"Ring: ({x}, {y}) | Arah: {'Kanan' if x > 200 else 'Kiri'} | Ketinggian: {y} | Waktu: {int(remaining_time)}s")
-                
                 return {
                     'status': 'active',
                     'hoop_position': hoop_pos,
-                    'direction': 'right' if x > 200 else 'left',
-                    'height': y,
+                    'direction': 'right' if hoop_pos[0] > 200 else 'left',
+                    'height': hoop_pos[1],
                     'remaining_time': int(remaining_time)
                 }
             
-            # Reset state jika tidak ada ring terdeteksi
-            if self.last_state != GameState.UNKNOWN:
-                print("\nMenunggu ring terdeteksi...")
-                self.last_state = GameState.UNKNOWN
             return {
                 'status': 'waiting',
                 'message': 'Waiting for ring'

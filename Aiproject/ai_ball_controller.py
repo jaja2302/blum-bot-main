@@ -1,37 +1,63 @@
-import pyautogui
+from pynput.mouse import Button, Controller
+import random
 import math
 import time
 
 class BallController:
     def __init__(self):
-        # Disable pyautogui's fail-safe
-        pyautogui.FAILSAFE = False
-        self.base_power = 100  # Base power for shots
-
-    def execute_action(self, action):
-        """
-        Execute the shooting action based on the AI's decision
-        action: tuple (angle, power)
-        """
+        self.mouse = Controller()
+        self.base_power = 300  # Base power untuk jarak tembakan
+        
+    def execute_action(self, action, ball_pos):
+        """Execute shooting action from RLAgent"""
         try:
             angle, power = action
             
-            # Calculate shot trajectory
+            # Konversi angle dan power ke koordinat target
             distance = power * self.base_power
-            x_offset = distance * math.cos(math.radians(angle))
-            y_offset = distance * math.sin(math.radians(angle))
+            target_x = ball_pos[0] + distance * math.cos(math.radians(angle))
+            target_y = ball_pos[1] - distance * math.sin(math.radians(angle))
             
-            # Get current mouse position
-            start_x, start_y = pyautogui.position()
-            
-            # Click and drag
-            pyautogui.mouseDown()
-            pyautogui.moveRel(x_offset, y_offset, duration=0.2)
-            pyautogui.mouseUp()
-            
-            # Return to starting position
-            time.sleep(0.1)
-            pyautogui.moveTo(start_x, start_y)
+            # Eksekusi swipe dengan smooth movement
+            self.swipe(ball_pos[0], ball_pos[1], target_x, target_y)
+            return True
             
         except Exception as e:
-            print(f"Error executing ball control: {e}") 
+            print(f"Error executing shot: {e}")
+            return False
+
+    def swipe(self, start_x, start_y, end_x, end_y, duration=0.2):
+        """Perform smooth swipe action"""
+        try:
+            # Add randomization
+            end_x += random.randint(-3, 3)
+            end_y += random.randint(-3, 3)
+            
+            # Start swipe
+            self.mouse.position = (start_x, start_y)
+            time.sleep(0.05)
+            self.mouse.press(Button.left)
+            
+            # Smooth movement with curve
+            steps = 15
+            for i in range(steps):
+                progress = i / steps
+                curve = math.sin(progress * math.pi) * 2
+                
+                current_x = start_x + (end_x - start_x) * progress
+                current_y = start_y + (end_y - start_y) * progress + curve
+                
+                self.mouse.position = (int(current_x), int(current_y))
+                time.sleep(duration / steps)
+            
+            # Release at target
+            self.mouse.position = (end_x, end_y)
+            time.sleep(0.05)
+            self.mouse.release(Button.left)
+            
+            # Return to ball position
+            time.sleep(0.1)
+            self.mouse.position = (start_x, start_y)
+            
+        except Exception as e:
+            print(f"Swipe error: {e}") 
