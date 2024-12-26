@@ -30,3 +30,11 @@ class KeyboardController:
 
     def is_game_paused(self):
         return self.is_paused 
+
+    def press_space(self):
+        """Tekan tombol spasi untuk memulai game baru"""
+        try:
+            keyboard.press_and_release('space')
+            time.sleep(0.1)  # Delay kecil setelah menekan spasi
+        except Exception as e:
+            print(f"Error menekan spasi: {e}") 

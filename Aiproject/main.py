@@ -3,6 +3,8 @@ from screen_capture import ScreenCapture
 from game_detector import GameDetector
 from keyboard_controller import KeyboardController
 import time
+import pyautogui
+import keyboard
 
 def main():
     detector = WindowDetector()
@@ -26,34 +28,29 @@ def main():
         detector.activate_window(window_info)
         
         try:
-            maintenance_count = 0
+            last_hoop_pos = None
+            print("\nTekan SPACE untuk memulai game!")
+            
             while not keyboard_ctrl.is_stopped():
                 if keyboard_ctrl.is_game_paused():
                     time.sleep(0.1)
                     continue
+                    
+                # Cek tombol space untuk memulai game
+                if keyboard.is_pressed('space'):
+                    game_detector.start_game()
+                    time.sleep(0.5)  # Delay untuk menghindari multiple press
                 
                 screenshot = screen_capture.capture_window(window_info)
                 if screenshot is not None:
                     result = game_detector.detect_game_elements(screenshot)
                     
-                    if result:
-                        if result['status'] == 'maintenance':
-                            maintenance_count += 1
-                            if maintenance_count == 1:  # Hanya print sekali
-                                print("\nGame sedang maintenance!")
-                                print("Tekan 'S' atau 'ESC' untuk stop")
-                                print("Tekan 'P' untuk pause")
-                            time.sleep(5)  # Tunggu lebih lama saat maintenance
-                        else:
-                            if maintenance_count > 0:  # Reset counter jika game aktif
-                                print("\nGame sudah aktif kembali!")
-                                maintenance_count = 0
+                    if result and result['status'] == 'active':
+                        current_hoop_pos = result['hoop_position']
+                        if current_hoop_pos != last_hoop_pos:
+                            last_hoop_pos = current_hoop_pos
                             
-                            if result['status'] == 'active':
-                                print(f"Ring terdeteksi di: {result['hoop_position']}")
-                                print(f"Bola siap di posisi: {result['ball_position']}")
-                            
-                time.sleep(0.5)
+                time.sleep(0.1)
                 
         except KeyboardInterrupt:
             print("\nProgram dihentikan!")
