@@ -27,23 +27,14 @@ class GameDetector:
         self.GAME_DURATION = 48
         self.last_hoop_pos = None
         
-        # Load koordinat tombol claim
         try:
-            # Coba gunakan os.path untuk memastikan path yang benar
-            import os
             json_path = os.path.join(os.path.dirname(__file__), 'button_claim_game_over.json')
-            print(f"\nDebug: Mencoba membaca file JSON dari: {json_path}")
-            
             with open(json_path, 'r') as f:
                 self.button_config = json.load(f)
-                print("Debug: Berhasil membaca konfigurasi tombol")
         except Exception as e:
-            print(f"Debug: Error loading button config: {e}")
-            print(f"Debug: Current working directory: {os.getcwd()}")
             self.button_config = None
 
     def start_game(self):
-        """Set flag game dimulai dan mulai timer"""
         self.game_started = True
         self.game_start_time = time.time()
         self.last_state = GameState.UNKNOWN
@@ -59,22 +50,14 @@ class GameDetector:
     def get_claim_button_pos(self, window_info):
         """Menghitung posisi absolut tombol claim"""
         if not self.button_config:
-            print("Debug: Button config tidak ditemukan!")
             return None
             
         try:
             claim_btn = self.button_config['buttons']['claim']
             absolute_x = window_info['left'] + claim_btn['x']
             absolute_y = window_info['top'] + claim_btn['y']
-            
-            print(f"\nDebug: Posisi tombol claim:")
-            print(f"- Relatif: ({claim_btn['x']}, {claim_btn['y']})")
-            print(f"- Window offset: ({window_info['left']}, {window_info['top']})")
-            print(f"- Absolut: ({absolute_x}, {absolute_y})")
-            
             return (absolute_x, absolute_y)
         except Exception as e:
-            print(f"Debug: Error saat menghitung posisi tombol: {e}")
             return None
 
     def detect_game_elements(self, screenshot):
@@ -135,9 +118,6 @@ class GameDetector:
             # Cek kata kunci hasil pertandingan
             result_keywords = ['defeat', 'nice', 'you scored', 'ok']
             if any(keyword in text for keyword in result_keywords):
-                # Debug: Print text yang terdeteksi
-                print("\nGame Over terdeteksi dengan text:")
-                print(text)
                 return True
             
             # Jika tidak ada keyword terdeteksi, cek warna merah
@@ -172,8 +152,7 @@ class GameDetector:
                 window_info['left'] + btn['x'],
                 window_info['top'] + btn['y']
             )
-        except Exception as e:
-            print(f"Debug: Error getting {button_name} button position: {e}")
+        except Exception:
             return None
 
     def detect_game_state(self, screenshot):
@@ -193,7 +172,6 @@ class GameDetector:
             # Cek opponent found
             opponent_keywords = ['opponent found', 'opponent', 'found', 'go!']
             if any(keyword in opponent_text for keyword in opponent_keywords):
-                print(f"Debug: Terdeteksi 'Opponent Found' di layar!")
                 return {
                     'state': GameState.OPPONENT_FOUND,
                     'action': 'click_go'
@@ -202,7 +180,6 @@ class GameDetector:
             # Deteksi menu betting
             text = pytesseract.image_to_string(Image.fromarray(cv2.cvtColor(screenshot, cv2.COLOR_BGR2RGB))).lower()
             if 'player vs player' in text:
-                print("Debug: Terdeteksi menu betting!")
                 return {
                     'state': GameState.UNKNOWN,
                     'action': 'click_bet'
@@ -212,6 +189,5 @@ class GameDetector:
                 'state': GameState.UNKNOWN,
                 'action': None
             }
-        except Exception as e:
-            print(f"Error detecting game state: {e}")
+        except Exception:
             return None 
