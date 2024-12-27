@@ -3,6 +3,18 @@
         "claim": {
             "x": 196,
             "y": 596
+        },
+        "go_versus_player": {
+            "x": 312,
+            "y": 342
+        },
+        "letsgo_play_the_game": {
+            "x": 295,
+            "y": 598
+        },
+        "go_versus_player_10m": {
+            "x": 314,
+            "y": 530
         }
     },
     "window_info": {

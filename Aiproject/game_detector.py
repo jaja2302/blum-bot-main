@@ -14,6 +14,9 @@ class GameState:
     UNKNOWN = 'unknown'
     ACTIVE = 'active'
     GAME_OVER = 'game_over'
+    FINDING_OPPONENT = 'finding_opponent'
+    OPPONENT_FOUND = 'opponent_found'
+    READY_TO_PLAY = 'ready_to_play'
 
 class GameDetector:
     def __init__(self):
@@ -157,3 +160,58 @@ class GameDetector:
         except Exception as e:
             print(f"Error checking game over: {e}")
             return False 
+
+    def get_button_position(self, button_name, window_info):
+        """Mendapatkan posisi absolut tombol berdasarkan nama"""
+        if not self.button_config:
+            return None
+        
+        try:
+            btn = self.button_config['buttons'][button_name]
+            return (
+                window_info['left'] + btn['x'],
+                window_info['top'] + btn['y']
+            )
+        except Exception as e:
+            print(f"Debug: Error getting {button_name} button position: {e}")
+            return None
+
+    def detect_game_state(self, screenshot):
+        """Deteksi state game saat ini"""
+        try:
+            # Preprocessing untuk area opponent found
+            height, width = screenshot.shape[:2]
+            opponent_area = screenshot[height//4:height//2, width//4:3*width//4]
+            
+            # Convert ke grayscale dan threshold
+            gray = cv2.cvtColor(opponent_area, cv2.COLOR_BGR2GRAY)
+            _, thresh = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY)
+            
+            # OCR untuk area opponent
+            opponent_text = pytesseract.image_to_string(thresh).lower()
+            
+            # Cek opponent found
+            opponent_keywords = ['opponent found', 'opponent', 'found', 'go!']
+            if any(keyword in opponent_text for keyword in opponent_keywords):
+                print(f"Debug: Terdeteksi 'Opponent Found' di layar!")
+                return {
+                    'state': GameState.OPPONENT_FOUND,
+                    'action': 'click_go'
+                }
+            
+            # Deteksi menu betting
+            text = pytesseract.image_to_string(Image.fromarray(cv2.cvtColor(screenshot, cv2.COLOR_BGR2RGB))).lower()
+            if 'player vs player' in text:
+                print("Debug: Terdeteksi menu betting!")
+                return {
+                    'state': GameState.UNKNOWN,
+                    'action': 'click_bet'
+                }
+            
+            return {
+                'state': GameState.UNKNOWN,
+                'action': None
+            }
+        except Exception as e:
+            print(f"Error detecting game state: {e}")
+            return None 

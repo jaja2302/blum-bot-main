@@ -1,6 +1,6 @@
 from window_detector import WindowDetector
 from screen_capture import ScreenCapture
-from game_detector import GameDetector
+from game_detector import GameDetector, GameState
 from keyboard_controller import KeyboardController
 from ai_ball_controller import BallController
 from ai_rl_agent import RLAgent
@@ -64,11 +64,13 @@ def main():
                             # print(f"\nMenembak ke ring di posisi {hoop_pos}")
                             ball_controller.execute_action(action, ball_pos)
                     elif result and result['status'] == 'game_over' and result.get('should_claim'):
-                        claim_pos = game_detector.get_claim_button_pos(window_info)
+                        claim_pos = game_detector.get_button_position('claim', window_info)
                         if claim_pos:
-                            print(f"\nDebug: Mencoba klik di posisi: {claim_pos}")
+                            print("\nDebug: Clicking claim button")
                             keyboard_ctrl.click_at(claim_pos[0], claim_pos[1])
-                            time.sleep(0.5)  # Tunggu sebentar setelah klik
+                            time.sleep(0.5)
+                            # Mulai alur post-game dengan mengirim screen_capture
+                            handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capture)
                         else:
                             print("\nDebug: Posisi tombol claim tidak ditemukan!")
                 
@@ -79,6 +81,56 @@ def main():
             
     else:
         print("Window Telegram tidak ditemukan!")
+
+def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capture):
+    """Menangani alur setelah game selesai"""
+    time.sleep(1)  # Tunggu animasi
+    
+    current_state = None
+    has_clicked_bet = False
+    retry_count = 0
+    MAX_RETRIES = 3
+    
+    while True:
+        if retry_count >= MAX_RETRIES:
+            print("\nDebug: Melebihi batas percobaan (3x), menghentikan program...")
+            return
+            
+        screenshot = screen_capture.capture_window(window_info)
+        if screenshot is None:
+            continue
+            
+        state = game_detector.detect_game_state(screenshot)
+        if not state:
+            continue
+            
+        if current_state != state['state']:
+            current_state = state['state']
+            retry_count = 0
+        else:
+            retry_count += 1
+            
+        if state['state'] == GameState.UNKNOWN and not has_clicked_bet:
+            pos = game_detector.get_button_position('go_versus_player', window_info)
+            if pos:
+                keyboard_ctrl.click_at(pos[0], pos[1])
+                has_clicked_bet = True
+                time.sleep(2)
+                
+        elif state['state'] == GameState.OPPONENT_FOUND:
+            pos = game_detector.get_button_position('go_versus_player', window_info)
+            if pos:
+                keyboard_ctrl.click_at(pos[0], pos[1])
+                time.sleep(2)  # Tunggu 2 detik
+                # Langsung klik Let's go dengan koordinat yang sudah ada
+                pos = game_detector.get_button_position('letsgo_play_the_game', window_info)
+                if pos:
+                    keyboard_ctrl.click_at(pos[0], pos[1])
+                    time.sleep(3)  # Tunggu 3 detik sebelum mulai game
+                    game_detector.start_game()
+                    return
+        
+        time.sleep(2)
 
 if __name__ == "__main__":
     main()
