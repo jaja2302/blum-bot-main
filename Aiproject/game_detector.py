@@ -7,8 +7,17 @@ from PIL import Image
 from hoop_detector import HoopDetector
 import time
 from game_stats import GameStats
+import sys
 # Set Tesseract path
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+if getattr(sys, 'frozen', False):
+    # Jika running dari .exe
+    application_path = sys._MEIPASS
+    tesseract_path = os.path.join(application_path, 'Tesseract-OCR', 'tesseract.exe')
+else:
+    # Jika running dari Python biasa
+    tesseract_path = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 class GameState:
     UNKNOWN = 'unknown'
@@ -20,6 +29,16 @@ class GameState:
 
 class GameDetector:
     def __init__(self):
+        if getattr(sys, 'frozen', False):
+            # Jika running dari .exe
+            application_path = sys._MEIPASS
+            tesseract_path = os.path.join(application_path, 'Tesseract-OCR', 'tesseract.exe')
+        else:
+            # Jika running dari Python biasa
+            tesseract_path = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        
+        pytesseract.pytesseract.tesseract_cmd = tesseract_path
+        
         self.last_state = GameState.UNKNOWN
         self.hoop_detector = HoopDetector()
         self.game_started = False

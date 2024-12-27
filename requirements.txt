@@ -1,6 +1,0 @@
-keyboard
-pynput
-pyautogui
-pygetwindow
-termcolor
-colorama
