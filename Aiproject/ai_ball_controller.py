@@ -8,14 +8,14 @@ class BallController:
         self.mouse = Controller()
         self.base_power = 300
         self.last_shot_time = 0
-        self.shot_cooldown = 0.1  # Default cooldown untuk mode cepat
+        self.shot_cooldown = 0.05  # Default cooldown untuk mode cepat
         self.max_retries = 2  # Maksimum percobaan ulang jika gagal
         
     def set_mode(self, fast_mode):
         """Set shooting mode parameters"""
         if fast_mode:
-            self.shot_cooldown = 0.1  # 10 tembakan/detik
-            self.swipe_duration = 0.08
+            self.shot_cooldown = 0.05  # 10 tembakan/detik
+            self.swipe_duration = 0.06
         else:
             self.shot_cooldown = 1.0  # 1 tembakan/detik
             self.swipe_duration = 0.06 # Sedikit lebih lambat untuk swipe yang lebih halus
