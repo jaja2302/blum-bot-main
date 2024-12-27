@@ -8,13 +8,18 @@ class GameStats:
         
     def update_stats(self, result):
         """Update statistik berdasarkan hasil game"""
+        result = result.lower()
         self.total_games += 1
-        if "nice" in result.lower():
+        
+        if "nice" in result:
             self.nice_shots += 1
-        elif "winner" in result.lower():
+            print("Nice terdeteksi!")
+        elif "winner" in result:
             self.wins += 1
-        elif "defeat" in result.lower():
+            print("Win terdeteksi!")
+        elif "defeat" in result:
             self.defeats += 1
+            print("Defeat terdeteksi!")
             
     def set_betting_amount(self, amount):
         """Set jumlah betting yang akan digunakan"""

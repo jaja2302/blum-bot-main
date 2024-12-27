@@ -112,41 +112,46 @@ class GameDetector:
         try:
             # Convert ke RGB untuk OCR
             pil_image = Image.fromarray(cv2.cvtColor(screenshot, cv2.COLOR_BGR2RGB))
-            
-            # Ekstrak text dari gambar
             text = pytesseract.image_to_string(pil_image).lower()
             
-            # Update game stats berdasarkan hasil OCR
-            if any(keyword in text for keyword in ['defeat', 'nice', 'winner']):
-                self.game_stats.update_stats(text)
-                self.game_stats.print_stats()  # Tampilkan statistik setiap game selesai
-                return True
-            
             # Cek kata kunci hasil pertandingan
-            result_keywords = ['defeat', 'nice', 'you scored', 'ok']
+            result_keywords = ['defeat', 'nice', 'winner', 'you scored', 'ok']
             if any(keyword in text for keyword in result_keywords):
+                print("\n=== Hasil Pertandingan ===")
+                if 'defeat' in text:
+                    print("Status: DEFEAT")
+                elif 'nice' in text:
+                    print("Status: NICE")
+                elif 'winner' in text:
+                    print("Status: WINNER")
+                print("========================")
+                
+                # Update statistik
+                self.game_stats.update_stats(text)
+                self.game_stats.print_stats()
                 return True
             
-            # Jika tidak ada keyword terdeteksi, cek warna merah
+            # Deteksi warna sebagai backup
             rgb = cv2.cvtColor(screenshot, cv2.COLOR_BGR2RGB)
             height = screenshot.shape[0]
-            
-            # Fokus pada area tengah
             roi = rgb[int(height*0.2):int(height*0.6), :]
             
-            # Deteksi warna merah (untuk Defeat) dan hijau (untuk Nice/OK button)
             red_mask = cv2.inRange(roi, np.array([150, 0, 0]), np.array([255, 100, 100]))
             green_mask = cv2.inRange(roi, np.array([0, 150, 0]), np.array([100, 255, 100]))
             
             red_pixels = cv2.countNonZero(red_mask)
             green_pixels = cv2.countNonZero(green_mask)
             
-            # Return true jika ada cukup pixel merah atau hijau
-            return red_pixels > 500 or green_pixels > 1000
+            if red_pixels > 500 or green_pixels > 1000:
+                # Jika deteksi warna menunjukkan game over tapi OCR gagal
+                print("\nGame Over terdeteksi (berdasarkan warna)")
+                self.game_stats.print_stats()
+                return True
+            
+            return False
             
         except Exception as e:
-            print(f"Error checking game over: {e}")
-            return False 
+            return False
 
     def get_button_position(self, button_name, window_info):
         """Mendapatkan posisi absolut tombol berdasarkan nama"""
