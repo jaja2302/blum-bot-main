@@ -42,7 +42,7 @@ class RLAgent:
                             elif speed_value > 30:
                                 speed_category = "LAMBAT"
                                 
-                        print(f"Ring: ({x}, {y}) | {movement} | {speed_category} | {speed_value:.1f} px/s | dt={dt*1000:.0f}ms")
+                        # print(f"Ring: ({x}, {y}) | {movement} | {speed_category} | {speed_value:.1f} px/s | dt={dt*1000:.0f}ms")
                         self.last_log_time = current_time
             
             # Update posisi terakhir

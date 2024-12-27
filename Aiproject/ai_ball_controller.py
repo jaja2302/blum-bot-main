@@ -8,9 +8,18 @@ class BallController:
         self.mouse = Controller()
         self.base_power = 300
         self.last_shot_time = 0
-        self.shot_cooldown = 0.1
+        self.shot_cooldown = 0.1  # Default cooldown untuk mode cepat
         self.max_retries = 2  # Maksimum percobaan ulang jika gagal
         
+    def set_mode(self, fast_mode):
+        """Set shooting mode parameters"""
+        if fast_mode:
+            self.shot_cooldown = 0.1  # 10 tembakan/detik
+            self.swipe_duration = 0.08
+        else:
+            self.shot_cooldown = 1.0  # 1 tembakan/detik
+            self.swipe_duration = 0.05 # Sedikit lebih lambat untuk swipe yang lebih halus
+
     def execute_action(self, action, ball_pos):
         """Execute shooting action from RLAgent with retry mechanism"""
         try:
@@ -39,8 +48,10 @@ class BallController:
             print(f"Error executing shot: {e}")
             return False
 
-    def swipe(self, start_x, start_y, end_x, end_y, duration=0.08):
-        """Perform ultra-fast swipe action with validation"""
+    def swipe(self, start_x, start_y, end_x, end_y, duration=None):
+        """Perform swipe action with dynamic duration"""
+        if duration is None:
+            duration = self.swipe_duration  # Use mode-specific duration
         try:
             # Add minimal randomization
             end_x += random.randint(-2, 2)

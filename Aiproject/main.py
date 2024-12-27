@@ -20,12 +20,14 @@ def main():
     print("S - Stop program")
     print("P - Pause program")
     print("R - Resume program")
+    print("M - Ganti mode (NORMAL/CEPAT)")
     print("Space - Play game")
     
     window_info = detector.find_window()
     
     if window_info:
         print(f"Window Telegram ditemukan!")
+        print("Mode awal: CEPAT")
         detector.activate_window(window_info)
         
         # Posisi bola tetap (di tengah bawah window)
@@ -43,6 +45,9 @@ def main():
                     time.sleep(0.01)
                     continue
                     
+                # Update mode tembakan
+                ball_controller.set_mode(keyboard_ctrl.get_current_mode())
+                
                 if keyboard.is_pressed('space'):
                     game_detector.start_game()
                     time.sleep(0.1)
@@ -56,7 +61,7 @@ def main():
                         action = ai_agent.get_action(screenshot, hoop_pos)
                         
                         if action:  # Jika AI memutuskan untuk menembak
-                            print(f"\nMenembak ke ring di posisi {hoop_pos}")
+                            # print(f"\nMenembak ke ring di posisi {hoop_pos}")
                             ball_controller.execute_action(action, ball_pos)
                             
                 time.sleep(0.01)

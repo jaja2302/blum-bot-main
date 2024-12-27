@@ -6,12 +6,14 @@ class KeyboardController:
     def __init__(self):
         self.is_running = True
         self.is_paused = False
+        self.fast_mode = True  # Default mode cepat
         
         # Set up keyboard event handlers
         keyboard.on_press_key('s', lambda _: self.stop_program())
         keyboard.on_press_key('esc', lambda _: self.stop_program())
         keyboard.on_press_key('p', lambda _: self.toggle_pause())
         keyboard.on_press_key('r', lambda _: self.toggle_pause())
+        keyboard.on_press_key('m', lambda _: self.toggle_mode())  # Tambah handler mode
 
     def stop_program(self):
         """Immediately stop the program"""
@@ -38,3 +40,13 @@ class KeyboardController:
             time.sleep(0.1)  # Delay kecil setelah menekan spasi
         except Exception as e:
             print(f"Error menekan spasi: {e}") 
+
+    def toggle_mode(self):
+        """Toggle between fast and normal mode"""
+        self.fast_mode = not self.fast_mode
+        mode = "CEPAT" if self.fast_mode else "NORMAL"
+        print(f"\nMode diubah ke: {mode}")
+
+    def get_current_mode(self):
+        """Return current shooting mode"""
+        return self.fast_mode 

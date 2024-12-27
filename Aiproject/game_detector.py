@@ -21,7 +21,7 @@ class GameDetector:
         self.hoop_detector = HoopDetector()
         self.game_started = False
         self.game_start_time = None
-        self.GAME_DURATION = 45
+        self.GAME_DURATION = 50
         self.last_hoop_pos = None
         
     def start_game(self):
