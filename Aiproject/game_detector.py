@@ -6,7 +6,7 @@ import pytesseract
 from PIL import Image
 from hoop_detector import HoopDetector
 import time
-
+from game_stats import GameStats
 # Set Tesseract path
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
@@ -26,6 +26,7 @@ class GameDetector:
         self.game_start_time = None
         self.GAME_DURATION = 48
         self.last_hoop_pos = None
+        self.game_stats = GameStats()
         
         try:
             json_path = os.path.join(os.path.dirname(__file__), 'button_claim_game_over.json')
@@ -114,6 +115,12 @@ class GameDetector:
             
             # Ekstrak text dari gambar
             text = pytesseract.image_to_string(pil_image).lower()
+            
+            # Update game stats berdasarkan hasil OCR
+            if any(keyword in text for keyword in ['defeat', 'nice', 'winner']):
+                self.game_stats.update_stats(text)
+                self.game_stats.print_stats()  # Tampilkan statistik setiap game selesai
+                return True
             
             # Cek kata kunci hasil pertandingan
             result_keywords = ['defeat', 'nice', 'you scored', 'ok']

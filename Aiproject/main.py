@@ -38,8 +38,10 @@ def main():
     while True:
         choice = input("Pilihan anda (1/2/3): ")
         if choice in betting_options:
-            keyboard_ctrl.set_betting_amount(betting_options[choice])
-            print(f"Betting amount diset ke: {betting_options[choice]}")
+            betting_amount = betting_options[choice]
+            keyboard_ctrl.set_betting_amount(betting_amount)
+            game_detector.game_stats.set_betting_amount(betting_amount)  # Update game stats
+            print(f"Betting amount diset ke: {betting_amount}")
             break
         print("Input tidak valid! Pilih 1, 2, atau 3")
     
@@ -148,7 +150,7 @@ def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capt
                 pos = game_detector.get_button_position('letsgo_play_the_game', window_info)
                 if pos:
                     keyboard_ctrl.click_at(pos[0], pos[1])
-                    time.sleep(2)  # Tunggu 3 detik sebelum mulai game
+                    time.sleep(4)  # Tunggu 3 detik sebelum mulai game
                     game_detector.start_game()
                     return
         
