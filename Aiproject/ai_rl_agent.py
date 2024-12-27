@@ -12,6 +12,7 @@ class RLAgent:
         self.log_interval = 0.05
         self.last_shot_time = 0
         self.shot_cooldown = 0.1  # Ubah ke 0.1 untuk 10 tembakan/detik
+        self.prediction_factor = 0.9 # Faktor prediksi, bisa disesuaikan
         
     def get_action(self, game_screen, hoop_pos):
         """Tentukan parameter tembakan berdasarkan posisi ring"""
@@ -45,6 +46,21 @@ class RLAgent:
                         # print(f"Ring: ({x}, {y}) | {movement} | {speed_category} | {speed_value:.1f} px/s | dt={dt*1000:.0f}ms")
                         self.last_log_time = current_time
             
+            # Hitung prediksi posisi ring
+            predicted_x = x
+            if self.last_pos and self.last_time:
+                dx = x - self.last_pos[0]
+                dt = current_time - self.last_time
+                
+                if dt > 0:
+                    speed_value = abs(dx) / dt
+                    # Prediksi posisi ring berdasarkan arah dan kecepatan
+                    if abs(dx) > self.movement_threshold:
+                        direction = 1 if dx > 0 else -1
+                        predicted_x = x + (direction * speed_value * self.prediction_factor)
+                        # Batasi prediksi agar tidak keluar layar
+                        predicted_x = min(max(predicted_x, 0), game_screen.shape[1])
+            
             # Update posisi terakhir
             self.last_pos = hoop_pos
             self.last_time = current_time
@@ -55,15 +71,17 @@ class RLAgent:
             
             self.last_shot_time = current_time
             
-            # Posisi bola dan perhitungan tembakan
+            # Gunakan predicted_x untuk perhitungan tembakan
             ball_x = game_screen.shape[1] // 2
             ball_y = game_screen.shape[0] - 200
             
-            dx = x - ball_x
+            dx = predicted_x - ball_x  # Gunakan posisi prediksi
             dy = ball_y - y
             distance = math.sqrt(dx*dx + dy*dy)
             angle = math.degrees(math.atan2(dy, dx))
-            power = min(0.8, max(0.4, distance / 400))
+            
+            # Sesuaikan power berdasarkan jarak
+            power = min(0.85, max(0.4, distance / 350))  # Sedikit penyesuaian pada power
             
             return (angle, power)
             
