@@ -1,6 +1,7 @@
 import keyboard
 import time
 import sys
+import pyautogui
 
 class KeyboardController:
     def __init__(self):
@@ -50,3 +51,18 @@ class KeyboardController:
     def get_current_mode(self):
         """Return current shooting mode"""
         return self.fast_mode 
+
+    def click_at(self, x, y):
+        """Melakukan klik mouse pada posisi x,y"""
+        try:
+            print(f"\nDebug: Melakukan klik di koordinat ({x}, {y})")
+            current_pos = pyautogui.position()  # Simpan posisi mouse sekarang
+            
+            # Gerakkan mouse, klik, dan kembalikan ke posisi semula
+            pyautogui.moveTo(x, y, duration=0.1)
+            pyautogui.click()
+            pyautogui.moveTo(current_pos.x, current_pos.y, duration=0.1)
+            
+            print("Debug: Klik berhasil dilakukan")
+        except Exception as e:
+            print(f"Debug: Error saat melakukan klik: {e}") 

@@ -63,7 +63,15 @@ def main():
                         if action:  # Jika AI memutuskan untuk menembak
                             # print(f"\nMenembak ke ring di posisi {hoop_pos}")
                             ball_controller.execute_action(action, ball_pos)
-                            
+                    elif result and result['status'] == 'game_over' and result.get('should_claim'):
+                        claim_pos = game_detector.get_claim_button_pos(window_info)
+                        if claim_pos:
+                            print(f"\nDebug: Mencoba klik di posisi: {claim_pos}")
+                            keyboard_ctrl.click_at(claim_pos[0], claim_pos[1])
+                            time.sleep(0.5)  # Tunggu sebentar setelah klik
+                        else:
+                            print("\nDebug: Posisi tombol claim tidak ditemukan!")
+                
                 time.sleep(0.01)
                 
         except KeyboardInterrupt:

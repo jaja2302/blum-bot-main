@@ -24,6 +24,21 @@ class GameDetector:
         self.GAME_DURATION = 50
         self.last_hoop_pos = None
         
+        # Load koordinat tombol claim
+        try:
+            # Coba gunakan os.path untuk memastikan path yang benar
+            import os
+            json_path = os.path.join(os.path.dirname(__file__), 'button_claim_game_over.json')
+            print(f"\nDebug: Mencoba membaca file JSON dari: {json_path}")
+            
+            with open(json_path, 'r') as f:
+                self.button_config = json.load(f)
+                print("Debug: Berhasil membaca konfigurasi tombol")
+        except Exception as e:
+            print(f"Debug: Error loading button config: {e}")
+            print(f"Debug: Current working directory: {os.getcwd()}")
+            self.button_config = None
+
     def start_game(self):
         """Set flag game dimulai dan mulai timer"""
         self.game_started = True
@@ -38,6 +53,27 @@ class GameDetector:
         self.game_start_time = None
         self.last_state = GameState.UNKNOWN
         
+    def get_claim_button_pos(self, window_info):
+        """Menghitung posisi absolut tombol claim"""
+        if not self.button_config:
+            print("Debug: Button config tidak ditemukan!")
+            return None
+            
+        try:
+            claim_btn = self.button_config['buttons']['claim']
+            absolute_x = window_info['left'] + claim_btn['x']
+            absolute_y = window_info['top'] + claim_btn['y']
+            
+            print(f"\nDebug: Posisi tombol claim:")
+            print(f"- Relatif: ({claim_btn['x']}, {claim_btn['y']})")
+            print(f"- Window offset: ({window_info['left']}, {window_info['top']})")
+            print(f"- Absolut: ({absolute_x}, {absolute_y})")
+            
+            return (absolute_x, absolute_y)
+        except Exception as e:
+            print(f"Debug: Error saat menghitung posisi tombol: {e}")
+            return None
+
     def detect_game_elements(self, screenshot):
         """Deteksi ring saat game aktif"""
         try:
@@ -55,12 +91,13 @@ class GameDetector:
             if remaining_time <= 2:
                 if self.is_game_over(screenshot):
                     if self.last_state != GameState.GAME_OVER:
-                        print("\nGame selesai! Tekan SPACE untuk memulai game baru...")
+                        print("\nGame selesai! Mengklik tombol claim...")
                         self.last_state = GameState.GAME_OVER
                         self.game_started = False
                     return {
                         'status': 'game_over',
-                        'message': 'Game is over'
+                        'message': 'Game is over',
+                        'should_claim': True  # Flag baru untuk mengindikasikan perlu klik claim
                     }
             
             # Deteksi ring tanpa spam log
