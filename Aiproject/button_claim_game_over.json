@@ -12,9 +12,17 @@
             "x": 295,
             "y": 598
         },
+        "go_versus_player_1m": {
+            "x": 312,
+            "y": 342
+        },
         "go_versus_player_10m": {
-            "x": 314,
-            "y": 530
+            "x": 312,
+            "y": 437
+        },
+        "go_versus_player_100m": {
+            "x": 313,
+            "y": 531
         }
     },
     "window_info": {

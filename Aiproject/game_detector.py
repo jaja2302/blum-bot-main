@@ -24,7 +24,7 @@ class GameDetector:
         self.hoop_detector = HoopDetector()
         self.game_started = False
         self.game_start_time = None
-        self.GAME_DURATION = 50
+        self.GAME_DURATION = 48
         self.last_hoop_pos = None
         
         # Load koordinat tombol claim

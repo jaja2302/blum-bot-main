@@ -8,6 +8,7 @@ class KeyboardController:
         self.is_running = True
         self.is_paused = False
         self.fast_mode = True  # Default mode cepat
+        self.betting_amount = '1m'  # Default betting amount
         
         # Set up keyboard event handlers
         keyboard.on_press_key('s', lambda _: self.stop_program())
@@ -66,3 +67,11 @@ class KeyboardController:
             print("Debug: Klik berhasil dilakukan")
         except Exception as e:
             print(f"Debug: Error saat melakukan klik: {e}") 
+
+    def set_betting_amount(self, amount):
+        """Set betting amount (1m/10m/100m)"""
+        self.betting_amount = amount
+        
+    def get_betting_amount(self):
+        """Get current betting amount"""
+        return self.betting_amount 

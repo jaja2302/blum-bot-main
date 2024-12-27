@@ -23,6 +23,26 @@ def main():
     print("M - Ganti mode (NORMAL/CEPAT)")
     print("Space - Play game")
     
+    # Perbaikan input betting amount
+    print("\nPilih jumlah betting:")
+    print("1 - untuk 1m")
+    print("2 - untuk 10m")
+    print("3 - untuk 100m")
+    
+    betting_options = {
+        '1': '1m',
+        '2': '10m',
+        '3': '100m'
+    }
+    
+    while True:
+        choice = input("Pilihan anda (1/2/3): ")
+        if choice in betting_options:
+            keyboard_ctrl.set_betting_amount(betting_options[choice])
+            print(f"Betting amount diset ke: {betting_options[choice]}")
+            break
+        print("Input tidak valid! Pilih 1, 2, atau 3")
+    
     window_info = detector.find_window()
     
     if window_info:
@@ -84,16 +104,16 @@ def main():
 
 def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capture):
     """Menangani alur setelah game selesai"""
-    time.sleep(1)  # Tunggu animasi
+    time.sleep(1)
     
     current_state = None
     has_clicked_bet = False
     retry_count = 0
-    MAX_RETRIES = 3
+    MAX_RETRIES = 10
     
     while True:
         if retry_count >= MAX_RETRIES:
-            print("\nDebug: Melebihi batas percobaan (3x), menghentikan program...")
+            print("\nDebug: Melebihi batas percobaan (10x), menghentikan program...")
             return
             
         screenshot = screen_capture.capture_window(window_info)
@@ -111,7 +131,9 @@ def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capt
             retry_count += 1
             
         if state['state'] == GameState.UNKNOWN and not has_clicked_bet:
-            pos = game_detector.get_button_position('go_versus_player', window_info)
+            # Gunakan betting amount yang dipilih
+            button_name = f'go_versus_player_{keyboard_ctrl.get_betting_amount()}'
+            pos = game_detector.get_button_position(button_name, window_info)
             if pos:
                 keyboard_ctrl.click_at(pos[0], pos[1])
                 has_clicked_bet = True
