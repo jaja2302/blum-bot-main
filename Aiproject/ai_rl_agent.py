@@ -10,9 +10,7 @@ class RLAgent:
         self.movement_threshold = 1
         self.last_log_time = 0
         self.log_interval = 0.05
-        self.last_shot_time = 0
-        self.shot_cooldown = 0.1  # Ubah ke 0.1 untuk 10 tembakan/detik
-        self.prediction_factor = 0.9 # Faktor prediksi, bisa disesuaikan
+        self.prediction_factor = 0.8 # Faktor prediksi yang sudah disesuaikan
         
     def get_action(self, game_screen, hoop_pos):
         """Tentukan parameter tembakan berdasarkan posisi ring"""
@@ -54,22 +52,14 @@ class RLAgent:
                 
                 if dt > 0:
                     speed_value = abs(dx) / dt
-                    # Prediksi posisi ring berdasarkan arah dan kecepatan
                     if abs(dx) > self.movement_threshold:
                         direction = 1 if dx > 0 else -1
                         predicted_x = x + (direction * speed_value * self.prediction_factor)
-                        # Batasi prediksi agar tidak keluar layar
                         predicted_x = min(max(predicted_x, 0), game_screen.shape[1])
             
             # Update posisi terakhir
             self.last_pos = hoop_pos
             self.last_time = current_time
-            
-            # Cek cooldown tembakan
-            if current_time - self.last_shot_time < self.shot_cooldown:
-                return None  # Skip tembakan jika masih dalam cooldown
-            
-            self.last_shot_time = current_time
             
             # Gunakan predicted_x untuk perhitungan tembakan
             ball_x = game_screen.shape[1] // 2
@@ -81,7 +71,7 @@ class RLAgent:
             angle = math.degrees(math.atan2(dy, dx))
             
             # Sesuaikan power berdasarkan jarak
-            power = min(0.85, max(0.4, distance / 350))  # Sedikit penyesuaian pada power
+            power = min(0.85, max(0.4, distance / 350))
             
             return (angle, power)
             
