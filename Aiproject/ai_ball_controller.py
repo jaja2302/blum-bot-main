@@ -18,7 +18,7 @@ class BallController:
             self.swipe_duration = 0.08
         else:
             self.shot_cooldown = 1.0  # 1 tembakan/detik
-            self.swipe_duration = 0.05 # Sedikit lebih lambat untuk swipe yang lebih halus
+            self.swipe_duration = 0.06 # Sedikit lebih lambat untuk swipe yang lebih halus
 
     def execute_action(self, action, ball_pos):
         """Execute shooting action from RLAgent with retry mechanism"""
