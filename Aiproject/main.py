@@ -86,7 +86,7 @@ def main():
                     elif result and result['status'] == 'game_over' and result.get('should_claim'):
                         claim_pos = game_detector.get_button_position('claim', window_info)
                         if claim_pos:
-                            print("\nDebug: Clicking claim button")
+                            # print("\nDebug: Clicking claim button")
                             keyboard_ctrl.click_at(claim_pos[0], claim_pos[1])
                             time.sleep(0.5)
                             # Mulai alur post-game dengan mengirim screen_capture
@@ -109,7 +109,7 @@ def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capt
     current_state = None
     has_clicked_bet = False
     retry_count = 0
-    MAX_RETRIES = 10
+    MAX_RETRIES = 30
     
     while True:
         if retry_count >= MAX_RETRIES:
@@ -143,12 +143,12 @@ def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capt
             pos = game_detector.get_button_position('go_versus_player', window_info)
             if pos:
                 keyboard_ctrl.click_at(pos[0], pos[1])
-                time.sleep(2)  # Tunggu 2 detik
+                time.sleep(5)  # Tunggu 2 detik
                 # Langsung klik Let's go dengan koordinat yang sudah ada
                 pos = game_detector.get_button_position('letsgo_play_the_game', window_info)
                 if pos:
                     keyboard_ctrl.click_at(pos[0], pos[1])
-                    time.sleep(3)  # Tunggu 3 detik sebelum mulai game
+                    time.sleep(2)  # Tunggu 3 detik sebelum mulai game
                     game_detector.start_game()
                     return
         
