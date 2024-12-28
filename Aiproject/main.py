@@ -22,6 +22,7 @@ def main():
     print("P - Pause program")
     print("R - Resume program")
     print("M - Ganti mode (NORMAL/CEPAT)")
+    print("D - Toggle debug window")
     print("Space - Play game")
     
     # Perbaikan input betting amount
@@ -87,9 +88,11 @@ def main():
                 if result:
                     if result['status'] == 'active':
                         hoop_pos = result['hoop_position']
-                        # Pass the current screenshot to AI agent
+                        # Pass ball position to hoop detector
                         current_screenshot = screen_capture.capture_window(window_info)
                         if current_screenshot is not None:
+                            # Pass ball_pos to detect_hoop
+                            game_detector.hoop_detector.detect_hoop(current_screenshot, ball_pos)
                             action = gameplay_controller.get_action(current_screenshot, hoop_pos)
                             del current_screenshot
                             
@@ -110,8 +113,13 @@ def main():
                 del screenshot
                 time.sleep(0.01)
                 
+                if keyboard.is_pressed('d'):
+                    game_detector.hoop_detector.toggle_debug()
+                    time.sleep(0.1)  # Prevent multiple toggles
+                
         except KeyboardInterrupt:
             print("\nProgram dihentikan!")
+            game_detector.hoop_detector.close_debug_window()
             cleanup_game_resources()
             print("\nFinal performance metrics:")
             log_performance()
@@ -165,6 +173,9 @@ def cleanup_game_resources():
 def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capture):
     """Menangani alur setelah game selesai"""
     print("\n=== Post Game Cleanup ===")
+    
+    # Close debug window
+    game_detector.hoop_detector.close_debug_window()
     
     # Reset game state
     print("Resetting game state...")

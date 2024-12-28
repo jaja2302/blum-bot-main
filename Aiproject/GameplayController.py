@@ -10,31 +10,37 @@ import json
 
 class GameplayController:
     def __init__(self):
-        self.last_pos = None
-        self.last_time = None
-        self.movement_threshold = 5  # Reduced to detect subtle movements
-        self.last_log_time = 0
-        self.log_interval = 0.0005  # Faster updates
-        self.prediction_factor = 0.65  # Slightly increased prediction
-        self.speed_memory = deque(maxlen=3)  # Shorter memory for faster response
+
+        # for swipe action
+        self.mouse = Controller()
+        self.base_power = 300
+        self.last_shot_time = 0
+        self.shot_cooldown = 0.1
+        self.max_retries = 2  # Maksimum percobaan ulang jika gagal
+        self.shot_cooldown_fast = 0.1
+        self.swipe_duration_fast = 0.08
+        self.shot_cooldown_slow = 1.0
+        self.swipe_duration_slow = 0.06
+        self.base_power = 300
+        
 
         # RL Agent properties
         self.last_pos = None
         self.last_time = None
         self.movement_threshold = 4
         self.last_log_time = 0
-        self.log_interval = 0.001
+        self.log_interval = 0.005
         self.prediction_factor = 0.65
         self.speed_memory = deque(maxlen=3)
 
     def set_mode(self, fast_mode):
         """Set shooting mode parameters"""
         if fast_mode:
-            self.shot_cooldown = 0.1
-            self.swipe_duration = 0.08
+            self.shot_cooldown = self.shot_cooldown_fast
+            self.swipe_duration = self.swipe_duration_fast
         else:
-            self.shot_cooldown = 1.0
-            self.swipe_duration = 0.06
+            self.shot_cooldown = self.shot_cooldown_slow
+            self.swipe_duration = self.swipe_duration_slow
 
     def get_action(self, game_screen, hoop_pos):
         """Calculate shooting angle and power based on hoop position"""
@@ -83,7 +89,7 @@ class GameplayController:
             elif distance < 200:
                 angle -= 2
                 
-            base_power = self.setting_config['base_power'] / 400
+            base_power = self.base_power / 400
             power = min(0.95, max(0.5, base_power * (distance / 300)))
             
             if distance > 350:
