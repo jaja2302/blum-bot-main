@@ -2,8 +2,7 @@ from window_detector import WindowDetector
 from screen_capture import ScreenCapture
 from game_detector import GameDetector, GameState
 from keyboard_controller import KeyboardController
-from ai_ball_controller import BallController
-from ai_rl_agent import RLAgent
+from GameplayController import GameplayController
 import time
 import keyboard
 import gc
@@ -15,8 +14,7 @@ def main():
     screen_capture = ScreenCapture()
     game_detector = GameDetector()
     keyboard_ctrl = KeyboardController()
-    ball_controller = BallController()
-    ai_agent = RLAgent()
+    gameplay_controller = GameplayController()
     
     print("Mencari window Telegram...")
     print("\nKontrol:")
@@ -71,7 +69,7 @@ def main():
                     continue
                     
                 # Update mode tembakan
-                ball_controller.set_mode(keyboard_ctrl.get_current_mode())
+                gameplay_controller.set_mode(keyboard_ctrl.get_current_mode())
                 
                 # Capture screenshot first
                 screenshot = screen_capture.capture_window(window_info)
@@ -92,11 +90,11 @@ def main():
                         # Pass the current screenshot to AI agent
                         current_screenshot = screen_capture.capture_window(window_info)
                         if current_screenshot is not None:
-                            action = ai_agent.get_action(current_screenshot, hoop_pos)
+                            action = gameplay_controller.get_action(current_screenshot, hoop_pos)
                             del current_screenshot
                             
                             if action:  # Jika AI memutuskan untuk menembak
-                                ball_controller.execute_action(action, ball_pos)
+                                gameplay_controller.execute_action(action, ball_pos)
                     elif result['status'] == 'game_over' and result.get('should_claim'):
                         print("\n=== Game Over Detected ===")
                         print("Initiating post-game sequence...")
