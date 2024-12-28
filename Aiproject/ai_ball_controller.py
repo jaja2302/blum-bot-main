@@ -64,8 +64,8 @@ class BallController:
             duration = self.swipe_duration  # Use mode-specific duration
         try:
             # Add minimal randomization
-            end_x += random.randint(-2, 2)
-            end_y += random.randint(-2, 2)
+            # end_x += random.randint(-2, 2)
+            # end_y += random.randint(-2, 2)
             
             # Ensure mouse is released before starting
             self.mouse.release(Button.left)
