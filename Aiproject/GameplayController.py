@@ -11,27 +11,35 @@ import json
 class GameplayController:
     def __init__(self):
 
+        try:
+            json_path = os.path.join(os.path.dirname(__file__), 'setting_controller.json')
+            with open(json_path, 'r') as f:
+                self.setting_config = json.load(f)
+        except Exception as e:
+            self.setting_config = None
+
         # for swipe action
         self.mouse = Controller()
         self.base_power = 300
         self.last_shot_time = 0
         self.shot_cooldown = 0.1
         self.max_retries = 2  # Maksimum percobaan ulang jika gagal
-        self.shot_cooldown_fast = 0.1
-        self.swipe_duration_fast = 0.08
-        self.shot_cooldown_slow = 1.0
-        self.swipe_duration_slow = 0.06
-        self.base_power = 300
+        self.shot_cooldown_fast = self.setting_config['swipe_agent']['shot_cooldown_fast']
+        self.swipe_duration_fast = self.setting_config['swipe_agent']['swipe_duration_fast']
+        self.shot_cooldown_slow = self.setting_config['swipe_agent']['shot_cooldown_slow']
+        self.swipe_duration_slow = self.setting_config['swipe_agent']['swipe_duration_slow']
+        self.base_power = self.setting_config['swipe_agent']['base_power']
         
 
         # RL Agent properties
         self.last_pos = None
         self.last_time = None
-        self.movement_threshold = 4
-        self.last_log_time = 0
-        self.log_interval = 0.005
-        self.prediction_factor = 0.65
-        self.speed_memory = deque(maxlen=3)
+        self.movement_threshold = self.setting_config['ri_agent']['movement_threshold']
+        self.last_log_time = self.setting_config['ri_agent']['last_log_time']
+        self.log_interval = self.setting_config['ri_agent']['log_interval']
+        self.prediction_factor = self.setting_config['ri_agent']['prediction_factor']
+        self.speed_memory = deque(maxlen=self.setting_config['ri_agent']['speed_memory'])
+
 
     def set_mode(self, fast_mode):
         """Set shooting mode parameters"""

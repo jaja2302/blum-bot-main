@@ -1,12 +1,17 @@
 {
-    "movement_threshold": 4,        
-    "log_interval": 0.001,       
-    "prediction_factor": 0.65,      
-    "speed_memory": 3,            
-    "last_pos": null,
-    "last_time": null,
-    "last_log_time": 0,
-    "shot_cooldown": 0.1,         
-    "swipe_duration": 0.08,        
-    "base_power": 300             
-}
+
+    "ri_agent": {
+        "movement_threshold": 5,        
+        "log_interval": 0.0005,       
+        "prediction_factor": 0.67,      
+        "speed_memory": 3,            
+        "last_log_time": 0            
+        },
+    "swipe_agent": {
+        "shot_cooldown_slow": 1.0,
+        "swipe_duration_slow": 0.06,
+        "shot_cooldown_fast": 0.09,
+        "swipe_duration_fast": 0.05,
+        "base_power": 300
+    }
+}       
