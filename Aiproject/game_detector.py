@@ -66,6 +66,9 @@ class GameDetector:
         self.game_started = False
         self.game_start_time = None
         self.last_state = GameState.UNKNOWN
+        self.last_hoop_pos = None
+        # Reset hoop detector state
+        self.hoop_detector.reset_state()
         
     def get_claim_button_pos(self, window_info):
         """Menghitung posisi absolut tombol claim"""

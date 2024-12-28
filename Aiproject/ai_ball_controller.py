@@ -119,3 +119,7 @@ class BallController:
             print(f"Swipe error: {e}")
             self.mouse.release(Button.left)
             return False 
+
+    def reset_state(self):
+        """Reset controller state between games"""
+        self.last_shot_time = 0 

@@ -145,3 +145,7 @@ class HoopDetector:
     #     if cv2.waitKey(1) & 0xFF == ord('q'):
     #         cv2.destroyAllWindows()
     #         exit()
+
+    def reset_state(self):
+        """Reset detector state between games"""
+        self.missed_detections = 0
