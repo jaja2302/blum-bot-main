@@ -4,25 +4,33 @@ import time
 import cv2
 from collections import deque
 import pyautogui  # For simulating mouse/keyboard input
+import os
+import json
 
 class RLAgent:
     def __init__(self):
         # self.last_pos = None
         # self.last_time = None
-        # self.movement_threshold = 10
+        # self.movement_threshold = 5  # Reduced to detect subtle movements
         # self.last_log_time = 0
-        # self.log_interval = 0.01
-        # self.prediction_factor = 0.75
-        # self.speed_memory = deque(maxlen=5)
-
+        # self.log_interval = 0.0005  # Faster updates
+        # self.prediction_factor = 0.65  # Slightly increased prediction
+        # self.speed_memory = deque(maxlen=3)  # Shorter memory for faster response
+        try:
+            json_path = os.path.join(os.path.dirname(__file__), 'setting_controller.json')
+            with open(json_path, 'r') as f:
+                self.setting_config = json.load(f)
+        except Exception as e:
+                self.button_config = None
         self.last_pos = None
         self.last_time = None
-        self.movement_threshold = 3  # Reduced to detect subtle movements
+        self.movement_threshold = self.setting_config['movement_threshold']  # Lebih toleran terhadap pergerakan kecil
         self.last_log_time = 0
-        self.log_interval = 0.0005  # Faster updates
-        self.prediction_factor = 0.7  # Slightly increased prediction
-        self.speed_memory = deque(maxlen=3)  # Shorter memory for faster response
-        
+        self.log_interval = self.setting_config['log_interval']  # Sedikit lebih cepat untuk respons
+        self.prediction_factor = self.setting_config['prediction_factor']  # Mengurangi prediksi untuk stabilitas
+        self.speed_memory = deque(maxlen=self.setting_config['speed_memory'])  # Memori pendek untuk respons cepat
+
+
     def get_action(self, game_screen, hoop_pos):
         try:
             x, y = hoop_pos

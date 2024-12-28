@@ -2,20 +2,30 @@ from pynput.mouse import Button, Controller
 import random
 import math
 import time
+import os
+import json
 
 class BallController:
     def __init__(self):
+        try:
+            json_path = os.path.join(os.path.dirname(__file__), 'setting_controller.json')
+            with open(json_path, 'r') as f:
+                self.setting_config = json.load(f)
+        except Exception as e:
+            self.setting_config = None
+
         self.mouse = Controller()
-        self.base_power = 300
+        self.base_power = self.setting_config['base_power']
         self.last_shot_time = 0
-        self.shot_cooldown = 0.05  # Default cooldown untuk mode cepat
+        self.shot_cooldown = self.setting_config['shot_cooldown']  # Default cooldown untuk mode cepat
         self.max_retries = 2  # Maksimum percobaan ulang jika gagal
+       
         
     def set_mode(self, fast_mode):
         """Set shooting mode parameters"""
         if fast_mode:
-            self.shot_cooldown = 0.05  # 10 tembakan/detik
-            self.swipe_duration = 0.06
+            self.shot_cooldown = self.setting_config['shot_cooldown']  # 10 tembakan/detik
+            self.swipe_duration = self.setting_config['swipe_duration'] 
         else:
             self.shot_cooldown = 1.0  # 1 tembakan/detik
             self.swipe_duration = 0.06 # Sedikit lebih lambat untuk swipe yang lebih halus

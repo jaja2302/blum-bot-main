@@ -150,7 +150,7 @@ def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capt
                 pos = game_detector.get_button_position('letsgo_play_the_game', window_info)
                 if pos:
                     keyboard_ctrl.click_at(pos[0], pos[1])
-                    time.sleep(2)  # Tunggu 3 detik sebelum mulai game
+                    time.sleep(3)  # Tunggu 3 detik sebelum mulai game
                     game_detector.start_game()
                     return
         
