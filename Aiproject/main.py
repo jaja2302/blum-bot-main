@@ -90,7 +90,7 @@ def main():
                         if claim_pos:
                             # print("\nDebug: Clicking claim button")
                             keyboard_ctrl.click_at(claim_pos[0], claim_pos[1])
-                            time.sleep(0.5)
+                            time.sleep(0.3)
                             # Mulai alur post-game dengan mengirim screen_capture
                             handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capture)
                         else:

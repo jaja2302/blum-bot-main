@@ -45,9 +45,20 @@ class RLAgent:
                     speed = dx / dt
                     self.speed_memory.append(speed)
                     
-                    avg_speed = sum(self.speed_memory) / len(self.speed_memory)
+                    # Weighted average untuk prediksi lebih akurat
+                    weights = [0.4, 0.3, 0.2, 0.1]  # Berikan bobot lebih tinggi untuk kecepatan terbaru
+                    if len(self.speed_memory) >= 4:
+                        avg_speed = sum(w * s for w, s in zip(weights, list(self.speed_memory)[-4:]))
+                    else:
+                        avg_speed = sum(self.speed_memory) / len(self.speed_memory)
+                    
                     if abs(dx) > self.movement_threshold:
                         predicted_x = x + (avg_speed * self.prediction_factor)
+                        # Tambahkan koreksi berdasarkan arah pergerakan
+                        if dx > 0:
+                            predicted_x += 5
+                        else:
+                            predicted_x -= 5
                         predicted_x = min(max(predicted_x, 100), game_screen.shape[1] - 100)
             
             self.last_pos = hoop_pos
@@ -59,15 +70,25 @@ class RLAgent:
             dx = predicted_x - ball_x
             dy = ball_y - y
             distance = math.sqrt(dx*dx + dy*dy)
+            
+            # Penyesuaian sudut berdasarkan jarak
             angle = math.degrees(math.atan2(dy, dx))
-            
-            base_power = distance / 400
-            power = min(0.9, max(0.45, base_power))
-            
-            if distance > 300:
+            if distance > 350:
+                angle += 3
+            elif distance > 250:
                 angle += 2
             elif distance < 200:
-                angle -= 1
+                angle -= 2
+                
+            # Dynamic power adjustment
+            base_power = self.setting_config['base_power'] / 400
+            power = min(0.95, max(0.5, base_power * (distance / 300)))
+            
+            # Fine-tune power berdasarkan jarak
+            if distance > 350:
+                power *= 1.1
+            elif distance < 200:
+                power *= 0.9
                 
             return (angle, power)
             
