@@ -1,7 +1,7 @@
 {
 
     "ri_agent": {
-        "movement_threshold": 5,        
+        "movement_threshold": 4.5,        
         "log_interval": 0.0005,       
         "prediction_factor": 0.67,      
         "speed_memory": 3,            
