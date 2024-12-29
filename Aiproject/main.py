@@ -2,8 +2,7 @@ from window_detector import WindowDetector
 from screen_capture import ScreenCapture
 from game_detector import GameDetector, GameState
 from keyboard_controller import KeyboardController
-from ai_ball_controller import BallController
-from ai_rl_agent import RLAgent
+from Gamecontroller import GameplayController
 import time
 import keyboard
 
@@ -12,8 +11,7 @@ def main():
     screen_capture = ScreenCapture()
     game_detector = GameDetector()
     keyboard_ctrl = KeyboardController()
-    ball_controller = BallController()
-    ai_agent = RLAgent()
+    gameplay_controller = GameplayController()
     
     print("Mencari window Telegram...")
     keyboard_ctrl.print_controls()
@@ -45,7 +43,7 @@ def main():
                     continue
                     
                 # Update mode tembakan
-                ball_controller.set_mode(keyboard_ctrl.get_current_mode())
+                gameplay_controller.set_mode(keyboard_ctrl.get_current_mode())
                 
                 if keyboard.is_pressed('space'):
                     game_detector.start_game()
@@ -57,15 +55,15 @@ def main():
                     
                     if result and result['status'] == 'active':
                         hoop_pos = result['hoop_position']
-                        action = ai_agent.get_action(screenshot, hoop_pos)
+                        action = gameplay_controller.get_action(screenshot, hoop_pos)
                         
                         if action:  # Jika AI memutuskan untuk menembak
                             # print(f"\nMenembak ke ring di posisi {hoop_pos}")
-                            ball_controller.execute_action(action, ball_pos)
+                            gameplay_controller.execute_action(action, ball_pos)
                     elif result and result['status'] == 'game_over' and result.get('should_claim'):
                         print("\nPermainan selesai! Membersihkan state...")
                         game_detector.stop_game()
-                        ball_controller.reset()
+                        gameplay_controller.reset_state()
                         
                         claim_pos = game_detector.get_button_position('claim', window_info)
                         if claim_pos:
