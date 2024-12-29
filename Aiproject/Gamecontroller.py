@@ -51,68 +51,22 @@ class GameplayController:
             self.swipe_duration = self.swipe_duration_slow
 
     def get_action(self, game_screen, hoop_pos):
-        """Calculate shooting angle and power based on hoop position"""
+        """Calculate shooting angle and power with straight up shot"""
         try:
-            x, y = hoop_pos
-            current_time = time.time()
+            # Fixed angle for straight up shot (90 degrees)
+            angle = 90
             
-            predicted_x = x
-            if self.last_pos and self.last_time:
-                dx = x - self.last_pos[0]
-                dt = current_time - self.last_time
-                
-                if dt > 0:
-                    speed = dx / dt
-                    self.speed_memory.append(speed)
-                    
-                    weights = [0.4, 0.3, 0.2, 0.1]
-                    if len(self.speed_memory) >= 4:
-                        avg_speed = sum(w * s for w, s in zip(weights, list(self.speed_memory)[-4:]))
-                    else:
-                        avg_speed = sum(self.speed_memory) / len(self.speed_memory)
-                    
-                    if abs(dx) > self.movement_threshold:
-                        predicted_x = x + (avg_speed * self.prediction_factor)
-                        if dx > 0:
-                            predicted_x += 5
-                        else:
-                            predicted_x -= 5
-                        predicted_x = min(max(predicted_x, 100), game_screen.shape[1] - 100)
+            # Fixed power for consistent height
+            power = 0.7  # Bisa disesuaikan antara 0.6-0.8
             
-            self.last_pos = hoop_pos
-            self.last_time = current_time
-            
-            ball_x = game_screen.shape[1] // 2
-            ball_y = game_screen.shape[0] - 200
-            
-            dx = predicted_x - ball_x
-            dy = ball_y - y
-            distance = math.sqrt(dx*dx + dy*dy)
-            
-            angle = math.degrees(math.atan2(dy, dx))
-            if distance > 350:
-                angle += 3
-            elif distance > 250:
-                angle += 2
-            elif distance < 200:
-                angle -= 2
-                
-            base_power = self.base_power / 400
-            power = min(0.95, max(0.5, base_power * (distance / 300)))
-            
-            if distance > 350:
-                power *= 1.1
-            elif distance < 200:
-                power *= 0.9
-                
             return (angle, power)
             
         except Exception as e:
             print(f"Error calculating shot: {e}")
-            return (45, 0.6)
+            return (90, 0.7)  # Default fallback
 
     def execute_action(self, action, ball_pos):
-        """Execute shooting action with retry mechanism"""
+        """Execute shooting action with fixed upward direction"""
         try:
             current_time = time.time()
             if current_time - self.last_shot_time < self.shot_cooldown:
@@ -120,18 +74,18 @@ class GameplayController:
                 
             angle, power = action
             distance = power * self.base_power
-            target_x = ball_pos[0] + distance * math.cos(math.radians(angle))
-            target_y = ball_pos[1] - distance * math.sin(math.radians(angle))
             
+            target_x = ball_pos[0]
+            target_y = ball_pos[1] - distance
+            
+            # Tambah retry dengan progressive delay
             for attempt in range(self.max_retries):
                 success = self.swipe(ball_pos[0], ball_pos[1], target_x, target_y)
                 if success:
                     self.last_shot_time = current_time
                     return True
-                else:
-                    print(f"Retry shot {attempt + 1}/{self.max_retries}")
-                    time.sleep(0.05)
-            
+                time.sleep(0.005 * (attempt + 1))  # Progressive delay
+                
             return False
             
         except Exception as e:
@@ -144,19 +98,27 @@ class GameplayController:
             duration = self.swipe_duration
 
         try:
+            # Reset mouse state
             self.mouse.release(Button.left)
+            time.sleep(0.01)  # Reduced delay
+            
+            # Posisi awal dengan validasi lebih ketat
             self.mouse.position = (start_x, start_y)
-            time.sleep(0.02)
+            time.sleep(0.01)  # Reduced delay
             
             current_pos = self.mouse.position
-            if abs(current_pos[0] - start_x) > 5 or abs(current_pos[1] - start_y) > 5:
-                print("Position validation failed")
-                return False
+            if abs(current_pos[0] - start_x) > 2 or abs(current_pos[1] - start_y) > 2:  # Threshold lebih ketat
+                self.mouse.position = (start_x, start_y)  # Retry positioning
+                time.sleep(0.01)
+                current_pos = self.mouse.position
+                if abs(current_pos[0] - start_x) > 2 or abs(current_pos[1] - start_y) > 2:
+                    return False
                 
             self.mouse.press(Button.left)
             
-            steps = 8
-            curve_height = 1.2
+            # Optimasi steps berdasarkan duration
+            steps = max(5, min(15, int(duration * 1000)))  # Dynamic steps
+            curve_height = 0.5  # Reduced curve height
             
             for i in range(steps):
                 progress = i / steps
@@ -169,17 +131,10 @@ class GameplayController:
                 time.sleep(duration / steps)
             
             self.mouse.position = (end_x, end_y)
-            time.sleep(0.02)
-            
-            current_pos = self.mouse.position
-            if abs(current_pos[0] - end_x) > 5 or abs(current_pos[1] - end_y) > 5:
-                print("Final position validation failed")
-                self.mouse.release(Button.left)
-                return False
-                
             self.mouse.release(Button.left)
             
-            time.sleep(0.015)
+            # Quick return to start
+            time.sleep(0.01)
             self.mouse.position = (start_x, start_y)
             
             return True
