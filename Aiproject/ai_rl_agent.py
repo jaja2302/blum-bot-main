@@ -16,6 +16,7 @@ class RLAgent:
         # self.log_interval = 0.0005  # Faster updates
         # self.prediction_factor = 0.65  # Slightly increased prediction
         # self.speed_memory = deque(maxlen=3)  # Shorter memory for faster response
+        # s 
         try:
             json_path = os.path.join(os.path.dirname(__file__), 'setting_controller.json')
             with open(json_path, 'r') as f:
