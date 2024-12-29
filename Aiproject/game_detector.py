@@ -53,19 +53,28 @@ class GameDetector:
                 self.button_config = json.load(f)
         except Exception as e:
             self.button_config = None
+        
+        self.reset_state()
+
+    def reset_state(self):
+        """Reset semua state detector"""
+        self.last_state = GameState.UNKNOWN
+        self.game_started = False
+        self.game_start_time = None
+        self.last_hoop_pos = None
+        self.hoop_detector.reset()  # Tambahkan method reset di HoopDetector
 
     def start_game(self):
         self.game_started = True
         self.game_start_time = time.time()
         self.last_state = GameState.UNKNOWN
         self.last_hoop_pos = None
-        print("\nGame dimulai! Menunggu ring terdeteksi...")
+        print("\nGame dimulai!")
         
     def stop_game(self):
-        """Reset flag game dan timer"""
-        self.game_started = False
-        self.game_start_time = None
-        self.last_state = GameState.UNKNOWN
+        """Reset flag game, timer, dan state"""
+        self.reset_state()
+        self.game_stats.cleanup_game()  # Tambahkan method cleanup di GameStats
         
     def get_claim_button_pos(self, window_info):
         """Menghitung posisi absolut tombol claim"""

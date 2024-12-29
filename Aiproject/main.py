@@ -16,34 +16,11 @@ def main():
     ai_agent = RLAgent()
     
     print("Mencari window Telegram...")
-    print("\nKontrol:")
-    print("S - Stop program")
-    print("P - Pause program")
-    print("R - Resume program")
-    print("M - Ganti mode (NORMAL/CEPAT)")
-    print("Space - Play game")
+    keyboard_ctrl.print_controls()
     
-    # Perbaikan input betting amount
-    print("\nPilih jumlah betting:")
-    print("1 - untuk 1m")
-    print("2 - untuk 10m")
-    print("3 - untuk 100m")
-    
-    betting_options = {
-        '1': '1m',
-        '2': '10m',
-        '3': '100m'
-    }
-    
-    while True:
-        choice = input("Pilihan anda (1/2/3): ")
-        if choice in betting_options:
-            betting_amount = betting_options[choice]
-            keyboard_ctrl.set_betting_amount(betting_amount)
-            game_detector.game_stats.set_betting_amount(betting_amount)  # Update game stats
-            print(f"Betting amount diset ke: {betting_amount}")
-            break
-        print("Input tidak valid! Pilih 1, 2, atau 3")
+    # Get betting amount from user
+    betting_amount = keyboard_ctrl.get_betting_input()
+    game_detector.game_stats.set_betting_amount(betting_amount)
     
     window_info = detector.find_window()
     
@@ -86,12 +63,14 @@ def main():
                             # print(f"\nMenembak ke ring di posisi {hoop_pos}")
                             ball_controller.execute_action(action, ball_pos)
                     elif result and result['status'] == 'game_over' and result.get('should_claim'):
+                        print("\nPermainan selesai! Membersihkan state...")
+                        game_detector.stop_game()
+                        ball_controller.reset()
+                        
                         claim_pos = game_detector.get_button_position('claim', window_info)
                         if claim_pos:
-                            # print("\nDebug: Clicking claim button")
                             keyboard_ctrl.click_at(claim_pos[0], claim_pos[1])
                             time.sleep(0.5)
-                            # Mulai alur post-game dengan mengirim screen_capture
                             handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capture)
                         else:
                             print("\nDebug: Posisi tombol claim tidak ditemukan!")
@@ -106,6 +85,7 @@ def main():
 
 def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capture):
     """Menangani alur setelah game selesai"""
+    print("\nMencari pertandingan baru...")
     time.sleep(1)
     
     current_state = None
@@ -115,7 +95,7 @@ def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capt
     
     while True:
         if retry_count >= MAX_RETRIES:
-            print("\nDebug: Melebihi batas percobaan (10x), menghentikan program...")
+            print("Gagal menemukan pertandingan, menghentikan program...")
             return
             
         screenshot = screen_capture.capture_window(window_info)
@@ -133,24 +113,25 @@ def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capt
             retry_count += 1
             
         if state['state'] == GameState.UNKNOWN and not has_clicked_bet:
-            # Gunakan betting amount yang dipilih
             button_name = f'go_versus_player_{keyboard_ctrl.get_betting_amount()}'
             pos = game_detector.get_button_position(button_name, window_info)
             if pos:
                 keyboard_ctrl.click_at(pos[0], pos[1])
                 has_clicked_bet = True
+                print("Memilih jumlah taruhan...")
                 time.sleep(2)
                 
         elif state['state'] == GameState.OPPONENT_FOUND:
+            print("Lawan ditemukan!")
             pos = game_detector.get_button_position('go_versus_player', window_info)
             if pos:
                 keyboard_ctrl.click_at(pos[0], pos[1])
-                time.sleep(5)  # Tunggu 2 detik
-                # Langsung klik Let's go dengan koordinat yang sudah ada
+                time.sleep(5)
                 pos = game_detector.get_button_position('letsgo_play_the_game', window_info)
                 if pos:
                     keyboard_ctrl.click_at(pos[0], pos[1])
-                    time.sleep(3)  # Tunggu 3 detik sebelum mulai game
+                    # print("\nGame dimulai!")
+                    time.sleep(3)
                     game_detector.start_game()
                     return
         

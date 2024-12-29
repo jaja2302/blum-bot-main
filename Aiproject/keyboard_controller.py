@@ -16,6 +16,13 @@ class KeyboardController:
         keyboard.on_press_key('p', lambda _: self.toggle_pause())
         keyboard.on_press_key('r', lambda _: self.toggle_pause())
         keyboard.on_press_key('m', lambda _: self.toggle_mode())  # Tambah handler mode
+        
+        # Tambahkan betting options
+        self.betting_options = {
+            '1': '1m',
+            '2': '10m',
+            '3': '100m'
+        }
 
     def stop_program(self):
         """Immediately stop the program"""
@@ -56,7 +63,6 @@ class KeyboardController:
     def click_at(self, x, y):
         """Melakukan klik mouse pada posisi x,y"""
         try:
-            print(f"\nDebug: Melakukan klik di koordinat ({x}, {y})")
             current_pos = pyautogui.position()  # Simpan posisi mouse sekarang
             
             # Gerakkan mouse, klik, dan kembalikan ke posisi semula
@@ -64,9 +70,8 @@ class KeyboardController:
             pyautogui.click()
             pyautogui.moveTo(current_pos.x, current_pos.y, duration=0.1)
             
-            print("Debug: Klik berhasil dilakukan")
         except Exception as e:
-            print(f"Debug: Error saat melakukan klik: {e}") 
+            print(f"Error saat melakukan klik: {e}")
 
     def set_betting_amount(self, amount):
         """Set betting amount (1m/10m/100m)"""
@@ -75,3 +80,28 @@ class KeyboardController:
     def get_betting_amount(self):
         """Get current betting amount"""
         return self.betting_amount 
+
+    def get_betting_input(self):
+        """Handle betting amount input from user"""
+        print("\nPilih jumlah betting:")
+        print("1 - untuk 1m")
+        print("2 - untuk 10m")
+        print("3 - untuk 100m")
+        
+        while True:
+            choice = input("Pilihan anda (1/2/3): ")
+            if choice in self.betting_options:
+                betting_amount = self.betting_options[choice]
+                self.set_betting_amount(betting_amount)
+                print(f"Betting amount diset ke: {betting_amount}")
+                return betting_amount
+            print("Input tidak valid! Pilih 1, 2, atau 3")
+            
+    def print_controls(self):
+        """Print control information"""
+        print("\nKontrol:")
+        print("S - Stop program")
+        print("P - Pause program")
+        print("R - Resume program")
+        print("M - Ganti mode (NORMAL/CEPAT)")
+        print("Space - Play game") 

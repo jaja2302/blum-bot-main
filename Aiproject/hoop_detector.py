@@ -12,6 +12,7 @@ class HoopDetector:
     
     def __init__(self):
         self.missed_detections = 0
+        self.reset()
         
 
     def detect_hoop(self, screenshot: np.ndarray) -> tuple[int, int] | None:
@@ -145,3 +146,8 @@ class HoopDetector:
     #     if cv2.waitKey(1) & 0xFF == ord('q'):
     #         cv2.destroyAllWindows()
     #         exit()
+
+    def reset(self):
+        """Reset detector state"""
+        self.missed_detections = 0
+        cv2.destroyAllWindows()  # Tutup semua window debug jika ada

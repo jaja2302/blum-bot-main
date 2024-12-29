@@ -19,6 +19,7 @@ class BallController:
         self.last_shot_time = 0
         self.shot_cooldown = self.setting_config['shot_cooldown']  # Default cooldown untuk mode cepat
         self.max_retries = 2  # Maksimum percobaan ulang jika gagal
+        self.reset()
        
         
     def set_mode(self, fast_mode):
@@ -119,3 +120,8 @@ class BallController:
             print(f"Swipe error: {e}")
             self.mouse.release(Button.left)
             return False 
+
+    def reset(self):
+        """Reset controller state"""
+        self.last_shot_time = 0
+        self.mouse.release(Button.left)  # Pastikan mouse tidak tertahan 
