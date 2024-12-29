@@ -8,10 +8,10 @@
         "last_log_time": 0            
         },
     "swipe_agent": {
-        "shot_cooldown_fast": 0.06,
-        "swipe_duration_fast": 0.05,
-        "shot_cooldown_slow": 0.8,
-        "swipe_duration_slow": 0.2,
-        "base_power": 400
+            "shot_cooldown_fast": 0.09,
+            "swipe_duration_fast": 0.08,
+            "shot_cooldown_slow": 0.8,
+            "swipe_duration_slow": 0.2,
+            "base_power": 300
     }
 }       

@@ -129,7 +129,7 @@ def handle_post_game_flow(game_detector, keyboard_ctrl, window_info, screen_capt
                 if pos:
                     keyboard_ctrl.click_at(pos[0], pos[1])
                     # print("\nGame dimulai!")
-                    time.sleep(3)
+                    # time.sleep(1)
                     game_detector.start_game()
                     return
         

@@ -43,7 +43,7 @@ class GameDetector:
         self.hoop_detector = HoopDetector()
         self.game_started = False
         self.game_start_time = None
-        self.GAME_DURATION = 48
+        self.GAME_DURATION = 55
         self.last_hoop_pos = None
         self.game_stats = GameStats()
         
