@@ -5,8 +5,37 @@
         "log_interval": 0.0001,       
         "prediction_factor": 0.67,      
         "speed_memory": 3,            
-        "last_log_time": 0            
+        "last_log_time": 0,
+        "speed_history_size": 10,
+        "acceleration_threshold": 50,
+        "speed_states": {
+            "fast_threshold": 150,
+            "medium_threshold": 80
         },
+        "prediction_params": {
+            "normal": {
+                "weights": [0.7, 0.2, 0.07, 0.03],
+                "speed_divisor": 85,
+                "base_factor": 1.5,
+                "max_speed_factor": 0.8,
+                "max_offset": 40
+            },
+            "medium": {
+                "weights": [0.75, 0.15, 0.07, 0.03],
+                "speed_divisor": 75,
+                "base_factor": 1.3,
+                "max_speed_factor": 0.9,
+                "max_offset": 55
+            },
+            "fast": {
+                "weights": [0.8, 0.15, 0.04, 0.01],
+                "speed_divisor": 50,
+                "base_factor": 1.6,
+                "max_speed_factor": 1.4,
+                "max_offset": 80
+            }
+        }
+    },
     "swipe_agent": {
             "shot_cooldown_fast": 0.09,
             "swipe_duration_fast": 0.08,

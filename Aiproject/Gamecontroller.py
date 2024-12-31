@@ -13,35 +13,42 @@ import hashlib
 
 class GameplayController:
     def __init__(self):
-
         try:
             json_path = os.path.join(os.path.dirname(__file__), 'setting_controller.json')
             with open(json_path, 'r') as f:
                 self.setting_config = json.load(f)
         except Exception as e:
+            print(f"Error loading settings: {e}")
             self.setting_config = None
 
-        # for swipe action
+        # Load settings
+        ri_config = self.setting_config['ri_agent']
+        swipe_config = self.setting_config['swipe_agent']
+
+        # Initialize swipe settings
         self.mouse = Controller()
-        self.base_power = 300
+        self.base_power = swipe_config['base_power']
         self.last_shot_time = 0
         self.shot_cooldown = 0.1
-        self.max_retries = 2  # Maksimum percobaan ulang jika gagal
-        self.shot_cooldown_fast = self.setting_config['swipe_agent']['shot_cooldown_fast']
-        self.swipe_duration_fast = self.setting_config['swipe_agent']['swipe_duration_fast']
-        self.shot_cooldown_slow = self.setting_config['swipe_agent']['shot_cooldown_slow']
-        self.swipe_duration_slow = self.setting_config['swipe_agent']['swipe_duration_slow']
-        self.base_power = self.setting_config['swipe_agent']['base_power']
-        
+        self.max_retries = 2
+        self.shot_cooldown_fast = swipe_config['shot_cooldown_fast']
+        self.swipe_duration_fast = swipe_config['swipe_duration_fast']
+        self.shot_cooldown_slow = swipe_config['shot_cooldown_slow']
+        self.swipe_duration_slow = swipe_config['swipe_duration_slow']
 
-        # RL Agent properties
+        # Initialize RI agent settings
+        self.movement_threshold = ri_config['movement_threshold']
+        self.prediction_factor = ri_config['prediction_factor']
+        self.speed_memory = deque(maxlen=ri_config['speed_memory'])
+        self.speed_history = deque(maxlen=ri_config['speed_history_size'])
+        self.acceleration_threshold = ri_config['acceleration_threshold']
+        self.speed_state = 'normal'
+        self.prediction_params = ri_config['prediction_params']
+        self.speed_thresholds = ri_config['speed_states']
+
+        # Initialize position tracking
         self.last_pos = None
         self.last_time = None
-        self.movement_threshold = 5
-        self.last_log_time = self.setting_config['ri_agent']['last_log_time']
-        self.log_interval = self.setting_config['ri_agent']['log_interval']
-        self.prediction_factor = 0.3
-        self.speed_memory = deque(maxlen=self.setting_config['ri_agent']['speed_memory'])
 
         # Add logging properties
         self.logs = []
@@ -49,6 +56,13 @@ class GameplayController:
         self.shot_logs_folder.mkdir(exist_ok=True)
         self.shot_patterns_file = self.shot_logs_folder / "shot_patterns.json"
         self.existing_patterns = self.load_existing_patterns()
+
+        # Add game timing properties
+        self.game_start_time = None
+        self.game_duration = 45  # durasi game dalam detik
+        self.early_game_threshold = 20  # 20 detik untuk fase awal yang lebih stabil
+        self.mid_game_threshold = 25    # Tambah threshold mid-game
+        self.late_game_threshold = 35
 
     def load_existing_patterns(self):
         """Load existing shot patterns from file"""
@@ -75,31 +89,55 @@ class GameplayController:
             x, y = hoop_pos
             current_time = time.time()
             
+            # Initialize game start time if not set
+            if not self.game_start_time:
+                self.game_start_time = current_time
+            
+            # Calculate game progress
+            game_time = current_time - self.game_start_time
+            
             predicted_x = x
             if self.last_pos and self.last_time:
                 dx = x - self.last_pos[0]
                 dt = current_time - self.last_time
                 
                 if dt > 0:
-                    speed = dx / dt
-                    self.speed_memory.append(speed)
+                    current_speed = dx / dt
+                    self.speed_memory.append(current_speed)
+                    self.speed_history.append(abs(current_speed))
                     
-                    weights = [0.7, 0.2, 0.07, 0.03]
+                    # Detect speed state dynamically
+                    if len(self.speed_history) >= 5:
+                        recent_avg = sum(list(self.speed_history)[-5:]) / 5
+                        older_avg = sum(list(self.speed_history)[:-5]) / (len(self.speed_history)-5) if len(self.speed_history) > 5 else recent_avg
+                        
+                        acceleration = abs(recent_avg - older_avg)
+                        
+                        if recent_avg > self.speed_thresholds['fast_threshold'] or acceleration > self.acceleration_threshold:
+                            self.speed_state = 'fast'
+                        elif recent_avg > self.speed_thresholds['medium_threshold']:
+                            self.speed_state = 'medium'
+                        else:
+                            self.speed_state = 'normal'
+                    
+                    # Get current state parameters
+                    params = self.prediction_params[self.speed_state]
+                    
                     if len(self.speed_memory) >= 4:
-                        avg_speed = sum(w * s for w, s in zip(weights, list(self.speed_memory)[-4:]))
+                        avg_speed = sum(w * s for w, s in zip(params['weights'], list(self.speed_memory)[-4:]))
                     else:
                         avg_speed = sum(self.speed_memory) / len(self.speed_memory)
                     
                     if abs(dx) > self.movement_threshold:
-                        dynamic_factor = self.prediction_factor * (1.4 + min(abs(avg_speed)/70, 1.0))
+                        dynamic_factor = self.prediction_factor * (params['base_factor'] + 
+                                       min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
                         predicted_x = x + (avg_speed * dynamic_factor)
                         
-                        max_offset = 65
-                        if abs(predicted_x - x) > max_offset:
+                        if abs(predicted_x - x) > params['max_offset']:
                             if predicted_x > x:
-                                predicted_x = x + max_offset
+                                predicted_x = x + params['max_offset']
                             else:
-                                predicted_x = x - max_offset
+                                predicted_x = x - params['max_offset']
                         predicted_x = min(max(predicted_x, 100), game_screen.shape[1] - 100)
             
             self.last_pos = hoop_pos
