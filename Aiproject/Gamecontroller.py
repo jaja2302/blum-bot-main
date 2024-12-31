@@ -7,6 +7,9 @@ from pynput.mouse import Button, Controller
 import random
 import os
 import json
+from datetime import datetime
+from pathlib import Path
+import hashlib
 
 class GameplayController:
     def __init__(self):
@@ -34,12 +37,28 @@ class GameplayController:
         # RL Agent properties
         self.last_pos = None
         self.last_time = None
-        self.movement_threshold = self.setting_config['ri_agent']['movement_threshold']
+        self.movement_threshold = 5
         self.last_log_time = self.setting_config['ri_agent']['last_log_time']
         self.log_interval = self.setting_config['ri_agent']['log_interval']
-        self.prediction_factor = self.setting_config['ri_agent']['prediction_factor']
+        self.prediction_factor = 0.3
         self.speed_memory = deque(maxlen=self.setting_config['ri_agent']['speed_memory'])
 
+        # Add logging properties
+        self.logs = []
+        self.shot_logs_folder = Path("shot_logs")
+        self.shot_logs_folder.mkdir(exist_ok=True)
+        self.shot_patterns_file = self.shot_logs_folder / "shot_patterns.json"
+        self.existing_patterns = self.load_existing_patterns()
+
+    def load_existing_patterns(self):
+        """Load existing shot patterns from file"""
+        if self.shot_patterns_file.exists():
+            try:
+                with open(self.shot_patterns_file, 'r') as f:
+                    return json.load(f)
+            except json.JSONDecodeError:
+                return {}
+        return {}
 
     def set_mode(self, fast_mode):
         """Set shooting mode parameters"""
@@ -65,18 +84,22 @@ class GameplayController:
                     speed = dx / dt
                     self.speed_memory.append(speed)
                     
-                    weights = [0.4, 0.3, 0.2, 0.1]
+                    weights = [0.7, 0.2, 0.07, 0.03]
                     if len(self.speed_memory) >= 4:
                         avg_speed = sum(w * s for w, s in zip(weights, list(self.speed_memory)[-4:]))
                     else:
                         avg_speed = sum(self.speed_memory) / len(self.speed_memory)
                     
                     if abs(dx) > self.movement_threshold:
-                        predicted_x = x + (avg_speed * self.prediction_factor)
-                        if dx > 0:
-                            predicted_x += 5
-                        else:
-                            predicted_x -= 5
+                        dynamic_factor = self.prediction_factor * (1.4 + min(abs(avg_speed)/70, 1.0))
+                        predicted_x = x + (avg_speed * dynamic_factor)
+                        
+                        max_offset = 65
+                        if abs(predicted_x - x) > max_offset:
+                            if predicted_x > x:
+                                predicted_x = x + max_offset
+                            else:
+                                predicted_x = x - max_offset
                         predicted_x = min(max(predicted_x, 100), game_screen.shape[1] - 100)
             
             self.last_pos = hoop_pos
@@ -189,9 +212,56 @@ class GameplayController:
             self.mouse.release(Button.left)
             return False
 
+    def save_shot_logs(self):
+        """Save the collected shot logs to a JSON file"""
+        if not self.logs:
+            return
+
+        # Calculate summary statistics
+        shots = len(self.logs)
+        distances = [log["shot_params"]["distance"] for log in self.logs]
+        angles = [log["shot_params"]["angle"] for log in self.logs]
+        powers = [log["shot_params"]["power"] for log in self.logs]
+        speeds = [log["movement_metrics"]["speed"] for log in self.logs]
+
+        # Create shot pattern summary
+        shot_summary = {
+            "total_shots": shots,
+            "average_distance": float(np.mean(distances)),
+            "average_angle": float(np.mean(angles)),
+            "average_power": float(np.mean(powers)),
+            "average_hoop_speed": float(np.mean(speeds)),
+            "shot_sequence": self.logs
+        }
+
+        # Generate pattern hash
+        pattern_hash = hashlib.md5(json.dumps(shot_summary, sort_keys=True).encode()).hexdigest()
+
+        # Save pattern
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        pattern_data = {
+            "id": pattern_hash,
+            "timestamp": timestamp,
+            "pattern_data": shot_summary
+        }
+
+        # Save to individual file
+        pattern_file = self.shot_logs_folder / f"shots_{pattern_hash[:8]}_{timestamp}.json"
+        with open(pattern_file, 'w') as f:
+            json.dump(pattern_data, f, indent=2)
+            print(f"\nShot pattern saved: {pattern_file}")
+
+        # Update patterns database
+        self.existing_patterns[pattern_hash] = pattern_data
+        with open(self.shot_patterns_file, 'w') as f:
+            json.dump(self.existing_patterns, f, indent=2)
+
     def reset_state(self):
         """Reset controller state"""
         self.last_shot_time = 0
         self.last_pos = None
         self.last_time = None
-        self.speed_memory.clear() 
+        self.speed_memory.clear()
+        if self.logs:  # Save logs before resetting
+            self.save_shot_logs()
+        self.logs = [] 
