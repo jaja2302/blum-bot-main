@@ -64,6 +64,14 @@ class GameplayController:
         self.mid_game_threshold = 25    # Tambah threshold mid-game
         self.late_game_threshold = 35
 
+        # Tambahkan pengaturan performa
+        self.performance_mode = True
+        if self.performance_mode:
+            # Kurangi ukuran memory untuk tracking
+            self.speed_memory = deque(maxlen=3)  # Dari 5 ke 3
+            self.speed_history = deque(maxlen=10)  # Dari 20 ke 10
+            self.prediction_factor *= 0.8  # Kurangi kompleksitas prediksi
+
     def load_existing_patterns(self):
         """Load existing shot patterns from file"""
         if self.shot_patterns_file.exists():

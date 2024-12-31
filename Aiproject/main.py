@@ -5,6 +5,7 @@ from keyboard_controller import KeyboardController
 from Gamecontroller import GameplayController
 import time
 import keyboard
+from collections import deque
 
 def main():
     detector = WindowDetector()
@@ -12,6 +13,12 @@ def main():
     game_detector = GameDetector()
     keyboard_ctrl = KeyboardController()
     gameplay_controller = GameplayController()
+    
+    # Tambahkan variabel untuk tracking FPS warning
+    frame_times = deque(maxlen=60)
+    last_frame_time = time.time()
+    last_fps_warning = 0
+    fps_warning_cooldown = 5  # Hanya tampilkan warning setiap 5 detik
     
     print("Mencari window Telegram...")
     keyboard_ctrl.print_controls()
@@ -38,6 +45,24 @@ def main():
             print("\nTekan SPACE untuk memulai game!")
             
             while not keyboard_ctrl.is_stopped():
+                current_time = time.time()
+                frame_times.append(current_time - last_frame_time)
+                
+                # Monitor FPS dengan cooldown
+                if len(frame_times) == 60:
+                    avg_fps = 1.0 / (sum(frame_times) / len(frame_times))
+                    if avg_fps < 30 and (current_time - last_fps_warning) > fps_warning_cooldown:
+                        print(f"\nWarning: Low FPS ({avg_fps:.1f})")
+                        print("Tip: Coba tutup aplikasi lain untuk meningkatkan performa")
+                        last_fps_warning = current_time
+                
+                # Frame rate control
+                if current_time - last_frame_time < 1/60:  # Target 60 FPS
+                    time.sleep(0.001)  # Micro sleep
+                    continue
+                    
+                last_frame_time = current_time
+                
                 if keyboard_ctrl.is_game_paused():
                     time.sleep(0.01)
                     continue

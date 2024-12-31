@@ -18,31 +18,31 @@ class HoopDetector:
     def detect_hoop(self, screenshot: np.ndarray) -> tuple[int, int] | None:
         frame_bgr = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
         
-        # Draw blue detection area
-        self.draw_detection_area(frame_bgr)
-        
-        # Crop to detection area
+        # Crop to detection area first to reduce processing area
         detection_area = frame_bgr[self.DETECTION_START_Y:self.DETECTION_END_Y, :]
-
-        # Try color detection first
-        result = self.detect_hoop_color(detection_area)
+        
+        # Optimize color detection
+        red_lower, red_upper = self.get_adaptive_color_range()
+        red_mask = cv2.inRange(detection_area, red_lower, red_upper)
+        
+        # Use smaller kernel for faster processing
+        red_mask = cv2.dilate(red_mask, np.ones((2, 2), np.uint8), iterations=1)
+        
+        contours = self.find_contours(red_mask)
+        result = self.get_largest_contour_center(contours)
+        
         if result:
             x, y = result
-            adjusted_result = (x, y + self.DETECTION_START_Y)
-            self.draw_target_box(frame_bgr, adjusted_result)
-            # self.debug_window(frame_bgr)
-            return adjusted_result
-
-        # Try shape detection if color fails
-        result = self.detect_hoop_shape(detection_area)
-        if result:
-            x, y = result
-            adjusted_result = (x, y + self.DETECTION_START_Y)
-            self.draw_target_box(frame_bgr, adjusted_result)
-            # self.debug_window(frame_bgr)
-            return adjusted_result
-
-        # self.debug_window(frame_bgr)
+            return (x, y + self.DETECTION_START_Y)
+        
+        # Only try shape detection if color fails and we haven't detected recently
+        if self.missed_detections > 5:
+            result = self.detect_hoop_shape(detection_area)
+            if result:
+                x, y = result
+                return (x, y + self.DETECTION_START_Y)
+        
+        self.missed_detections += 1
         return None
 
     def draw_detection_area(self, frame: np.ndarray) -> None:
