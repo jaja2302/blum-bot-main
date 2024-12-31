@@ -96,6 +96,12 @@ class GameplayController:
             # Calculate game progress
             game_time = current_time - self.game_start_time
             
+            # Adjust prediction parameters based on game time
+            if game_time > self.mid_game_threshold:
+                self.prediction_factor *= 1.1  # Increase prediction factor for mid to late game
+            elif game_time > self.late_game_threshold:
+                self.prediction_factor *= 1.2  # Further increase for late game
+
             predicted_x = x
             if self.last_pos and self.last_time:
                 dx = x - self.last_pos[0]
@@ -128,17 +134,25 @@ class GameplayController:
                     else:
                         avg_speed = sum(self.speed_memory) / len(self.speed_memory)
                     
-                    if abs(dx) > self.movement_threshold:
+                    # Adjust dynamic factor and max offset for fast-moving hoops
+                    if self.speed_state == 'fast':
+                        dynamic_factor = self.prediction_factor * 0.9 * (params['base_factor'] + 
+                                       min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
+                        max_offset = params['max_offset'] * 0.8  # Reduce max offset for fast state
+                    else:
                         dynamic_factor = self.prediction_factor * (params['base_factor'] + 
                                        min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
-                        predicted_x = x + (avg_speed * dynamic_factor)
-                        
-                        if abs(predicted_x - x) > params['max_offset']:
-                            if predicted_x > x:
-                                predicted_x = x + params['max_offset']
-                            else:
-                                predicted_x = x - params['max_offset']
-                        predicted_x = min(max(predicted_x, 100), game_screen.shape[1] - 100)
+                        max_offset = params['max_offset']
+
+                    predicted_x = x + (avg_speed * dynamic_factor)
+
+                    if abs(predicted_x - x) > max_offset:
+                        if predicted_x > x:
+                            predicted_x = x + max_offset
+                        else:
+                            predicted_x = x - max_offset
+
+                    predicted_x = min(max(predicted_x, 100), game_screen.shape[1] - 100)
             
             self.last_pos = hoop_pos
             self.last_time = current_time
