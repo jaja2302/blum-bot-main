@@ -1,9 +1,9 @@
 {
 
     "ri_agent": {
-        "movement_threshold": 5,        
+        "movement_threshold": 4.5,        
         "log_interval": 0.0001,       
-        "prediction_factor": 0.67,      
+        "prediction_factor": 0.6,      
         "speed_memory": 3,            
         "last_log_time": 0,
         "speed_history_size": 10,
@@ -25,14 +25,14 @@
                 "speed_divisor": 75,
                 "base_factor": 1.3,
                 "max_speed_factor": 0.9,
-                "max_offset": 55
+                "max_offset": 60
             },
             "fast": {
                 "weights": [0.8, 0.15, 0.04, 0.01],
                 "speed_divisor": 50,
                 "base_factor": 1.6,
                 "max_speed_factor": 1.4,
-                "max_offset": 80
+                "max_offset": 85
             }
         }
     },
@@ -42,5 +42,8 @@
             "shot_cooldown_slow": 0.8,
             "swipe_duration_slow": 0.2,
             "base_power": 300
+    },
+    "game_duration":{
+        "GAME_DURATION" :50
     }
 }       

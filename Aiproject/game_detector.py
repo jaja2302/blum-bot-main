@@ -38,12 +38,18 @@ class GameDetector:
             tesseract_path = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
         
         pytesseract.pytesseract.tesseract_cmd = tesseract_path
-        
+        try:
+            json_path = os.path.join(os.path.dirname(__file__), 'setting_controller.json')
+            with open(json_path, 'r') as f:
+                self.setting_config = json.load(f)
+        except Exception as e:
+                self.setting_config = None
+        game_duraction = self.setting_config['game_duration']
         self.last_state = GameState.UNKNOWN
         self.hoop_detector = HoopDetector()
         self.game_started = False
         self.game_start_time = None
-        self.GAME_DURATION = 50
+        self.GAME_DURATION =  game_duraction['GAME_DURATION']
         self.last_hoop_pos = None
         self.game_stats = GameStats()
         
@@ -53,7 +59,7 @@ class GameDetector:
                 self.button_config = json.load(f)
         except Exception as e:
             self.button_config = None
-        
+      
         self.reset_state()
 
     def reset_state(self):
