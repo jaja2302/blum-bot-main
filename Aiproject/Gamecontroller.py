@@ -43,7 +43,6 @@ class GameplayController:
         self.speed_history = deque(maxlen=ri_config['speed_history_size'])
         self.acceleration_threshold = ri_config['acceleration_threshold']
         self.speed_state = 'normal'
-        self.prediction_params = ri_config['prediction_params']
         self.speed_thresholds = ri_config['speed_states']
 
         # Initialize position tracking
@@ -112,48 +111,70 @@ class GameplayController:
                     self.speed_memory.append(current_speed)
                     self.speed_history.append(abs(current_speed))
                     
-                    # Detect speed state dynamically
+                    # Get direction based on dx
+                    direction = "LEFT" if dx < 0 else "RIGHT"
+                    
+                    # Calculate elapsed time in seconds
+                    elapsed_time = int(time.time() - self.game_start_time)
+                    
+                    # Detect speed state based on recent_avg_speed
                     if len(self.speed_history) >= 5:
                         recent_avg = sum(list(self.speed_history)[-5:]) / 5
-                        older_avg = sum(list(self.speed_history)[:-5]) / (len(self.speed_history)-5) if len(self.speed_history) > 5 else recent_avg
                         
-                        acceleration = abs(recent_avg - older_avg)
+                        # State detection with better stability
+                        if recent_avg < 65:  # Slow threshold
+                            new_state = 'slow'
+                        elif 65 <= recent_avg < 70:  # Normal range - lebih lebar untuk stabilitas
+                            new_state = 'normal'
+                        elif 70 <= recent_avg < 120:  # Medium range
+                            new_state = 'medium'
+                        elif 120 <= recent_avg < 150:  # Fast range
+                            new_state = 'fast'
+                        elif recent_avg >= 150:  # Very fast threshold
+                            new_state = 'very_fast'
                         
-                        if recent_avg > self.speed_thresholds['fast_threshold'] or acceleration > self.acceleration_threshold:
-                            self.speed_state = 'fast'
-                        elif recent_avg > self.speed_thresholds['medium_threshold']:
-                            self.speed_state = 'medium'
+                        # Add stability check - memastikan kecepatan stabil sebelum berubah state
+                        if new_state != self.speed_state:
+                            # Check last 3 speeds for stability
+                            last_speeds = list(self.speed_history)[-3:]
+                            speed_stable = all(abs(s - recent_avg) < 20 for s in last_speeds)
+                            
+                            if speed_stable:
+                                print(f"\n[{elapsed_time}s] State Change: {self.speed_state.upper()} -> {new_state.upper()}")
+                                print(f"Direction: {direction}")
+                                print(f"Current Speed: {abs(current_speed):.2f}")
+                                print(f"Recent Avg Speed: {recent_avg:.2f}")
+                                print("-" * 40)
+                                self.speed_state = new_state
+                        
+                        # Get current state parameters directly from speed_states
+                        params = self.speed_thresholds[self.speed_state]
+                        
+                        if len(self.speed_memory) >= 4:
+                            avg_speed = sum(w * s for w, s in zip(params['weights'], list(self.speed_memory)[-4:]))
                         else:
-                            self.speed_state = 'normal'
-                    
-                    # Get current state parameters
-                    params = self.prediction_params[self.speed_state]
-                    
-                    if len(self.speed_memory) >= 4:
-                        avg_speed = sum(w * s for w, s in zip(params['weights'], list(self.speed_memory)[-4:]))
-                    else:
-                        avg_speed = sum(self.speed_memory) / len(self.speed_memory)
-                    
-                    # Adjust dynamic factor and max offset for fast-moving hoops
-                    if self.speed_state == 'fast':
-                        dynamic_factor = self.prediction_factor * 0.9 * (params['base_factor'] + 
-                                       min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
-                        max_offset = params['max_offset'] * 0.8  # Reduce max offset for fast state
-                    else:
-                        dynamic_factor = self.prediction_factor * (params['base_factor'] + 
-                                       min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
-                        max_offset = params['max_offset']
-
-                    predicted_x = x + (avg_speed * dynamic_factor)
-
-                    if abs(predicted_x - x) > max_offset:
-                        if predicted_x > x:
-                            predicted_x = x + max_offset
+                            avg_speed = sum(self.speed_memory) / len(self.speed_memory)
+                        
+                        # Adjust dynamic factor and max offset for fast-moving hoops
+                        if self.speed_state == 'fast':
+                            dynamic_factor = self.prediction_factor * 0.9 * (params['base_factor'] + 
+                                           min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
+                            max_offset = params['max_offset'] * 0.8  # Reduce max offset for fast state
                         else:
-                            predicted_x = x - max_offset
+                            dynamic_factor = self.prediction_factor * (params['base_factor'] + 
+                                           min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
+                            max_offset = params['max_offset']
 
-                    predicted_x = min(max(predicted_x, 100), game_screen.shape[1] - 100)
-            
+                        predicted_x = x + (avg_speed * dynamic_factor)
+
+                        if abs(predicted_x - x) > max_offset:
+                            if predicted_x > x:
+                                predicted_x = x + max_offset
+                            else:
+                                predicted_x = x - max_offset
+
+                        predicted_x = min(max(predicted_x, 100), game_screen.shape[1] - 100)
+                
             self.last_pos = hoop_pos
             self.last_time = current_time
             
