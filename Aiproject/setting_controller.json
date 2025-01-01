@@ -3,7 +3,7 @@
     "ri_agent": {
         "movement_threshold": 4.5,        
         "log_interval": 0.0001,       
-        "prediction_factor": 0.6,      
+        "prediction_factor": 0.67,      
         "speed_memory": 3,            
         "last_log_time": 0,
         "speed_history_size": 10,
@@ -37,11 +37,11 @@
         }
     },
     "swipe_agent": {
-            "shot_cooldown_fast": 0.09,
+            "shot_cooldown_fast": 0.08,
             "swipe_duration_fast": 0.08,
             "shot_cooldown_slow": 0.8,
             "swipe_duration_slow": 0.2,
-            "base_power": 300
+            "base_power": 350
     },
     "game_duration":{
         "GAME_DURATION" :50
