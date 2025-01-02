@@ -117,14 +117,13 @@ class GameplayController:
                     # Calculate elapsed time in seconds
                     elapsed_time = int(time.time() - self.game_start_time)
                     
-                    # Detect speed state based on recent_avg_speed
                     if len(self.speed_history) >= 5:
                         recent_avg = sum(list(self.speed_history)[-5:]) / 5
                         
-                        # State detection with better stability
+                        # Use the proven threshold values
                         if recent_avg < 65:  # Slow threshold
                             new_state = 'slow'
-                        elif 65 <= recent_avg < 70:  # Normal range - lebih lebar untuk stabilitas
+                        elif 65 <= recent_avg < 70:  # Normal range
                             new_state = 'normal'
                         elif 70 <= recent_avg < 120:  # Medium range
                             new_state = 'medium'
@@ -133,19 +132,10 @@ class GameplayController:
                         elif recent_avg >= 150:  # Very fast threshold
                             new_state = 'very_fast'
                         
-                        # Add stability check - memastikan kecepatan stabil sebelum berubah state
-                        if new_state != self.speed_state:
-                            # Check last 3 speeds for stability
-                            last_speeds = list(self.speed_history)[-3:]
-                            speed_stable = all(abs(s - recent_avg) < 20 for s in last_speeds)
-                            
-                            if speed_stable:
-                                print(f"\n[{elapsed_time}s] State Change: {self.speed_state.upper()} -> {new_state.upper()}")
-                                print(f"Direction: {direction}")
-                                print(f"Current Speed: {abs(current_speed):.2f}")
-                                print(f"Recent Avg Speed: {recent_avg:.2f}")
-                                print("-" * 40)
-                                self.speed_state = new_state
+                        # Only log state changes
+                        # if new_state != self.speed_state:
+                        #     print(f"\n[{elapsed_time}s] {direction}: {self.speed_state.upper()} -> {new_state.upper()}")
+                        #     self.speed_state = new_state
                         
                         # Get current state parameters directly from speed_states
                         params = self.speed_thresholds[self.speed_state]
