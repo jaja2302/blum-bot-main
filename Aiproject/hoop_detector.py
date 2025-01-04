@@ -33,6 +33,7 @@ class HoopDetector:
         
         if result:
             x, y = result
+            self.draw_target_box(frame_bgr, (x, y + self.DETECTION_START_Y))
             return (x, y + self.DETECTION_START_Y)
         
         # Only try shape detection if color fails and we haven't detected recently
@@ -40,6 +41,7 @@ class HoopDetector:
             result = self.detect_hoop_shape(detection_area)
             if result:
                 x, y = result
+                self.draw_target_box(frame_bgr, (x, y + self.DETECTION_START_Y))
                 return (x, y + self.DETECTION_START_Y)
         
         self.missed_detections += 1
@@ -94,9 +96,17 @@ class HoopDetector:
     def filter_valid_contours(self, contours: list, frame_height: int) -> list:
         """Filter contours based on area and position."""
         return [
-            cnt for cnt in contours if cv2.contourArea(cnt) > 100
+            cnt for cnt in contours if cv2.contourArea(cnt) > 200  # Adjust area threshold
             and cv2.boundingRect(cnt)[2] > cv2.boundingRect(cnt)[3]  # width > height
+            and self.is_contour_hoop_shape(cnt)  # Add shape validation
         ]
+
+    def is_contour_hoop_shape(self, contour) -> bool:
+        """Check if the contour is likely a hoop shape."""
+        # Example: Check aspect ratio or other shape properties
+        x, y, w, h = cv2.boundingRect(contour)
+        aspect_ratio = float(w) / h
+        return 0.8 < aspect_ratio < 1.2  # Example range for a circular shape
 
     def get_largest_contour_center(self, contours: list) -> tuple[int, int] | None:
         """Get center coordinates of largest contour."""
@@ -112,8 +122,8 @@ class HoopDetector:
     def draw_target_box(self, frame: np.ndarray, position: tuple[int, int]) -> None:
         """Draw target box around detected hoop."""
         cx, cy = position
-        box_start = (cx - self.BOX_SIZE // 2, cy - self.BOX_SIZE // 2)
-        box_end = (cx + self.BOX_SIZE // 2, cy + self.BOX_SIZE // 2)
+        box_start = (cx - self.BOX_SIZE, cy - self.BOX_SIZE // 2)
+        box_end = (cx + self.BOX_SIZE, cy + self.BOX_SIZE // 2)
 
         # Draw main box
         cv2.rectangle(frame, box_start, box_end, (0, 255, 0), 2)
@@ -140,12 +150,12 @@ class HoopDetector:
         for end in ends:
             cv2.line(frame, start, end, (0, 255, 0), 2)
 
-    # def debug_window(self, frame: np.ndarray) -> None:
-    #     """Show debug window."""
-    #     cv2.imshow('Hoop Detection Debug', frame)
-    #     if cv2.waitKey(1) & 0xFF == ord('q'):
-    #         cv2.destroyAllWindows()
-    #         exit()
+    def debug_window(self, frame: np.ndarray) -> None:
+        """Show debug window."""
+        cv2.imshow('Hoop Detection Debug', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            cv2.destroyAllWindows()
+            exit()
 
     def reset(self):
         """Reset detector state"""

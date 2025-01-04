@@ -16,6 +16,7 @@ class KeyboardController:
         keyboard.on_press_key('p', lambda _: self.toggle_pause())
         keyboard.on_press_key('r', lambda _: self.toggle_pause())
         keyboard.on_press_key('m', lambda _: self.toggle_mode())  # Tambah handler mode
+        keyboard.on_press_key('d', lambda _: self.toggle_debug_shoot())  # Tambah handler debug shoot
         
         # Tambahkan betting options
         self.betting_options = {
@@ -23,6 +24,8 @@ class KeyboardController:
             '2': '10m',
             '3': '100m'
         }
+
+        self.debug_shoot = False  # Tambahkan variabel untuk mode debug shoot
 
     def stop_program(self):
         """Immediately stop the program"""
@@ -105,3 +108,12 @@ class KeyboardController:
         print("R - Resume program")
         print("M - Ganti mode (NORMAL/CEPAT)")
         print("Space - Play game") 
+
+    def toggle_debug_shoot(self):
+        """Toggle debug shooting mode"""
+        self.debug_shoot = not self.debug_shoot
+        print("\nMode debug shoot diaktifkan..." if self.debug_shoot else "\nMode debug shoot dimatikan...")
+
+    def is_debug_shoot(self):
+        """Check if debug shooting mode is active"""
+        return self.debug_shoot 

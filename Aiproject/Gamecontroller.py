@@ -63,6 +63,11 @@ class GameplayController:
         self.mid_game_threshold = 25    # Tambah threshold mid-game
         self.late_game_threshold = 35
 
+        self.prediction_factor_very_slow = ri_config['prediction_factor'] * 0.8  # New variable for very slow
+        self.prediction_factor_slow = ri_config['prediction_factor'] * 0.9
+        self.prediction_factor_normal = ri_config['prediction_factor'] * 1.2
+        self.prediction_factor_medium = ri_config['prediction_factor'] * 1.1
+
     def load_existing_patterns(self):
         """Load existing shot patterns from file"""
         if self.shot_patterns_file.exists():
@@ -101,6 +106,16 @@ class GameplayController:
             elif game_time > self.late_game_threshold:
                 self.prediction_factor *= 1.2  # Further increase for late game
 
+            # Adjust prediction parameters based on speed state
+            if self.speed_state == 'very_slow':
+                self.prediction_factor = self.prediction_factor_very_slow
+            elif self.speed_state == 'slow':
+                self.prediction_factor = self.prediction_factor_slow
+            elif self.speed_state == 'normal':
+                self.prediction_factor = self.prediction_factor_normal
+            elif self.speed_state == 'medium':
+                self.prediction_factor = self.prediction_factor_medium
+
             predicted_x = x
             if self.last_pos and self.last_time:
                 dx = x - self.last_pos[0]
@@ -120,22 +135,23 @@ class GameplayController:
                     if len(self.speed_history) >= 5:
                         recent_avg = sum(list(self.speed_history)[-5:]) / 5
                         
-                        # Use the proven threshold values
-                        if recent_avg < 65:  # Slow threshold
+                        if recent_avg < 60:  # Very slow threshold
+                            new_state = 'very_slow'
+                        elif 60 <= recent_avg < 70:  # Slow threshold
                             new_state = 'slow'
-                        elif 65 <= recent_avg < 70:  # Normal range
+                        elif 70 <= recent_avg < 85:  # Normal range
                             new_state = 'normal'
-                        elif 70 <= recent_avg < 120:  # Medium range
+                        elif 85 <= recent_avg < 120:  # Medium range
                             new_state = 'medium'
                         elif 120 <= recent_avg < 150:  # Fast range
                             new_state = 'fast'
                         elif recent_avg >= 150:  # Very fast threshold
                             new_state = 'very_fast'
                         
-                        # Only log state changes
-                        # if new_state != self.speed_state:
-                        #     print(f"\n[{elapsed_time}s] {direction}: {self.speed_state.upper()} -> {new_state.upper()}")
-                        #     self.speed_state = new_state
+                        # Only log state changes if they are significant
+                        if new_state != self.speed_state:
+                            # print(f"Speed state changed: {self.speed_state.upper()} -> {new_state.upper()}")
+                            self.speed_state = new_state
                         
                         # Get current state parameters directly from speed_states
                         params = self.speed_thresholds[self.speed_state]
@@ -236,13 +252,12 @@ class GameplayController:
             
             current_pos = self.mouse.position
             if abs(current_pos[0] - start_x) > 5 or abs(current_pos[1] - start_y) > 5:
-                print("Position validation failed")
                 return False
                 
             self.mouse.press(Button.left)
             
-            steps = 8
-            curve_height = 1.2
+            steps = 10  # Increase steps for smoother swipe
+            curve_height = 1.0  # Adjust curve height for smoother motion
             
             for i in range(steps):
                 progress = i / steps
@@ -259,7 +274,6 @@ class GameplayController:
             
             current_pos = self.mouse.position
             if abs(current_pos[0] - end_x) > 5 or abs(current_pos[1] - end_y) > 5:
-                print("Final position validation failed")
                 self.mouse.release(Button.left)
                 return False
                 
@@ -271,7 +285,6 @@ class GameplayController:
             return True
             
         except Exception as e:
-            print(f"Swipe error: {e}")
             self.mouse.release(Button.left)
             return False
 
@@ -328,3 +341,29 @@ class GameplayController:
         if self.logs:  # Save logs before resetting
             self.save_shot_logs()
         self.logs = [] 
+
+    def debug_shoot_straight(self, ball_pos):
+        """Debug method to shoot straight without following the hoop"""
+        try:
+            current_time = time.time()
+            if current_time - self.last_shot_time < self.shot_cooldown:
+                return False
+
+            # Set a fixed angle and power for straight shooting
+            angle = 0  # Straight angle
+            power = 0.7  # Adjust power as needed
+
+            distance = power * self.base_power
+            target_x = ball_pos[0]
+            target_y = ball_pos[1] - distance
+
+            success = self.swipe(ball_pos[0], ball_pos[1], target_x, target_y)
+            if success:
+                self.last_shot_time = current_time
+                return True
+
+            return False
+
+        except Exception as e:
+            print(f"Error in debug shoot straight: {e}")
+            return False 

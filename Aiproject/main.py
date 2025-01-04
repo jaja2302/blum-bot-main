@@ -67,11 +67,14 @@ def main():
                     
                     if result and result['status'] == 'active':
                         hoop_pos = result['hoop_position']
-                        action = gameplay_controller.get_action(screenshot, hoop_pos)
                         
-                        if action:  # Jika AI memutuskan untuk menembak
-                            # print(f"\nMenembak ke ring di posisi {hoop_pos}")
-                            gameplay_controller.execute_action(action, ball_pos)
+                        if keyboard_ctrl.is_debug_shoot():
+                            # Gunakan debug shoot
+                            gameplay_controller.debug_shoot_straight(ball_pos)
+                        else:
+                            action = gameplay_controller.get_action(screenshot, hoop_pos)
+                            if action:
+                                gameplay_controller.execute_action(action, ball_pos)
                     elif result and result['status'] == 'game_over' and result.get('should_claim'):
                         print("\nPermainan selesai! Membersihkan state...")
                         game_detector.stop_game()
