@@ -111,11 +111,11 @@ class GameplayController:
             if self.speed_state == 'very_slow':
                 self.prediction_factor = self.prediction_factor_very_slow
             elif self.speed_state == 'slow':
-                self.prediction_factor = self.prediction_factor_slow
+                self.prediction_factor = self.prediction_factor_slow * 1.1
             elif self.speed_state == 'normal':
-                self.prediction_factor = self.prediction_factor_normal
+                self.prediction_factor = self.prediction_factor_normal * 1.1
             elif self.speed_state == 'medium':
-                self.prediction_factor = self.prediction_factor_medium
+                self.prediction_factor = self.prediction_factor_medium * 1.1
 
             predicted_x = x
             if self.last_pos and self.last_time:
@@ -163,14 +163,22 @@ class GameplayController:
                             avg_speed = sum(self.speed_memory) / len(self.speed_memory)
                         
                         # Adjust dynamic factor and max offset for fast-moving hoops
-                        if self.speed_state == 'fast':
+                        if self.speed_state in ['slow', 'normal', 'medium']:
+                            dynamic_factor = self.prediction_factor * (params['base_factor'] + 
+                                   min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
+                            max_offset = params['max_offset'] * 1.2
+                        elif self.speed_state == 'fast':
                             dynamic_factor = self.prediction_factor * 0.9 * (params['base_factor'] + 
-                                           min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
-                            max_offset = params['max_offset'] * 0.8  # Reduce max offset for fast state
+                                   min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
+                            max_offset = params['max_offset'] * 0.8
                         else:
                             dynamic_factor = self.prediction_factor * (params['base_factor'] + 
-                                           min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
+                                   min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
                             max_offset = params['max_offset']
+
+                        # Increase dynamic factor when moving right
+                        if direction == "RIGHT":
+                            dynamic_factor *= 1.1  # Increase factor for right movement
 
                         predicted_x = x + (avg_speed * dynamic_factor)
 
