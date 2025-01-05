@@ -287,8 +287,12 @@ class GameplayController:
                 progress = i / steps
                 curve = math.sin(progress * math.pi) * curve_height
                 
-                current_x = int(start_x + (end_x - start_x) * progress)
-                current_y = int(start_y + (end_y - start_y) * progress + curve)
+                # Calculate horizontal and vertical adjustments separately
+                horizontal_adjustment = (end_x - start_x) * progress
+                vertical_adjustment = (end_y - start_y) * progress
+                
+                current_x = int(start_x + horizontal_adjustment)
+                current_y = int(start_y + vertical_adjustment + curve)
                 
                 self.mouse.position = (current_x, current_y)
                 time.sleep(duration / steps)
