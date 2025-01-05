@@ -6,6 +6,8 @@ from Gamecontroller import GameplayController
 import time
 import keyboard
 from collections import deque
+import json
+import os
 
 def main():
     detector = WindowDetector()
@@ -27,6 +29,17 @@ def main():
     betting_amount = keyboard_ctrl.get_betting_input()
     game_detector.game_stats.set_betting_amount(betting_amount)
     
+    # Load button positions from JSON
+    try:
+        json_path = os.path.join(os.path.dirname(__file__), 'button_claim_game_over.json')
+        with open(json_path, 'r') as f:
+            button_data = json.load(f)
+        
+        bola_pos = button_data['buttons']['bola']
+    except Exception as e:
+        print(f"Error loading button positions: {e}")
+        bola_pos = {'x': 0, 'y': 0}  # Default to (0, 0) if loading fails
+    
     window_info = detector.find_window()
     
     if window_info:
@@ -34,10 +47,10 @@ def main():
         print("Mode awal: CEPAT")
         detector.activate_window(window_info)
         
-        # Posisi bola tetap (di tengah bawah window)
+        # Use bola position from JSON
         ball_pos = (
-            window_info['left'] + (window_info['width'] // 2),  # x tengah
-            window_info['top'] + window_info['height'] - 200    # y bawah
+            window_info['left'] + bola_pos['x'],  # x position
+            window_info['top'] + bola_pos['y']    # y position
         )
         print(f"\nPosisi bola: ({ball_pos[0]}, {ball_pos[1]})")
         
@@ -74,7 +87,7 @@ def main():
                         else:
                             action = gameplay_controller.get_action(screenshot, hoop_pos)
                             if action:
-                                gameplay_controller.execute_action(action, ball_pos)
+                                gameplay_controller.execute_action(action, window_info)
                     elif result and result['status'] == 'game_over' and result.get('should_claim'):
                         print("\nPermainan selesai! Membersihkan state...")
                         game_detector.stop_game()

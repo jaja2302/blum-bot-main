@@ -10,6 +10,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 import hashlib
+import pyautogui
 
 class GameplayController:
     def __init__(self):
@@ -213,7 +214,7 @@ class GameplayController:
             print(f"Error calculating shot: {e}")
             return (45, 0.6)
 
-    def execute_action(self, action, ball_pos):
+    def execute_action(self, action, window_info):
         """Execute shooting action with retry mechanism"""
         try:
             current_time = time.time()
@@ -222,6 +223,13 @@ class GameplayController:
                 
             angle, power = action
             distance = power * self.base_power
+            
+            # Adjust the ball position to be slightly higher
+            ball_pos = (
+                window_info['left'] + window_info['width'] // 2,
+                window_info['top'] + window_info['height'] - 220  # Adjust this value to move the ball up
+            )
+            
             target_x = ball_pos[0] + distance * math.cos(math.radians(angle))
             target_y = ball_pos[1] - distance * math.sin(math.radians(angle))
             
@@ -246,18 +254,26 @@ class GameplayController:
             duration = self.swipe_duration
 
         try:
+            # Reset mouse state
             self.mouse.release(Button.left)
-            self.mouse.position = (start_x, start_y)
-            time.sleep(0.02)
+            time.sleep(0.02)  # Slightly increased delay for better response
             
-            current_pos = self.mouse.position
-            if abs(current_pos[0] - start_x) > 5 or abs(current_pos[1] - start_y) > 5:
-                return False
-                
+            # Set initial position with retries
+            for _ in range(3):  # Retry setting position up to 3 times
+                self.mouse.position = (start_x, start_y)
+                time.sleep(0.02)  # Slightly increased delay
+                current_pos = self.mouse.position
+                if abs(current_pos[0] - start_x) <= 1 and abs(current_pos[1] - start_y) <= 1:
+                    break
+            else:
+                print("Failed to set initial position")
+                return False  # Return False if position is not set correctly
+            
             self.mouse.press(Button.left)
             
-            steps = 10  # Increase steps for smoother swipe
-            curve_height = 1.0  # Adjust curve height for smoother motion
+            # Optimize steps based on duration
+            steps = max(5, min(20, int(duration * 1000)))  # Dynamic steps
+            curve_height = 0.2  # Reduced curve height for smoother swipe
             
             for i in range(steps):
                 progress = i / steps
@@ -270,21 +286,16 @@ class GameplayController:
                 time.sleep(duration / steps)
             
             self.mouse.position = (end_x, end_y)
-            time.sleep(0.02)
-            
-            current_pos = self.mouse.position
-            if abs(current_pos[0] - end_x) > 5 or abs(current_pos[1] - end_y) > 5:
-                self.mouse.release(Button.left)
-                return False
-                
             self.mouse.release(Button.left)
             
-            time.sleep(0.015)
+            # Quick return to start
+            time.sleep(0.02)
             self.mouse.position = (start_x, start_y)
             
             return True
             
         except Exception as e:
+            print(f"Swipe error: {e}")
             self.mouse.release(Button.left)
             return False
 
@@ -351,13 +362,13 @@ class GameplayController:
 
             # Set a fixed angle and power for straight shooting
             angle = 0  # Straight angle
-            power = 0.7  # Adjust power as needed
+            power = 0.8  # Adjust power for more consistent shooting
 
             distance = power * self.base_power
             target_x = ball_pos[0]
             target_y = ball_pos[1] - distance
 
-            success = self.swipe(ball_pos[0], ball_pos[1], target_x, target_y)
+            success = self.swipe(ball_pos[0], ball_pos[1], target_x, target_y, duration=0.1)  # Adjust duration
             if success:
                 self.last_shot_time = current_time
                 return True
@@ -367,3 +378,9 @@ class GameplayController:
         except Exception as e:
             print(f"Error in debug shoot straight: {e}")
             return False 
+
+    def detect_ball_position(self):
+        """Detect the current position of the ball"""
+        # Implement logic to detect the ball's position
+        # This is a placeholder function and should be replaced with actual detection logic
+        return (self.mouse.position[0], self.mouse.position[1] - 200) 
