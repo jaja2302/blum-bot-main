@@ -6,7 +6,6 @@ class KeyboardController:
     def __init__(self):
         self.is_running = True
         self.is_paused = False
-        self.fast_mode = True
         self.betting_amount = '1m'
         self.debug_shoot = False
         
@@ -15,7 +14,6 @@ class KeyboardController:
         keyboard.on_press_key('esc', lambda _: self.stop_program())
         keyboard.on_press_key('p', lambda _: self.toggle_pause())
         keyboard.on_press_key('r', lambda _: self.toggle_pause())
-        keyboard.on_press_key('m', lambda _: self.toggle_mode())
         keyboard.on_press_key('d', lambda _: self.toggle_debug_shoot())
         
         self.betting_options = {
@@ -37,13 +35,6 @@ class KeyboardController:
 
     def is_game_paused(self):
         return self.is_paused
-
-    def toggle_mode(self):
-        self.fast_mode = not self.fast_mode
-        print(f"\nMode diubah ke: {'CEPAT' if self.fast_mode else 'NORMAL'}")
-
-    def get_current_mode(self):
-        return self.fast_mode
 
     def click_at(self, x, y):
         try:
@@ -75,8 +66,8 @@ class KeyboardController:
         print("\nKontrol:")
         print("S/ESC - Stop program")
         print("P/R - Pause/Resume program")
-        print("M - Ganti mode (NORMAL/CEPAT)")
         print("Space - Play game")
+        print("D - Toggle debug shoot")
 
     def toggle_debug_shoot(self):
         self.debug_shoot = not self.debug_shoot

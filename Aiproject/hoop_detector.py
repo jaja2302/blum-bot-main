@@ -30,52 +30,50 @@ class HoopDetector:
                 self.frame_skip -= 1
                 return self._predict_position()
             
-            # Direct array slicing for detection area
+            # Optimized detection area
             detection_area = screenshot[self.DETECTION_START_Y:self.DETECTION_END_Y]
             
-            # Fast color filtering
-            hoop_mask = cv2.inRange(detection_area, self.RED_LOWER_RGB, self.RED_UPPER_RGB)
+            # Enhanced color filtering
+            hoop_mask = cv2.inRange(detection_area, 
+                                   np.array([140, 0, 0]), 
+                                   np.array([255, 60, 60]))
             
-            # Only detect ball if we have a valid hoop mask
-            if np.count_nonzero(hoop_mask) > 400:
-                ball_mask = cv2.inRange(detection_area, self.BALL_LOWER_RGB, self.BALL_UPPER_RGB)
-                filtered_mask = cv2.bitwise_and(hoop_mask, cv2.bitwise_not(ball_mask))
-            else:
-                filtered_mask = hoop_mask
+            # Improved noise reduction
+            kernel = np.ones((2,2), np.uint8)
+            hoop_mask = cv2.morphologyEx(hoop_mask, cv2.MORPH_OPEN, kernel)
             
-            # Fast contour finding
-            contours, _ = cv2.findContours(filtered_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours, _ = cv2.findContours(hoop_mask, cv2.RETR_EXTERNAL, 
+                                         cv2.CHAIN_APPROX_SIMPLE)
             
             if contours:
-                # Quick area filtering
                 largest = max(contours, key=cv2.contourArea)
                 area = cv2.contourArea(largest)
                 
-                if 400 < area < 700:
-                    # Fast moment calculation
+                # Refined area thresholds
+                if 350 < area < 800:
                     M = cv2.moments(largest)
                     if M["m00"] > 0:
                         cx = int(M["m10"] / M["m00"])
                         cy = int(M["m01"] / M["m00"])
                         position = (cx, cy + self.DETECTION_START_Y)
                         
-                        # Update tracking
                         self._update_motion(position)
                         self.last_valid_pos = position
                         self.missed_detections = 0
                         
-                        # Adaptive frame skipping
+                        # Improved frame skipping logic
                         speed = abs(self.velocity[0])
-                        if speed < 2:
+                        if speed < 1.5:
+                            self.frame_skip = 3
+                        elif speed < 4:
                             self.frame_skip = 2
-                        elif speed < 5:
+                        else:
                             self.frame_skip = 1
                         
                         return position
             
-            # Quick fallback to prediction
             self.missed_detections += 1
-            if self.missed_detections < 3:
+            if self.missed_detections < 4:
                 return self._predict_position()
             
             return None
