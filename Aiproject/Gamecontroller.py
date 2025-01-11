@@ -1,16 +1,11 @@
 import numpy as np
 import math
 import time
-import cv2
 from collections import deque
 from pynput.mouse import Button, Controller
-import random
 import os
 import json
-from datetime import datetime
 from pathlib import Path
-import hashlib
-import pyautogui
 
 class GameplayController:
     def __init__(self):
@@ -20,13 +15,13 @@ class GameplayController:
                 self.setting_config = json.load(f)
         except Exception as e:
             print(f"Error loading settings: {e}")
-            self.setting_config = None
+            raise ValueError("Settings could not be loaded")
 
         # Load settings
         ri_config = self.setting_config['ri_agent']
         swipe_config = self.setting_config['swipe_agent']
 
-        # Initialize swipe settings
+        # Swipe settings (unchanged)
         self.mouse = Controller()
         self.base_power = swipe_config['base_power']
         self.last_shot_time = 0
@@ -37,266 +32,254 @@ class GameplayController:
         self.shot_cooldown_slow = swipe_config['shot_cooldown_slow']
         self.swipe_duration_slow = swipe_config['swipe_duration_slow']
 
-        # Initialize RI agent settings
-        self.movement_threshold = ri_config['movement_threshold']
-        self.prediction_factor = ri_config['prediction_factor']
-        self.speed_memory = deque(maxlen=ri_config['speed_memory'])
-        self.speed_history = deque(maxlen=ri_config['speed_history_size'])
-        self.acceleration_threshold = ri_config['acceleration_threshold']
+        # Optimized RI agent settings
+        self.speed_memory = deque(maxlen=3)  # Reduced from original
+        self.speed_history = deque(maxlen=10)  # Reduced for less memory usage
         self.speed_state = 'normal'
         self.speed_thresholds = ri_config['speed_states']
-
-        # Initialize position tracking
+        
+        # Enhanced prediction factors with better medium speed handling
+        self.prediction_factors = {
+            'very_slow': 0.45,
+            'slow': 0.52,      
+            'normal': 0.58,    # Slightly reduced
+            'medium': 0.62,    # Adjusted for better medium speed accuracy
+            'fast': 0.72      
+        }
+        
+        # Lead time compensation with refined medium speed values
+        self.lead_time_compensation = {
+            'very_slow': 0.08,
+            'slow': 0.12,
+            'normal': 0.14,    # Slightly reduced
+            'medium': 0.16,    # Reduced for better medium speed control
+            'fast': 0.22
+        }
+        
+        # Add speed transition dampening
+        self.speed_dampening = {
+            'very_slow': 1.0,
+            'slow': 0.95,
+            'normal': 0.90,
+            'medium': 0.85,
+            'fast': 0.80
+        }
+        
+        # Position tracking
         self.last_pos = None
         self.last_time = None
-
-        # Add logging properties
-        self.logs = []
-        self.shot_logs_folder = Path("shot_logs")
-        self.shot_logs_folder.mkdir(exist_ok=True)
-        self.shot_patterns_file = self.shot_logs_folder / "shot_patterns.json"
-        self.existing_patterns = self.load_existing_patterns()
-
-        # Add game timing properties
+        
+        # Game state
         self.game_start_time = None
-        self.game_duration = 45  # durasi game dalam detik
-        self.early_game_threshold = 20  # 20 detik untuk fase awal yang lebih stabil
-        self.mid_game_threshold = 25    # Tambah threshold mid-game
-        self.late_game_threshold = 35
 
-        self.prediction_factor_very_slow = ri_config['prediction_factor'] * 0.8  # New variable for very slow
-        self.prediction_factor_slow = ri_config['prediction_factor'] * 0.9
-        self.prediction_factor_normal = ri_config['prediction_factor'] * 1.2
-        self.prediction_factor_medium = ri_config['prediction_factor'] * 1.1
-
-    def load_existing_patterns(self):
-        """Load existing shot patterns from file"""
-        if self.shot_patterns_file.exists():
-            try:
-                with open(self.shot_patterns_file, 'r') as f:
-                    return json.load(f)
-            except json.JSONDecodeError:
-                return {}
-        return {}
-
-    def set_mode(self, fast_mode):
-        """Set shooting mode parameters"""
-        if fast_mode:
-            self.shot_cooldown = self.shot_cooldown_fast
-            self.swipe_duration = self.swipe_duration_fast
-        else:
-            self.shot_cooldown = self.shot_cooldown_slow
-            self.swipe_duration = self.swipe_duration_slow
+    def execute_action(self, action, window_info):
+        current_time = time.time()
+        if current_time - self.last_shot_time < self.shot_cooldown:
+            return False
+            
+        angle, power = action
+        distance = power * self.base_power
+        
+        ball_pos = (
+            window_info['left'] + window_info['width'] // 2,
+            window_info['top'] + window_info['height'] - 220
+        )
+        
+        target_x = ball_pos[0] + distance * math.cos(math.radians(angle))
+        target_y = ball_pos[1] - distance * math.sin(math.radians(angle))
+        
+        success = self.swipe(ball_pos[0], ball_pos[1], target_x, target_y)
+        if success:
+            self.last_shot_time = current_time
+        return success
 
     def get_action(self, game_screen, hoop_pos):
-        """Calculate shooting angle and power based on hoop position"""
         try:
+            if game_screen is None or hoop_pos is None:
+                return (45, 0.6)
+
             x, y = hoop_pos
             current_time = time.time()
-            
-            # Initialize game start time if not set
+
             if not self.game_start_time:
                 self.game_start_time = current_time
-            
-            # Calculate game progress
-            game_time = current_time - self.game_start_time
-            
-            # Adjust prediction parameters based on game time
-            if game_time > self.mid_game_threshold:
-                self.prediction_factor *= 1.1  # Increase prediction factor for mid to late game
-            elif game_time > self.late_game_threshold:
-                self.prediction_factor *= 1.2  # Further increase for late game
 
-            # Adjust prediction parameters based on speed state
-            if self.speed_state == 'very_slow':
-                self.prediction_factor = self.prediction_factor_very_slow
-            elif self.speed_state == 'slow':
-                self.prediction_factor = self.prediction_factor_slow * 1.1
-            elif self.speed_state == 'normal':
-                self.prediction_factor = self.prediction_factor_normal * 1.1
-            elif self.speed_state == 'medium':
-                self.prediction_factor = self.prediction_factor_medium * 1.1
-
+            # Calculate speed and update state
             predicted_x = x
             if self.last_pos and self.last_time:
-                dx = x - self.last_pos[0]
                 dt = current_time - self.last_time
-                
                 if dt > 0:
-                    current_speed = dx / dt
-                    self.speed_memory.append(current_speed)
-                    self.speed_history.append(abs(current_speed))
-                    
-                    # Get direction based on dx
-                    direction = "LEFT" if dx < 0 else "RIGHT"
-                    
-                    # Calculate elapsed time in seconds
-                    elapsed_time = int(time.time() - self.game_start_time)
-                    
-                    if len(self.speed_history) >= 5:
-                        recent_avg = sum(list(self.speed_history)[-5:]) / 5
+                    speed = (x - self.last_pos[0]) / dt
+                    self.speed_memory.append(speed)
+                    self.speed_history.append(abs(speed))
+
+                    # Enhanced speed state determination with smoothing
+                    if len(self.speed_history) >= 3:
+                        recent_speeds = list(self.speed_history)[-3:]
+                        avg_speed = sum(recent_speeds) / 3
                         
-                        if recent_avg < 60:  # Very slow threshold
+                        # Add trend detection
+                        speed_trend = 0
+                        if len(recent_speeds) >= 2:
+                            speed_trend = recent_speeds[-1] - recent_speeds[0]
+                        
+                        # Adjust thresholds based on trend
+                        trend_factor = 1.0 + (speed_trend * 0.1)
+                        
+                        if avg_speed < 60 * trend_factor:
                             new_state = 'very_slow'
-                        elif 60 <= recent_avg < 70:  # Slow threshold
+                        elif avg_speed < 70 * trend_factor:
                             new_state = 'slow'
-                        elif 70 <= recent_avg < 85:  # Normal range
+                        elif avg_speed < 85 * trend_factor:
                             new_state = 'normal'
-                        elif 85 <= recent_avg < 120:  # Medium range
+                        elif avg_speed < 120 * trend_factor:
                             new_state = 'medium'
-                        elif 120 <= recent_avg < 150:  # Fast range
+                        else:
                             new_state = 'fast'
-                        elif recent_avg >= 150:  # Very fast threshold
-                            new_state = 'very_fast'
-                        
-                        # Only log state changes if they are significant
+                            
+                        # Smooth state transitions
                         if new_state != self.speed_state:
-                            # print(f"Speed state changed: {self.speed_state.upper()} -> {new_state.upper()}")
-                            self.speed_state = new_state
-                        
-                        # Get current state parameters directly from speed_states
-                        params = self.speed_thresholds[self.speed_state]
-                        
-                        if len(self.speed_memory) >= 4:
-                            avg_speed = sum(w * s for w, s in zip(params['weights'], list(self.speed_memory)[-4:]))
-                        else:
-                            avg_speed = sum(self.speed_memory) / len(self.speed_memory)
-                        
-                        # Adjust dynamic factor and max offset for fast-moving hoops
-                        if self.speed_state in ['slow', 'normal', 'medium']:
-                            dynamic_factor = self.prediction_factor * (params['base_factor'] + 
-                                   min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
-                            max_offset = params['max_offset'] * 1.2
-                        elif self.speed_state == 'fast':
-                            dynamic_factor = self.prediction_factor * 0.9 * (params['base_factor'] + 
-                                   min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
-                            max_offset = params['max_offset'] * 0.8
-                        else:
-                            dynamic_factor = self.prediction_factor * (params['base_factor'] + 
-                                   min(abs(avg_speed)/params['speed_divisor'], params['max_speed_factor']))
-                            max_offset = params['max_offset']
-
-                        # Increase dynamic factor when moving right
-                        if direction == "RIGHT":
-                            dynamic_factor *= 1.1  # Increase factor for right movement
-
-                        predicted_x = x + (avg_speed * dynamic_factor)
-
-                        if abs(predicted_x - x) > max_offset:
-                            if predicted_x > x:
-                                predicted_x = x + max_offset
+                            # Only change state if we detect the same new state multiple times
+                            if not hasattr(self, 'state_change_counter'):
+                                self.state_change_counter = {}
+                            
+                            if new_state not in self.state_change_counter:
+                                self.state_change_counter[new_state] = 1
                             else:
-                                predicted_x = x - max_offset
+                                self.state_change_counter[new_state] += 1
+                            
+                            required_counts = {
+                                'very_slow': 2,
+                                'slow': 2,
+                                'normal': 3,
+                                'medium': 3,
+                                'fast': 2
+                            }
+                            
+                            if self.state_change_counter.get(new_state, 0) >= required_counts[new_state]:
+                                self.speed_state = new_state
+                                self.state_change_counter.clear()
 
+                    # Enhanced prediction calculation with smoothed transitions
+                    if len(self.speed_memory) >= 2:
+                        avg_speed = sum(self.speed_memory) / len(self.speed_memory)
+                        
+                        # Add system latency compensation with dampening
+                        lead_time = self.lead_time_compensation[self.speed_state]
+                        dampening = self.speed_dampening[self.speed_state]
+                        
+                        # Calculate base prediction
+                        base_prediction = avg_speed * (self.prediction_factors[self.speed_state] * dampening + lead_time)
+                        
+                        # Add direction-based compensation
+                        direction = 1 if avg_speed > 0 else -1
+                        direction_factor = min(abs(avg_speed) / 100, 1.0)  # Normalize speed influence
+                        extra_offset = direction * (abs(avg_speed) * 0.12 * direction_factor)  # Reduced from 0.15
+                        
+                        # Apply predictions with game phase adjustment
+                        game_time = time.time() - self.game_start_time if self.game_start_time else 0
+                        if game_time < 5:  # Early game adjustment
+                            base_prediction *= 0.85
+                            extra_offset *= 0.8
+                        
+                        predicted_x = x + base_prediction + extra_offset
+                        
+                        # Ensure prediction stays within bounds
                         predicted_x = min(max(predicted_x, 100), game_screen.shape[1] - 100)
-                
+
             self.last_pos = hoop_pos
             self.last_time = current_time
-            
+
+            # Simplified shooting angle and power calculation
             ball_x = game_screen.shape[1] // 2
             ball_y = game_screen.shape[0] - 200
-            
+
             dx = predicted_x - ball_x
             dy = ball_y - y
             distance = math.sqrt(dx*dx + dy*dy)
-            
+
+            # Enhanced angle adjustment with dynamic compensation
             angle = math.degrees(math.atan2(dy, dx))
-            if distance > 350:
-                angle += 3
+            
+            # Dynamic angle adjustment based on distance and speed
+            speed_magnitude = abs(sum(self.speed_memory) / len(self.speed_memory)) if self.speed_memory else 0
+            
+            if distance > 300:
+                angle += 2 + (speed_magnitude * 0.01)  # Add extra angle for faster speeds
             elif distance > 250:
-                angle += 2
+                angle += 1.5 + (speed_magnitude * 0.008)
             elif distance < 200:
-                angle -= 2
+                angle -= 1 + (speed_magnitude * 0.005)
                 
-            base_power = self.base_power / 400
-            power = min(0.95, max(0.5, base_power * (distance / 300)))
-            
-            if distance > 350:
-                power *= 1.1
-            elif distance < 200:
-                power *= 0.9
-                
+            # Additional minor adjustment for extreme sides
+            if predicted_x > game_screen.shape[1] * 0.7:  # Right side
+                angle += 0.8
+            elif predicted_x < game_screen.shape[1] * 0.3:  # Left side
+                angle -= 0.8
+
+            # Simplified power calculation
+            power = min(0.95, max(0.5, (distance / 300) * (self.base_power / 400)))
+            if distance > 300:
+                power *= 1.05
+
             return (angle, power)
-            
+
         except Exception as e:
-            print(f"Error calculating shot: {e}")
+            print(f"Error in get_action: {e}")
             return (45, 0.6)
 
-    def execute_action(self, action, window_info):
-        """Execute shooting action with retry mechanism"""
-        try:
-            current_time = time.time()
-            if current_time - self.last_shot_time < self.shot_cooldown:
-                return False
-                
-            angle, power = action
-            distance = power * self.base_power
-            
-            # Adjust the ball position to be slightly higher
-            ball_pos = (
-                window_info['left'] + window_info['width'] // 2,
-                window_info['top'] + window_info['height'] - 220  # Adjust this value to move the ball up
-            )
-            
-            target_x = ball_pos[0] + distance * math.cos(math.radians(angle))
-            target_y = ball_pos[1] - distance * math.sin(math.radians(angle))
-            
-            for attempt in range(self.max_retries):
-                success = self.swipe(ball_pos[0], ball_pos[1], target_x, target_y)
-                if success:
-                    self.last_shot_time = current_time
-                    return True
-                else:
-                    print(f"Retry shot {attempt + 1}/{self.max_retries}")
-                    time.sleep(0.05)
-            
-            return False
-            
-        except Exception as e:
-            print(f"Error executing shot: {e}")
-            return False
+    def set_mode(self, fast_mode):
+        self.shot_cooldown = self.shot_cooldown_fast if fast_mode else self.shot_cooldown_slow
+        self.swipe_duration = self.swipe_duration_fast if fast_mode else self.swipe_duration_slow
 
-    def swipe(self, start_x, start_y, end_x, end_y, duration=None):
-        """Perform swipe action with dynamic duration"""
-        if duration is None:
-            duration = self.swipe_duration
+    def reset_state(self):
+        """Reset all game state variables for a new game"""
+        # Reset timing variables
+        self.last_shot_time = 0
+        self.game_start_time = None
+        self.last_time = None
+        
+        # Reset position tracking
+        self.last_pos = None
+        
+        # Reset speed tracking
+        self.speed_memory.clear()
+        self.speed_history.clear()
+        self.speed_state = 'normal'
+        
+        # Release mouse button just in case
+        self.mouse.release(Button.left)
+        
+        print("Game state reset completed")
 
+    def swipe(self, start_x, start_y, end_x, end_y):
+        """Optimized swipe action for CPU-only systems"""
         try:
             # Reset mouse state
             self.mouse.release(Button.left)
-            time.sleep(0.02)  # Slightly increased delay for better response
+            time.sleep(0.02)
             
-            # Set initial position with retries
-            for _ in range(3):  # Retry setting position up to 3 times
-                self.mouse.position = (start_x, start_y)
-                time.sleep(0.02)  # Slightly increased delay
-                current_pos = self.mouse.position
-                if abs(current_pos[0] - start_x) <= 1 and abs(current_pos[1] - start_y) <= 1:
-                    break
-            else:
-                print("Failed to set initial position")
-                return False  # Return False if position is not set correctly
+            # Set initial position
+            self.mouse.position = (start_x, start_y)
+            time.sleep(0.02)
             
             self.mouse.press(Button.left)
             
-            # Optimize steps based on duration
-            steps = max(5, min(20, int(duration * 1000)))  # Dynamic steps
-            curve_height = 0.2  # Reduced curve height for smoother swipe
+            # Simplified movement with fewer steps
+            steps = 10  # Reduced number of steps for better performance
+            duration = self.swipe_duration
             
             for i in range(steps):
                 progress = i / steps
-                curve = math.sin(progress * math.pi) * curve_height
                 
-                # Calculate horizontal and vertical adjustments separately
-                horizontal_adjustment = (end_x - start_x) * progress
-                vertical_adjustment = (end_y - start_y) * progress
-                
-                current_x = int(start_x + horizontal_adjustment)
-                current_y = int(start_y + vertical_adjustment + curve)
+                # Linear interpolation for smoother movement
+                current_x = int(start_x + (end_x - start_x) * progress)
+                current_y = int(start_y + (end_y - start_y) * progress)
                 
                 self.mouse.position = (current_x, current_y)
                 time.sleep(duration / steps)
             
+            # Ensure we reach the final position
             self.mouse.position = (end_x, end_y)
             self.mouse.release(Button.left)
             
@@ -310,89 +293,3 @@ class GameplayController:
             print(f"Swipe error: {e}")
             self.mouse.release(Button.left)
             return False
-
-    def save_shot_logs(self):
-        """Save the collected shot logs to a JSON file"""
-        if not self.logs:
-            return
-
-        # Calculate summary statistics
-        shots = len(self.logs)
-        distances = [log["shot_params"]["distance"] for log in self.logs]
-        angles = [log["shot_params"]["angle"] for log in self.logs]
-        powers = [log["shot_params"]["power"] for log in self.logs]
-        speeds = [log["movement_metrics"]["speed"] for log in self.logs]
-
-        # Create shot pattern summary
-        shot_summary = {
-            "total_shots": shots,
-            "average_distance": float(np.mean(distances)),
-            "average_angle": float(np.mean(angles)),
-            "average_power": float(np.mean(powers)),
-            "average_hoop_speed": float(np.mean(speeds)),
-            "shot_sequence": self.logs
-        }
-
-        # Generate pattern hash
-        pattern_hash = hashlib.md5(json.dumps(shot_summary, sort_keys=True).encode()).hexdigest()
-
-        # Save pattern
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        pattern_data = {
-            "id": pattern_hash,
-            "timestamp": timestamp,
-            "pattern_data": shot_summary
-        }
-
-        # Save to individual file
-        pattern_file = self.shot_logs_folder / f"shots_{pattern_hash[:8]}_{timestamp}.json"
-        with open(pattern_file, 'w') as f:
-            json.dump(pattern_data, f, indent=2)
-            print(f"\nShot pattern saved: {pattern_file}")
-
-        # Update patterns database
-        self.existing_patterns[pattern_hash] = pattern_data
-        with open(self.shot_patterns_file, 'w') as f:
-            json.dump(self.existing_patterns, f, indent=2)
-
-    def reset_state(self):
-        """Reset controller state"""
-        self.last_shot_time = 0
-        self.last_pos = None
-        self.last_time = None
-        self.speed_memory.clear()
-        if self.logs:  # Save logs before resetting
-            self.save_shot_logs()
-        self.logs = [] 
-
-    def debug_shoot_straight(self, ball_pos):
-        """Debug method to shoot straight without following the hoop"""
-        try:
-            current_time = time.time()
-            if current_time - self.last_shot_time < self.shot_cooldown:
-                return False
-
-            # Set a fixed angle and power for straight shooting
-            angle = 0  # Straight angle
-            power = 0.8  # Adjust power for more consistent shooting
-
-            distance = power * self.base_power
-            target_x = ball_pos[0]
-            target_y = ball_pos[1] - distance
-
-            success = self.swipe(ball_pos[0], ball_pos[1], target_x, target_y, duration=0.1)  # Adjust duration
-            if success:
-                self.last_shot_time = current_time
-                return True
-
-            return False
-
-        except Exception as e:
-            print(f"Error in debug shoot straight: {e}")
-            return False 
-
-    def detect_ball_position(self):
-        """Detect the current position of the ball"""
-        # Implement logic to detect the ball's position
-        # This is a placeholder function and should be replaced with actual detection logic
-        return (self.mouse.position[0], self.mouse.position[1] - 200) 
