@@ -10,7 +10,7 @@ from pathlib import Path
 class GameplayController:
     def __init__(self):
         try:
-            json_path = os.path.join(os.path.dirname(__file__), 'setting_controller.json')
+            json_path = os.path.join(os.path.dirname(__file__), 'partial/setting_controller.json')
             with open(json_path, 'r') as f:
                 self.setting_config = json.load(f)
         except Exception as e:

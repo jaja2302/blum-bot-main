@@ -39,7 +39,7 @@ class GameDetector:
         
         pytesseract.pytesseract.tesseract_cmd = tesseract_path
         try:
-            json_path = os.path.join(os.path.dirname(__file__), 'setting_controller.json')
+            json_path = os.path.join(os.path.dirname(__file__), 'partial/setting_controller.json')
             with open(json_path, 'r') as f:
                 self.setting_config = json.load(f)
         except Exception as e:
@@ -54,7 +54,7 @@ class GameDetector:
         self.game_stats = GameStats()
         
         try:
-            json_path = os.path.join(os.path.dirname(__file__), 'button_claim_game_over.json')
+            json_path = os.path.join(os.path.dirname(__file__), 'partial/button_attributes.json')
             with open(json_path, 'r') as f:
                 self.button_config = json.load(f)
         except Exception as e:
@@ -237,3 +237,7 @@ class GameDetector:
             }
         except Exception:
             return None 
+
+    def is_game_active(self):
+        """Check if game is currently active"""
+        return self.game_started 

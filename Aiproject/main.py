@@ -31,7 +31,7 @@ def main():
     
     # Load button positions from JSON
     try:
-        json_path = os.path.join(os.path.dirname(__file__), 'button_claim_game_over.json')
+        json_path = os.path.join(os.path.dirname(__file__), 'partial/button_attributes.json')
         with open(json_path, 'r') as f:
             button_data = json.load(f)
         
