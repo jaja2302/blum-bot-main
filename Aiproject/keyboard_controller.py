@@ -8,6 +8,7 @@ class KeyboardController:
         self.is_paused = False
         self.betting_amount = '1m'
         self.debug_shoot = False
+        self.fast_mode = True  # Default to fast mode
         
         # Set up keyboard handlers
         keyboard.on_press_key('s', lambda _: self.stop_program())
@@ -15,6 +16,7 @@ class KeyboardController:
         keyboard.on_press_key('p', lambda _: self.toggle_pause())
         keyboard.on_press_key('r', lambda _: self.toggle_pause())
         keyboard.on_press_key('d', lambda _: self.toggle_debug_shoot())
+        keyboard.on_press_key('m', lambda _: self.toggle_mode())
         
         self.betting_options = {
             '1': '1m',
@@ -68,6 +70,7 @@ class KeyboardController:
         print("P/R - Pause/Resume program")
         print("Space - Play game")
         print("D - Toggle debug shoot")
+        print("M - Toggle mode (Cepat/Lambat)")
 
     def toggle_debug_shoot(self):
         self.debug_shoot = not self.debug_shoot
@@ -75,3 +78,12 @@ class KeyboardController:
 
     def is_debug_shoot(self):
         return self.debug_shoot 
+
+    def get_current_mode(self):
+        """Returns whether fast mode is enabled"""
+        return self.fast_mode
+
+    def toggle_mode(self):
+        """Toggles between fast and slow mode"""
+        self.fast_mode = not self.fast_mode
+        print(f"\nMode: {'CEPAT' if self.fast_mode else 'LAMBAT'}") 

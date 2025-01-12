@@ -67,6 +67,9 @@ def main():
                     time.sleep(0.01)
                     continue
                     
+                # Update mode tembakan
+                gameplay_controller.set_mode(keyboard_ctrl.get_current_mode())
+                
                 if keyboard.is_pressed('space'):
                     game_detector.start_game()
                     time.sleep(0.1)
@@ -79,14 +82,12 @@ def main():
                         hoop_pos = result['hoop_position']
                         
                         if keyboard_ctrl.is_debug_shoot():
+                            # Gunakan debug shoot
                             gameplay_controller.debug_shoot_straight(ball_pos)
                         else:
-                            shot_params = gameplay_controller.shoot(screenshot, hoop_pos)
-                            if shot_params:
-                                success = gameplay_controller.swipe(ball_pos, *shot_params)
-                                # Update shot success status
-                                if gameplay_controller.shot_logger['shots']:
-                                    gameplay_controller.shot_logger['shots'][-1]['success'] = success
+                            action = gameplay_controller.get_action(screenshot, hoop_pos)
+                            if action:
+                                gameplay_controller.execute_action(action, window_info)
                     elif result and result['status'] == 'game_over' and result.get('should_claim'):
                         print("\nPermainan selesai! Membersihkan state...")
                         game_detector.stop_game()

@@ -1,12 +1,21 @@
 {
+    "ri_agent": {
+        "speed_states": {
+            "very_slow": {"threshold": 60},
+            "slow": {"threshold": 70},
+            "normal": {"threshold": 85},
+            "medium": {"threshold": 120},
+            "fast": {"threshold": 150}
+        }
+    },
     "swipe_agent": {
-        "shot_cooldown_fast": 0.12,
-        "swipe_duration_fast": 0.11,
-        "shot_cooldown_slow": 0.6,
-        "swipe_duration_slow": 0.15,
-        "base_power": 280
+        "shot_cooldown_fast": 0.09,
+        "swipe_duration_fast": 0.08,
+        "shot_cooldown_slow": 0.8,
+        "swipe_duration_slow": 0.2,
+        "base_power": 310
     },
     "game_duration": {
-        "GAME_DURATION": 50
+        "GAME_DURATION": 5000
     }
 }
