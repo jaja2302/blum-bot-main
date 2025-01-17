@@ -4,9 +4,13 @@ import win32gui
 import win32con
 
 class WindowDetector:
-    def find_window(self, window_name="TelegramDesktop"):
+
+    def __init__(self):
+        self.window_name = "TelegramDesktop"
+
+    def find_window(self):
         """Find Telegram window and return window object"""
-        telegram_windows = gw.getWindowsWithTitle(window_name)
+        telegram_windows = gw.getWindowsWithTitle(self.window_name)
         
         if telegram_windows:
             window = telegram_windows[0]
@@ -30,7 +34,7 @@ class WindowDetector:
                 window_info['window'].activate()
                 
                 # Pindahkan ke foreground
-                hwnd = win32gui.FindWindow(None, "TelegramDesktop")
+                hwnd = win32gui.FindWindow(None, self.window_name)
                 win32gui.ShowWindow(hwnd, win32con.SW_RESTORE)
                 win32gui.SetForegroundWindow(hwnd)
                 

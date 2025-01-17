@@ -1,0 +1,4969 @@
+{
+  "id": "815939ccd3dbb4eeb3c4210d638ced10",
+  "timestamp": "20241231_193835",
+  "pattern_data": {
+    "total_shots": 236,
+    "average_distance": 212.9244925556459,
+    "average_angle": 91.15046835889012,
+    "average_power": 0.5355225644795848,
+    "average_hoop_speed": 0.9881664132621958,
+    "shot_sequence": [
+      {
+        "timestamp": 1735648661.6641805,
+        "hoop_position": {
+          "x": 151,
+          "y": 287
+        },
+        "predicted_x": 151,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 102.52880770915151,
+          "power": 0.5762215285808054,
+          "distance": 230.4886114323222
+        },
+        "movement_metrics": {
+          "speed": 0,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648661.8729198,
+        "hoop_position": {
+          "x": 138,
+          "y": 287
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.17478195763474,
+          "power": 0.6165731911135935,
+          "distance": 246.62927644543743
+        },
+        "movement_metrics": {
+          "speed": -62.278647106392114,
+          "prediction_offset": -38
+        }
+      },
+      {
+        "timestamp": 1735648662.0900154,
+        "hoop_position": {
+          "x": 119,
+          "y": 287
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.17478195763474,
+          "power": 0.6165731911135935,
+          "distance": 246.62927644543743
+        },
+        "movement_metrics": {
+          "speed": -74.89884429032081,
+          "prediction_offset": -19
+        }
+      },
+      {
+        "timestamp": 1735648662.3054645,
+        "hoop_position": {
+          "x": 101,
+          "y": 287
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.17478195763474,
+          "power": 0.6165731911135935,
+          "distance": 246.62927644543743
+        },
+        "movement_metrics": {
+          "speed": -77.78136865974666,
+          "prediction_offset": -1
+        }
+      },
+      {
+        "timestamp": 1735648662.5060997,
+        "hoop_position": {
+          "x": 120,
+          "y": 287
+        },
+        "predicted_x": 107.94487726993965,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 112.46892665031505,
+          "power": 0.6087089609693751,
+          "distance": 243.48358438775003
+        },
+        "movement_metrics": {
+          "speed": -25.45540705979157,
+          "prediction_offset": -12.055122730060347
+        }
+      },
+      {
+        "timestamp": 1735648662.707222,
+        "hoop_position": {
+          "x": 138,
+          "y": 287
+        },
+        "predicted_x": 165.47863637471616,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 98.97139622685904,
+          "power": 0.5694666763395798,
+          "distance": 227.78667053583192
+        },
+        "movement_metrics": {
+          "speed": 33.55020354435246,
+          "prediction_offset": 27.47863637471616
+        }
+      },
+      {
+        "timestamp": 1735648662.921791,
+        "hoop_position": {
+          "x": 151,
+          "y": 287
+        },
+        "predicted_x": 210.66833137726655,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 87.5394932893181,
+          "power": 0.5630190751188,
+          "distance": 225.20763004752
+        },
+        "movement_metrics": {
+          "speed": 81.5945244436814,
+          "prediction_offset": 59.668331377266554
+        }
+      },
+      {
+        "timestamp": 1735648663.1210651,
+        "hoop_position": {
+          "x": 153,
+          "y": 303
+        },
+        "predicted_x": 153,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 102.9345373527201,
+          "power": 0.5361028352844257,
+          "distance": 214.44113411377026
+        },
+        "movement_metrics": {
+          "speed": 53.37358823602804,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648663.3227375,
+        "hoop_position": {
+          "x": 153,
+          "y": 344
+        },
+        "predicted_x": 153,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 103.94539590092286,
+          "power": 0.45,
+          "distance": 174.72263734273244
+        },
+        "movement_metrics": {
+          "speed": 23.54099145663385,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648663.5215652,
+        "hoop_position": {
+          "x": 153,
+          "y": 363
+        },
+        "predicted_x": 153,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 105.85622325731426,
+          "power": 0.45,
+          "distance": 156.54072952429985
+        },
+        "movement_metrics": {
+          "speed": 3.3454763568377093,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648663.7224395,
+        "hoop_position": {
+          "x": 147,
+          "y": 364
+        },
+        "predicted_x": 135.32916252041474,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 111.92790841472991,
+          "power": 0.45,
+          "distance": 161.91559188438308
+        },
+        "movement_metrics": {
+          "speed": -9.956473850127237,
+          "prediction_offset": -11.67083747958526
+        }
+      },
+      {
+        "timestamp": 1735648663.920407,
+        "hoop_position": {
+          "x": 140,
+          "y": 364
+        },
+        "predicted_x": 120.43224458197376,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 116.56284385646707,
+          "power": 0.45,
+          "distance": 168.50864432752076
+        },
+        "movement_metrics": {
+          "speed": -21.742918534367515,
+          "prediction_offset": -19.567755418026238
+        }
+      },
+      {
+        "timestamp": 1735648664.1215405,
+        "hoop_position": {
+          "x": 133,
+          "y": 364
+        },
+        "predicted_x": 105.6596288113517,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 120.78929815779736,
+          "power": 0.45,
+          "distance": 176.05052223265128
+        },
+        "movement_metrics": {
+          "speed": -33.34383759499746,
+          "prediction_offset": -27.340371188648305
+        }
+      },
+      {
+        "timestamp": 1735648664.3210068,
+        "hoop_position": {
+          "x": 127,
+          "y": 364
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 122.3108953281446,
+          "power": 0.45,
+          "distance": 179.17868176767013
+        },
+        "movement_metrics": {
+          "speed": -33.414123739228486,
+          "prediction_offset": -27
+        }
+      },
+      {
+        "timestamp": 1735648664.5224144,
+        "hoop_position": {
+          "x": 296,
+          "y": 364
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 53.68910467185542,
+          "power": 0.45,
+          "distance": 179.17868176767013
+        },
+        "movement_metrics": {
+          "speed": 258.07037346060287,
+          "prediction_offset": 6
+        }
+      },
+      {
+        "timestamp": 1735648664.721253,
+        "hoop_position": {
+          "x": 112,
+          "y": 364
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 122.3108953281446,
+          "power": 0.45,
+          "distance": 179.17868176767013
+        },
+        "movement_metrics": {
+          "speed": -38.78678706175125,
+          "prediction_offset": -12
+        }
+      },
+      {
+        "timestamp": 1735648664.9219308,
+        "hoop_position": {
+          "x": 105,
+          "y": 364
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 122.3108953281446,
+          "power": 0.45,
+          "distance": 179.17868176767013
+        },
+        "movement_metrics": {
+          "speed": -40.38728478903068,
+          "prediction_offset": -5
+        }
+      },
+      {
+        "timestamp": 1735648665.1228619,
+        "hoop_position": {
+          "x": 105,
+          "y": 350
+        },
+        "predicted_x": 105,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 118.65066795705286,
+          "power": 0.45,
+          "distance": 188.30825791770258
+        },
+        "movement_metrics": {
+          "speed": -320.08533730462176,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648665.3471603,
+        "hoop_position": {
+          "x": 115,
+          "y": 321
+        },
+        "predicted_x": 122.16670788414169,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 112.4278856227277,
+          "power": 0.5165733729698053,
+          "distance": 206.62934918792212
+        },
+        "movement_metrics": {
+          "speed": 3.2338923643905795,
+          "prediction_offset": 7.166707884141687
+        }
+      },
+      {
+        "timestamp": 1735648665.5565255,
+        "hoop_position": {
+          "x": 126,
+          "y": 310
+        },
+        "predicted_x": 152.6908570595409,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 103.44990157476292,
+          "power": 0.5192408719204996,
+          "distance": 207.69634876819984
+        },
+        "movement_metrics": {
+          "speed": 32.3744135217028,
+          "prediction_offset": 26.69085705954089
+        }
+      },
+      {
+        "timestamp": 1735648665.770884,
+        "hoop_position": {
+          "x": 136,
+          "y": 310
+        },
+        "predicted_x": 173.1095370879401,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 97.8612165194322,
+          "power": 0.509790875760891,
+          "distance": 203.9163503043564
+        },
+        "movement_metrics": {
+          "speed": 47.92468222080615,
+          "prediction_offset": 37.10953708794011
+        }
+      },
+      {
+        "timestamp": 1735648665.9734435,
+        "hoop_position": {
+          "x": 145,
+          "y": 310
+        },
+        "predicted_x": 182.0755782205634,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 95.35214780122607,
+          "power": 0.5072113325558072,
+          "distance": 202.88453302232287
+        },
+        "movement_metrics": {
+          "speed": 47.87399734412444,
+          "prediction_offset": 37.075578220563386
+        }
+      },
+      {
+        "timestamp": 1735648666.1928418,
+        "hoop_position": {
+          "x": 157,
+          "y": 310
+        },
+        "predicted_x": 194.55692076640312,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 91.82691153863918,
+          "power": 0.5052568237417135,
+          "distance": 202.10272949668544
+        },
+        "movement_metrics": {
+          "speed": 48.59241905433303,
+          "prediction_offset": 37.556920766403124
+        }
+      },
+      {
+        "timestamp": 1735648666.408014,
+        "hoop_position": {
+          "x": 167,
+          "y": 310
+        },
+        "predicted_x": 204.51752017500357,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 89.00238270658888,
+          "power": 0.5050765594700815,
+          "distance": 202.03062378803259
+        },
+        "movement_metrics": {
+          "speed": 48.533612201497846,
+          "prediction_offset": 37.51752017500357
+        }
+      },
+      {
+        "timestamp": 1735648666.6276467,
+        "hoop_position": {
+          "x": 178,
+          "y": 310
+        },
+        "predicted_x": 216.77985337683572,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 85.53323467728121,
+          "power": 0.5065385213176933,
+          "distance": 202.6154085270773
+        },
+        "movement_metrics": {
+          "speed": 50.41769160721748,
+          "prediction_offset": 38.77985337683572
+        }
+      },
+      {
+        "timestamp": 1735648666.8398843,
+        "hoop_position": {
+          "x": 188,
+          "y": 310
+        },
+        "predicted_x": 225.08742222182616,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 83.1998935803195,
+          "power": 0.5085776975380244,
+          "distance": 203.43107901520978
+        },
+        "movement_metrics": {
+          "speed": 47.891674957949505,
+          "prediction_offset": 37.08742222182616
+        }
+      },
+      {
+        "timestamp": 1735648667.0575497,
+        "hoop_position": {
+          "x": 199,
+          "y": 310
+        },
+        "predicted_x": 236.99457730423507,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 79.89645439986354,
+          "power": 0.5129547348165244,
+          "distance": 205.1818939266098
+        },
+        "movement_metrics": {
+          "speed": 49.24563776751504,
+          "prediction_offset": 37.994577304235065
+        }
+      },
+      {
+        "timestamp": 1735648667.2738647,
+        "hoop_position": {
+          "x": 209,
+          "y": 306
+        },
+        "predicted_x": 246.13368061380186,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 77.64202036947901,
+          "power": 0.5272158543101005,
+          "distance": 210.88634172404022
+        },
+        "movement_metrics": {
+          "speed": 47.96071733403264,
+          "prediction_offset": 37.13368061380186
+        }
+      },
+      {
+        "timestamp": 1735648667.4916995,
+        "hoop_position": {
+          "x": 220,
+          "y": 304
+        },
+        "predicted_x": 257.88854666427284,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 74.7035403939748,
+          "power": 0.5390982444182435,
+          "distance": 215.6392977672974
+        },
+        "movement_metrics": {
+          "speed": 49.087383081004226,
+          "prediction_offset": 37.88854666427284
+        }
+      },
+      {
+        "timestamp": 1735648667.7065146,
+        "hoop_position": {
+          "x": 230,
+          "y": 304
+        },
+        "predicted_x": 266.9986481419046,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 72.39570498397788,
+          "power": 0.5455491588560039,
+          "distance": 218.21966354240152
+        },
+        "movement_metrics": {
+          "speed": 47.75917633120085,
+          "prediction_offset": 36.998648141904596
+        }
+      },
+      {
+        "timestamp": 1735648667.923007,
+        "hoop_position": {
+          "x": 241,
+          "y": 304
+        },
+        "predicted_x": 279.02178767272807,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 69.4386932474323,
+          "power": 0.555379371193963,
+          "distance": 222.15174847758516
+        },
+        "movement_metrics": {
+          "speed": 49.286250257803054,
+          "prediction_offset": 38.02178767272807
+        }
+      },
+      {
+        "timestamp": 1735648668.1390853,
+        "hoop_position": {
+          "x": 251,
+          "y": 304
+        },
+        "predicted_x": 288.0798840791377,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 67.28321646347977,
+          "power": 0.5637314642808448,
+          "distance": 225.4925857123379
+        },
+        "movement_metrics": {
+          "speed": 47.88042399871296,
+          "prediction_offset": 37.079884079137685
+        }
+      },
+      {
+        "timestamp": 1735648668.3382819,
+        "hoop_position": {
+          "x": 261,
+          "y": 304
+        },
+        "predicted_x": 298.895053454547,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 64.79601221946183,
+          "power": 0.5747142849433351,
+          "distance": 229.885713977334
+        },
+        "movement_metrics": {
+          "speed": 49.09709470827912,
+          "prediction_offset": 37.895053454546996
+        }
+      },
+      {
+        "timestamp": 1735648668.5385485,
+        "hoop_position": {
+          "x": 271,
+          "y": 304
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 64.09986032095657,
+          "power": 0.5780624966212563,
+          "distance": 231.22499864850255
+        },
+        "movement_metrics": {
+          "speed": 48.80487620414673,
+          "prediction_offset": 31
+        }
+      },
+      {
+        "timestamp": 1735648668.7385163,
+        "hoop_position": {
+          "x": 281,
+          "y": 304
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 64.09986032095657,
+          "power": 0.5780624966212563,
+          "distance": 231.22499864850255
+        },
+        "movement_metrics": {
+          "speed": 50.04771355213452,
+          "prediction_offset": 21
+        }
+      },
+      {
+        "timestamp": 1735648668.9455326,
+        "hoop_position": {
+          "x": 290,
+          "y": 304
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 64.09986032095657,
+          "power": 0.5780624966212563,
+          "distance": 231.22499864850255
+        },
+        "movement_metrics": {
+          "speed": 47.80544235884787,
+          "prediction_offset": 12
+        }
+      },
+      {
+        "timestamp": 1735648669.157482,
+        "hoop_position": {
+          "x": 292,
+          "y": 318
+        },
+        "predicted_x": 292,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 64.87003352051568,
+          "power": 0.5357063094644303,
+          "distance": 214.28252378577213
+        },
+        "movement_metrics": {
+          "speed": 34.306368350720696,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648669.3733263,
+        "hoop_position": {
+          "x": 280,
+          "y": 339
+        },
+        "predicted_x": 274.40045322735176,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 65.00945496278983,
+          "power": 0.45,
+          "distance": 187.92718412720566
+        },
+        "movement_metrics": {
+          "speed": -0.8948459293257448,
+          "prediction_offset": -5.599546772648239
+        }
+      },
+      {
+        "timestamp": 1735648669.5892055,
+        "hoop_position": {
+          "x": 270,
+          "y": 344
+        },
+        "predicted_x": 244.34577777182074,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 73.53260318809508,
+          "power": 0.45,
+          "distance": 173.50174768757824
+        },
+        "movement_metrics": {
+          "speed": -30.82719735549145,
+          "prediction_offset": -25.654222228179265
+        }
+      },
+      {
+        "timestamp": 1735648669.8058138,
+        "hoop_position": {
+          "x": 260,
+          "y": 344
+        },
+        "predicted_x": 221.9278855619516,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 80.89920091701993,
+          "power": 0.45,
+          "distance": 169.29848314174035
+        },
+        "movement_metrics": {
+          "speed": -49.361364832908045,
+          "prediction_offset": -38.0721144380484
+        }
+      },
+      {
+        "timestamp": 1735648670.0231817,
+        "hoop_position": {
+          "x": 249,
+          "y": 344
+        },
+        "predicted_x": 212.0423536792947,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 84.23945528260585,
+          "power": 0.45,
+          "distance": 168.36250644005818
+        },
+        "movement_metrics": {
+          "speed": -47.69797958314221,
+          "prediction_offset": -36.957646320705294
+        }
+      },
+      {
+        "timestamp": 1735648670.2399094,
+        "hoop_position": {
+          "x": 239,
+          "y": 344
+        },
+        "predicted_x": 202.0828575322864,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 87.63070055219994,
+          "power": 0.45,
+          "distance": 168.00348978647804
+        },
+        "movement_metrics": {
+          "speed": -47.63752607121432,
+          "prediction_offset": -36.9171424677136
+        }
+      },
+      {
+        "timestamp": 1735648670.465917,
+        "hoop_position": {
+          "x": 227,
+          "y": 344
+        },
+        "predicted_x": 188.53532492308648,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 92.24325666943577,
+          "power": 0.45,
+          "distance": 168.46177051418232
+        },
+        "movement_metrics": {
+          "speed": -49.9472762341993,
+          "prediction_offset": -38.46467507691352
+        }
+      },
+      {
+        "timestamp": 1735648670.6755714,
+        "hoop_position": {
+          "x": 217,
+          "y": 344
+        },
+        "predicted_x": 179.1847539787037,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 95.39861002211524,
+          "power": 0.45,
+          "distance": 169.41046295601015
+        },
+        "movement_metrics": {
+          "speed": -48.97797913626315,
+          "prediction_offset": -37.8152460212963
+        }
+      },
+      {
+        "timestamp": 1735648670.890382,
+        "hoop_position": {
+          "x": 206,
+          "y": 344
+        },
+        "predicted_x": 167.05311114375468,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 99.42364213751561,
+          "power": 0.45,
+          "distance": 171.3954236933363
+        },
+        "movement_metrics": {
+          "speed": -50.66699829290345,
+          "prediction_offset": -38.94688885624532
+        }
+      },
+      {
+        "timestamp": 1735648671.1060712,
+        "hoop_position": {
+          "x": 196,
+          "y": 332
+        },
+        "predicted_x": 158.55670835179484,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 101.26776761985634,
+          "power": 0.45,
+          "distance": 184.93629445280501
+        },
+        "movement_metrics": {
+          "speed": -48.42282335553006,
+          "prediction_offset": -37.44329164820516
+        }
+      },
+      {
+        "timestamp": 1735648671.3252566,
+        "hoop_position": {
+          "x": 185,
+          "y": 300
+        },
+        "predicted_x": 147.00099348185955,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 104.29007293921737,
+          "power": 0.5469225990996475,
+          "distance": 218.76903963985896
+        },
+        "movement_metrics": {
+          "speed": -49.252248534537955,
+          "prediction_offset": -37.99900651814045
+        }
+      },
+      {
+        "timestamp": 1735648671.5401611,
+        "hoop_position": {
+          "x": 175,
+          "y": 287
+        },
+        "predicted_x": 138.0452135312891,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 105.63156940619088,
+          "power": 0.5841035071977877,
+          "distance": 233.6414028791151
+        },
+        "movement_metrics": {
+          "speed": -47.69371114732968,
+          "prediction_offset": -36.95478646871089
+        }
+      },
+      {
+        "timestamp": 1735648671.7568758,
+        "hoop_position": {
+          "x": 164,
+          "y": 287
+        },
+        "predicted_x": 126.06366679337464,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 108.42035623026408,
+          "power": 0.5928767474908591,
+          "distance": 237.15069899634364
+        },
+        "movement_metrics": {
+          "speed": -49.15870627854532,
+          "prediction_offset": -37.93633320662536
+        }
+      },
+      {
+        "timestamp": 1735648671.972502,
+        "hoop_position": {
+          "x": 154,
+          "y": 287
+        },
+        "predicted_x": 116.91440831449901,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 110.4914066494258,
+          "power": 0.6004966003707931,
+          "distance": 240.19864014831722
+        },
+        "movement_metrics": {
+          "speed": -47.88894281418059,
+          "prediction_offset": -37.08559168550099
+        }
+      },
+      {
+        "timestamp": 1735648672.2013543,
+        "hoop_position": {
+          "x": 143,
+          "y": 287
+        },
+        "predicted_x": 105.57189201625985,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 112.98301117848825,
+          "power": 0.6110008377314038,
+          "distance": 244.40033509256153
+        },
+        "movement_metrics": {
+          "speed": -48.400161169761425,
+          "prediction_offset": -37.42810798374015
+        }
+      },
+      {
+        "timestamp": 1735648672.4067426,
+        "hoop_position": {
+          "x": 132,
+          "y": 287
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.17478195763474,
+          "power": 0.6165731911135935,
+          "distance": 246.62927644543743
+        },
+        "movement_metrics": {
+          "speed": -49.33319214541037,
+          "prediction_offset": -32
+        }
+      },
+      {
+        "timestamp": 1735648672.62893,
+        "hoop_position": {
+          "x": 122,
+          "y": 287
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.17478195763474,
+          "power": 0.6165731911135935,
+          "distance": 246.62927644543743
+        },
+        "movement_metrics": {
+          "speed": -48.876686659312675,
+          "prediction_offset": -22
+        }
+      },
+      {
+        "timestamp": 1735648672.8401902,
+        "hoop_position": {
+          "x": 111,
+          "y": 287
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.17478195763474,
+          "power": 0.6165731911135935,
+          "distance": 246.62927644543743
+        },
+        "movement_metrics": {
+          "speed": -50.210879820250476,
+          "prediction_offset": -11
+        }
+      },
+      {
+        "timestamp": 1735648673.0541844,
+        "hoop_position": {
+          "x": 101,
+          "y": 285
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 113.98590367679458,
+          "power": 0.6211380683873755,
+          "distance": 248.4552273549502
+        },
+        "movement_metrics": {
+          "speed": -47.93525806485815,
+          "prediction_offset": -1
+        }
+      },
+      {
+        "timestamp": 1735648673.2880187,
+        "hoop_position": {
+          "x": 99,
+          "y": 273
+        },
+        "predicted_x": 99,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 115.1117349265469,
+          "power": 0.6496393230093142,
+          "distance": 259.8557292037257
+        },
+        "movement_metrics": {
+          "speed": -35.78393735644246,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648673.566738,
+        "hoop_position": {
+          "x": 126,
+          "y": 266
+        },
+        "predicted_x": 140.28807691015456,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 105.86336004293422,
+          "power": 0.6334525317913889,
+          "distance": 253.3810127165556
+        },
+        "movement_metrics": {
+          "speed": 13.862801358439626,
+          "prediction_offset": 14.288076910154558
+        }
+      },
+      {
+        "timestamp": 1735648673.7890277,
+        "hoop_position": {
+          "x": 114,
+          "y": 266
+        },
+        "predicted_x": 116.66816005339221,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 110.92234828210957,
+          "power": 0.6501339248030953,
+          "distance": 260.0535699212381
+        },
+        "movement_metrics": {
+          "speed": 11.445015005063011,
+          "prediction_offset": 2.6681600533922136
+        }
+      },
+      {
+        "timestamp": 1735648674.0079644,
+        "hoop_position": {
+          "x": 148,
+          "y": 266
+        },
+        "predicted_x": 197.26112746063825,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 90.87075253616803,
+          "power": 0.6150710282554039,
+          "distance": 246.0284113021616
+        },
+        "movement_metrics": {
+          "speed": 66.06138426960932,
+          "prediction_offset": 49.26112746063825
+        }
+      },
+      {
+        "timestamp": 1735648674.2212992,
+        "hoop_position": {
+          "x": 160,
+          "y": 266
+        },
+        "predicted_x": 200.18886265615762,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 90.18892104870201,
+          "power": 0.615003343201231,
+          "distance": 246.00133728049238
+        },
+        "movement_metrics": {
+          "speed": 52.520690531578545,
+          "prediction_offset": 40.188862656157625
+        }
+      },
+      {
+        "timestamp": 1735648674.419287,
+        "hoop_position": {
+          "x": 168,
+          "y": 266
+        },
+        "predicted_x": 229.26932157922477,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 83.44455698604654,
+          "power": 0.6190474262049194,
+          "distance": 247.61897048196775
+        },
+        "movement_metrics": {
+          "speed": 83.98406205854444,
+          "prediction_offset": 61.269321579224766
+        }
+      },
+      {
+        "timestamp": 1735648674.6258743,
+        "hoop_position": {
+          "x": 178,
+          "y": 266
+        },
+        "predicted_x": 215.39714146133676,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 86.65058711072255,
+          "power": 0.6160523399144839,
+          "distance": 246.42093596579357
+        },
+        "movement_metrics": {
+          "speed": 48.3539424796071,
+          "prediction_offset": 37.39714146133676
+        }
+      },
+      {
+        "timestamp": 1735648674.8389006,
+        "hoop_position": {
+          "x": 189,
+          "y": 266
+        },
+        "predicted_x": 225.36695095146234,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 84.34315384612937,
+          "power": 0.6180096494931884,
+          "distance": 247.20385979727536
+        },
+        "movement_metrics": {
+          "speed": 46.816344703675156,
+          "prediction_offset": 36.36695095146234
+        }
+      },
+      {
+        "timestamp": 1735648675.0547855,
+        "hoop_position": {
+          "x": 200,
+          "y": 267
+        },
+        "predicted_x": 238.7223450002465,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 81.24697574631566,
+          "power": 0.6197175531659443,
+          "distance": 247.88702126637776
+        },
+        "movement_metrics": {
+          "speed": 50.33185820932314,
+          "prediction_offset": 38.72234500024649
+        }
+      },
+      {
+        "timestamp": 1735648675.2712154,
+        "hoop_position": {
+          "x": 210,
+          "y": 270
+        },
+        "predicted_x": 248.2307087632949,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 78.95650617363341,
+          "power": 0.6164147338150426,
+          "distance": 246.56589352601705
+        },
+        "movement_metrics": {
+          "speed": 49.59807278103714,
+          "prediction_offset": 38.2307087632949
+        }
+      },
+      {
+        "timestamp": 1735648675.4701264,
+        "hoop_position": {
+          "x": 220,
+          "y": 272
+        },
+        "predicted_x": 257.92629034987294,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 76.65644001154396,
+          "power": 0.6166471972134778,
+          "distance": 246.65887888539112
+        },
+        "movement_metrics": {
+          "speed": 49.14371694010881,
+          "prediction_offset": 37.92629034987294
+        }
+      },
+      {
+        "timestamp": 1735648675.672918,
+        "hoop_position": {
+          "x": 230,
+          "y": 272
+        },
+        "predicted_x": 267.55971401887496,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 74.49959577410968,
+          "power": 0.6226465466572629,
+          "distance": 249.05861866290516
+        },
+        "movement_metrics": {
+          "speed": 48.596588087873045,
+          "prediction_offset": 37.559714018874956
+        }
+      },
+      {
+        "timestamp": 1735648675.8875213,
+        "hoop_position": {
+          "x": 240,
+          "y": 272
+        },
+        "predicted_x": 277.64755198471437,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 74.28834814135925,
+          "power": 0.6298553763823957,
+          "distance": 251.94215055295828
+        },
+        "movement_metrics": {
+          "speed": 48.72768952942442,
+          "prediction_offset": 37.64755198471437
+        }
+      },
+      {
+        "timestamp": 1735648676.0888367,
+        "hoop_position": {
+          "x": 250,
+          "y": 272
+        },
+        "predicted_x": 287.5134504197678,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 72.17715037050593,
+          "power": 0.637791977761625,
+          "distance": 255.11679110465
+        },
+        "movement_metrics": {
+          "speed": 48.527537939951934,
+          "prediction_offset": 37.51345041976782
+        }
+      },
+      {
+        "timestamp": 1735648676.3051798,
+        "hoop_position": {
+          "x": 260,
+          "y": 272
+        },
+        "predicted_x": 296.82361301726667,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 70.2349008232211,
+          "power": 0.6460561353884181,
+          "distance": 258.42245415536723
+        },
+        "movement_metrics": {
+          "speed": 47.49792987651742,
+          "prediction_offset": 36.823613017266666
+        }
+      },
+      {
+        "timestamp": 1735648676.5215092,
+        "hoop_position": {
+          "x": 271,
+          "y": 272
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 69.17701940234518,
+          "power": 0.6509656288929547,
+          "distance": 260.3862515571819
+        },
+        "movement_metrics": {
+          "speed": 48.91485201339962,
+          "prediction_offset": 31
+        }
+      },
+      {
+        "timestamp": 1735648676.7379453,
+        "hoop_position": {
+          "x": 282,
+          "y": 272
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 69.17701940234518,
+          "power": 0.6509656288929547,
+          "distance": 260.3862515571819
+        },
+        "movement_metrics": {
+          "speed": 49.29818715291191,
+          "prediction_offset": 20
+        }
+      },
+      {
+        "timestamp": 1735648676.9372158,
+        "hoop_position": {
+          "x": 291,
+          "y": 272
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 69.17701940234518,
+          "power": 0.6509656288929547,
+          "distance": 260.3862515571819
+        },
+        "movement_metrics": {
+          "speed": 48.94548063720614,
+          "prediction_offset": 11
+        }
+      },
+      {
+        "timestamp": 1735648677.1586666,
+        "hoop_position": {
+          "x": 290,
+          "y": 295
+        },
+        "predicted_x": 290,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 67.69959000722623,
+          "power": 0.5863552677345024,
+          "distance": 234.54210709380095
+        },
+        "movement_metrics": {
+          "speed": 30.490789721044347,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648677.3719614,
+        "hoop_position": {
+          "x": 279,
+          "y": 327
+        },
+        "predicted_x": 271.56058297162247,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 67.12272088959418,
+          "power": 0.45,
+          "distance": 197.99948451775126
+        },
+        "movement_metrics": {
+          "speed": -3.64092093787689,
+          "prediction_offset": -7.439417028377534
+        }
+      },
+      {
+        "timestamp": 1735648677.572074,
+        "hoop_position": {
+          "x": 270,
+          "y": 336
+        },
+        "predicted_x": 242.42944475807968,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 74.75402650362372,
+          "power": 0.45,
+          "distance": 180.81039486977173
+        },
+        "movement_metrics": {
+          "speed": -33.68739588346316,
+          "prediction_offset": -27.570555241920317
+        }
+      },
+      {
+        "timestamp": 1735648677.78888,
+        "hoop_position": {
+          "x": 259,
+          "y": 336
+        },
+        "predicted_x": 221.10677997950717,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 81.48261020542148,
+          "power": 0.45,
+          "distance": 177.14480687038022
+        },
+        "movement_metrics": {
+          "speed": -49.09435823954154,
+          "prediction_offset": -37.893220020492834
+        }
+      },
+      {
+        "timestamp": 1735648678.0056372,
+        "hoop_position": {
+          "x": 249,
+          "y": 336
+        },
+        "predicted_x": 212.32109458770532,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 84.31955381690616,
+          "power": 0.45,
+          "distance": 176.36373545222887
+        },
+        "movement_metrics": {
+          "speed": -47.28194837655921,
+          "prediction_offset": -36.67890541229468
+        }
+      },
+      {
+        "timestamp": 1735648678.2244549,
+        "hoop_position": {
+          "x": 239,
+          "y": 336
+        },
+        "predicted_x": 202.15907598440407,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 87.62267498876871,
+          "power": 0.45,
+          "distance": 176.00381659821363
+        },
+        "movement_metrics": {
+          "speed": -47.52376718745659,
+          "prediction_offset": -36.84092401559593
+        }
+      },
+      {
+        "timestamp": 1735648678.4372215,
+        "hoop_position": {
+          "x": 227,
+          "y": 336
+        },
+        "predicted_x": 188.89428248954658,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 91.93474881431321,
+          "power": 0.45,
+          "distance": 176.4158394148408
+        },
+        "movement_metrics": {
+          "speed": -49.411518672318515,
+          "prediction_offset": -38.10571751045342
+        }
+      },
+      {
+        "timestamp": 1735648678.6397462,
+        "hoop_position": {
+          "x": 218,
+          "y": 336
+        },
+        "predicted_x": 180.27295904726088,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 94.71663073748753,
+          "power": 0.45,
+          "distance": 177.21628092998827
+        },
+        "movement_metrics": {
+          "speed": -48.84632978020763,
+          "prediction_offset": -37.72704095273912
+        }
+      },
+      {
+        "timestamp": 1735648678.854349,
+        "hoop_position": {
+          "x": 207,
+          "y": 336
+        },
+        "predicted_x": 168.0318135718705,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 98.60964996260164,
+          "power": 0.45,
+          "distance": 179.06116641069863
+        },
+        "movement_metrics": {
+          "speed": -50.69878571362614,
+          "prediction_offset": -38.96818642812951
+        }
+      },
+      {
+        "timestamp": 1735648679.069827,
+        "hoop_position": {
+          "x": 196,
+          "y": 330
+        },
+        "predicted_x": 158.2267731216218,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 101.22551388353077,
+          "power": 0.45,
+          "distance": 186.9586824343529
+        },
+        "movement_metrics": {
+          "speed": -48.91526399757941,
+          "prediction_offset": -37.77322687837821
+        }
+      },
+      {
+        "timestamp": 1735648679.2710993,
+        "hoop_position": {
+          "x": 182,
+          "y": 298
+        },
+        "predicted_x": 138.61697587499845,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 106.25190317196662,
+          "power": 0.5572681227368279,
+          "distance": 222.90724909473116
+        },
+        "movement_metrics": {
+          "speed": -57.28809570895752,
+          "prediction_offset": -43.383024125001555
+        }
+      },
+      {
+        "timestamp": 1735648679.472663,
+        "hoop_position": {
+          "x": 169,
+          "y": 280
+        },
+        "predicted_x": 122.66042993566214,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 108.6583113942387,
+          "power": 0.6121738327359788,
+          "distance": 244.86953309439153
+        },
+        "movement_metrics": {
+          "speed": -61.70085084229532,
+          "prediction_offset": -46.33957006433786
+        }
+      },
+      {
+        "timestamp": 1735648679.6884205,
+        "hoop_position": {
+          "x": 154,
+          "y": 279
+        },
+        "predicted_x": 103.53474650039774,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.69984140231912,
+          "power": 0.6314095127161024,
+          "distance": 252.56380508644094
+        },
+        "movement_metrics": {
+          "speed": -67.85858731283919,
+          "prediction_offset": -50.465253499602255
+        }
+      },
+      {
+        "timestamp": 1735648679.9055152,
+        "hoop_position": {
+          "x": 139,
+          "y": 279
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 115.43559342048044,
+          "power": 0.6348720343502303,
+          "distance": 253.9488137400921
+        },
+        "movement_metrics": {
+          "speed": -67.7041727077638,
+          "prediction_offset": -39
+        }
+      },
+      {
+        "timestamp": 1735648680.1208713,
+        "hoop_position": {
+          "x": 110,
+          "y": 279
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 115.43559342048044,
+          "power": 0.6348720343502303,
+          "distance": 253.9488137400921
+        },
+        "movement_metrics": {
+          "speed": -91.09247435657403,
+          "prediction_offset": -10
+        }
+      },
+      {
+        "timestamp": 1735648680.3379054,
+        "hoop_position": {
+          "x": 101,
+          "y": 279
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 115.43559342048044,
+          "power": 0.6348720343502303,
+          "distance": 253.9488137400921
+        },
+        "movement_metrics": {
+          "speed": -81.74103311815348,
+          "prediction_offset": -1
+        }
+      },
+      {
+        "timestamp": 1735648680.5366967,
+        "hoop_position": {
+          "x": 98,
+          "y": 279
+        },
+        "predicted_x": 98,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 115.84830861653519,
+          "power": 0.6368771467088452,
+          "distance": 254.7508586835381
+        },
+        "movement_metrics": {
+          "speed": -63.740007343339904,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648680.7378707,
+        "hoop_position": {
+          "x": 104,
+          "y": 279
+        },
+        "predicted_x": 103.02931300379106,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.80553887239859,
+          "power": 0.6318982093190977,
+          "distance": 252.75928372763906
+        },
+        "movement_metrics": {
+          "speed": -8.911473128670067,
+          "prediction_offset": -0.97068699620894
+        }
+      },
+      {
+        "timestamp": 1735648680.9389145,
+        "hoop_position": {
+          "x": 110,
+          "y": 279
+        },
+        "predicted_x": 124.95574319797522,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 108.07513963102036,
+          "power": 0.6127383668447545,
+          "distance": 245.09534673790176
+        },
+        "movement_metrics": {
+          "speed": 14.859318205933166,
+          "prediction_offset": 14.955743197975224
+        }
+      },
+      {
+        "timestamp": 1735648681.1559052,
+        "hoop_position": {
+          "x": 149,
+          "y": 285
+        },
+        "predicted_x": 207.46608001816566,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 88.36837470222004,
+          "power": 0.5677301856450019,
+          "distance": 227.09207425800074
+        },
+        "movement_metrics": {
+          "speed": 79.80011943009798,
+          "prediction_offset": 58.466080018165655
+        }
+      },
+      {
+        "timestamp": 1735648681.37064,
+        "hoop_position": {
+          "x": 164,
+          "y": 294
+        },
+        "predicted_x": 231.4058192765512,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 82.05982435209441,
+          "power": 0.5502755778123715,
+          "distance": 220.1102311249486
+        },
+        "movement_metrics": {
+          "speed": 93.14301384559877,
+          "prediction_offset": 67.4058192765512
+        }
+      },
+      {
+        "timestamp": 1735648681.5721073,
+        "hoop_position": {
+          "x": 177,
+          "y": 296
+        },
+        "predicted_x": 252.1515490392593,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 76.67706259183909,
+          "power": 0.5549351368015666,
+          "distance": 221.97405472062664
+        },
+        "movement_metrics": {
+          "speed": 104.70380453620787,
+          "prediction_offset": 75.1515490392593
+        }
+      },
+      {
+        "timestamp": 1735648681.7882798,
+        "hoop_position": {
+          "x": 192,
+          "y": 296
+        },
+        "predicted_x": 242.5084680053865,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 79.12214543597139,
+          "power": 0.5498804012928299,
+          "distance": 219.95216051713197
+        },
+        "movement_metrics": {
+          "speed": 67.92308657520373,
+          "prediction_offset": 50.508468005386504
+        }
+      },
+      {
+        "timestamp": 1735648682.0043058,
+        "hoop_position": {
+          "x": 206,
+          "y": 296
+        },
+        "predicted_x": 255.38139083593836,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 75.86858010379314,
+          "power": 0.5568512799058823,
+          "distance": 222.7405119623529
+        },
+        "movement_metrics": {
+          "speed": 66.24088184468411,
+          "prediction_offset": 49.38139083593836
+        }
+      },
+      {
+        "timestamp": 1735648682.2202191,
+        "hoop_position": {
+          "x": 222,
+          "y": 296
+        },
+        "predicted_x": 273.52030142216597,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 71.440928252836,
+          "power": 0.5696226498654713,
+          "distance": 227.84905994618853
+        },
+        "movement_metrics": {
+          "speed": 69.43328570472534,
+          "prediction_offset": 51.52030142216597
+        }
+      },
+      {
+        "timestamp": 1735648682.4381013,
+        "hoop_position": {
+          "x": 237,
+          "y": 296
+        },
+        "predicted_x": 288.3986988946445,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 67.97058187373568,
+          "power": 0.5825296804051958,
+          "distance": 233.01187216207833
+        },
+        "movement_metrics": {
+          "speed": 69.2517893949918,
+          "prediction_offset": 51.3986988946445
+        }
+      },
+      {
+        "timestamp": 1735648682.6572893,
+        "hoop_position": {
+          "x": 251,
+          "y": 296
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 64.93955767329622,
+          "power": 0.596117647784395,
+          "distance": 238.447059113758
+        },
+        "movement_metrics": {
+          "speed": 68.940163875627,
+          "prediction_offset": 51
+        }
+      },
+      {
+        "timestamp": 1735648682.870961,
+        "hoop_position": {
+          "x": 266,
+          "y": 296
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 64.93955767329622,
+          "power": 0.596117647784395,
+          "distance": 238.447059113758
+        },
+        "movement_metrics": {
+          "speed": 67.6392770669261,
+          "prediction_offset": 36
+        }
+      },
+      {
+        "timestamp": 1735648683.0714288,
+        "hoop_position": {
+          "x": 280,
+          "y": 295
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 65.04095181220426,
+          "power": 0.5983832384016117,
+          "distance": 239.35329536064467
+        },
+        "movement_metrics": {
+          "speed": 67.96997334463815,
+          "prediction_offset": 22
+        }
+      },
+      {
+        "timestamp": 1735648683.285809,
+        "hoop_position": {
+          "x": 295,
+          "y": 289
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 65.63352425215824,
+          "power": 0.6120151141924519,
+          "distance": 244.80604567698077
+        },
+        "movement_metrics": {
+          "speed": 70.00231007707305,
+          "prediction_offset": 7
+        }
+      },
+      {
+        "timestamp": 1735648683.4870756,
+        "hoop_position": {
+          "x": 291,
+          "y": 285
+        },
+        "predicted_x": 291,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 68.3728737160832,
+          "power": 0.6104762485142236,
+          "distance": 244.19049940568942
+        },
+        "movement_metrics": {
+          "speed": 39.97720879764818,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648683.6880815,
+        "hoop_position": {
+          "x": 282,
+          "y": 285
+        },
+        "predicted_x": 278.1881748368739,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 71.2201172423673,
+          "power": 0.5994112441317304,
+          "distance": 239.76449765269214
+        },
+        "movement_metrics": {
+          "speed": 1.7733952789162661,
+          "prediction_offset": -3.811825163126116
+        }
+      },
+      {
+        "timestamp": 1735648683.9057088,
+        "hoop_position": {
+          "x": 255,
+          "y": 285
+        },
+        "predicted_x": 207.85381390703543,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 88.27059318719421,
+          "power": 0.5677586126882636,
+          "distance": 227.10344507530544
+        },
+        "movement_metrics": {
+          "speed": -62.90475536263369,
+          "prediction_offset": -47.14618609296457
+        }
+      },
+      {
+        "timestamp": 1735648684.1223755,
+        "hoop_position": {
+          "x": 241,
+          "y": 285
+        },
+        "predicted_x": 183.8616056829261,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 94.31761338730762,
+          "power": 0.5691151276310856,
+          "distance": 227.64605105243427
+        },
+        "movement_metrics": {
+          "speed": -77.81849898070733,
+          "prediction_offset": -57.1383943170739
+        }
+      },
+      {
+        "timestamp": 1735648684.337815,
+        "hoop_position": {
+          "x": 226,
+          "y": 285
+        },
+        "predicted_x": 163.31170551808086,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 99.42669950682799,
+          "power": 0.5752684565756879,
+          "distance": 230.10738263027517
+        },
+        "movement_metrics": {
+          "speed": -86.10193206256587,
+          "prediction_offset": -62.688294481919144
+        }
+      },
+      {
+        "timestamp": 1735648684.5368104,
+        "hoop_position": {
+          "x": 212,
+          "y": 285
+        },
+        "predicted_x": 161.30736821819875,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 99.91831820457291,
+          "power": 0.5761103682117129,
+          "distance": 230.44414728468516
+        },
+        "movement_metrics": {
+          "speed": -68.19795788328544,
+          "prediction_offset": -50.69263178180125
+        }
+      },
+      {
+        "timestamp": 1735648684.7402363,
+        "hoop_position": {
+          "x": 199,
+          "y": 285
+        },
+        "predicted_x": 148.46594305841535,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 103.03042414064379,
+          "power": 0.582499072631996,
+          "distance": 232.9996290527984
+        },
+        "movement_metrics": {
+          "speed": -67.96127901729051,
+          "prediction_offset": -50.53405694158465
+        }
+      },
+      {
+        "timestamp": 1735648684.954874,
+        "hoop_position": {
+          "x": 184,
+          "y": 285
+        },
+        "predicted_x": 133.4078558908024,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 106.58157100704395,
+          "power": 0.5921238148883988,
+          "distance": 236.84952595535952
+        },
+        "movement_metrics": {
+          "speed": -68.04797628238445,
+          "prediction_offset": -50.59214410919759
+        }
+      },
+      {
+        "timestamp": 1735648685.1728265,
+        "hoop_position": {
+          "x": 168,
+          "y": 281
+        },
+        "predicted_x": 116.725105313148,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 110.04330363827859,
+          "power": 0.6147319429763675,
+          "distance": 245.892777190547
+        },
+        "movement_metrics": {
+          "speed": -69.06700699530148,
+          "prediction_offset": -51.274894686851994
+        }
+      },
+      {
+        "timestamp": 1735648685.3874764,
+        "hoop_position": {
+          "x": 154,
+          "y": 275
+        },
+        "predicted_x": 102.43094354645731,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.58258194855357,
+          "power": 0.6417011516768422,
+          "distance": 256.68046067073686
+        },
+        "movement_metrics": {
+          "speed": -69.50605440827265,
+          "prediction_offset": -51.569056453542686
+        }
+      },
+      {
+        "timestamp": 1735648685.603112,
+        "hoop_position": {
+          "x": 137,
+          "y": 274
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.99489891033386,
+          "power": 0.6463600003094252,
+          "distance": 258.54400012377005
+        },
+        "movement_metrics": {
+          "speed": -72.48990059515421,
+          "prediction_offset": -37
+        }
+      },
+      {
+        "timestamp": 1735648685.8208413,
+        "hoop_position": {
+          "x": 107,
+          "y": 274
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.99489891033386,
+          "power": 0.6463600003094252,
+          "distance": 258.54400012377005
+        },
+        "movement_metrics": {
+          "speed": -93.9483206534184,
+          "prediction_offset": -7
+        }
+      },
+      {
+        "timestamp": 1735648686.0388863,
+        "hoop_position": {
+          "x": 99,
+          "y": 274
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.99489891033386,
+          "power": 0.6463600003094252,
+          "distance": 258.54400012377005
+        },
+        "movement_metrics": {
+          "speed": -84.43738532104429,
+          "prediction_offset": 1
+        }
+      },
+      {
+        "timestamp": 1735648686.2548869,
+        "hoop_position": {
+          "x": 99,
+          "y": 274
+        },
+        "predicted_x": 99,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 115.19859051364818,
+          "power": 0.6473407139984322,
+          "distance": 258.93628559937287
+        },
+        "movement_metrics": {
+          "speed": -58.158476396452556,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648686.470501,
+        "hoop_position": {
+          "x": 106,
+          "y": 274
+        },
+        "predicted_x": 110.05658136022792,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 112.91261684710847,
+          "power": 0.6369591107063352,
+          "distance": 254.78364428253406
+        },
+        "movement_metrics": {
+          "speed": -1.4080875220478717,
+          "prediction_offset": 4.0565813602279235
+        }
+      },
+      {
+        "timestamp": 1735648686.6724875,
+        "hoop_position": {
+          "x": 111,
+          "y": 274
+        },
+        "predicted_x": 111,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 112.71417484434872,
+          "power": 0.6361210576611971,
+          "distance": 254.44842306447882
+        },
+        "movement_metrics": {
+          "speed": 19.07317851176156,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648686.886777,
+        "hoop_position": {
+          "x": 124,
+          "y": 274
+        },
+        "predicted_x": 155.3276837602057,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 100.86302635515537,
+          "power": 0.6058566273813661,
+          "distance": 242.34265095254648
+        },
+        "movement_metrics": {
+          "speed": 39.29505038836672,
+          "prediction_offset": 31.3276837602057
+        }
+      },
+      {
+        "timestamp": 1735648687.1050775,
+        "hoop_position": {
+          "x": 166,
+          "y": 280
+        },
+        "predicted_x": 233.04535279888344,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 82.1356955661446,
+          "power": 0.5855067497262783,
+          "distance": 234.20269989051133
+        },
+        "movement_metrics": {
+          "speed": 92.60500417743798,
+          "prediction_offset": 67.04535279888344
+        }
+      },
+      {
+        "timestamp": 1735648687.3204956,
+        "hoop_position": {
+          "x": 180,
+          "y": 300
+        },
+        "predicted_x": 256.03134209370984,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 75.4482298500365,
+          "power": 0.5475653420633635,
+          "distance": 219.0261368253454
+        },
+        "movement_metrics": {
+          "speed": 106.01692849807438,
+          "prediction_offset": 76.03134209370984
+        }
+      },
+      {
+        "timestamp": 1735648687.5223362,
+        "hoop_position": {
+          "x": 196,
+          "y": 307
+        },
+        "predicted_x": 276.18642366082577,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 69.85882921833746,
+          "power": 0.545882303608715,
+          "distance": 218.35292144348603
+        },
+        "movement_metrics": {
+          "speed": 112.21854277735191,
+          "prediction_offset": 80.18642366082577
+        }
+      },
+      {
+        "timestamp": 1735648687.7349546,
+        "hoop_position": {
+          "x": 210,
+          "y": 307
+        },
+        "predicted_x": 261.92368119869724,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 73.44864626167707,
+          "power": 0.5346534796646358,
+          "distance": 213.86139186585433
+        },
+        "movement_metrics": {
+          "speed": 70.03534507268246,
+          "prediction_offset": 51.92368119869724
+        }
+      },
+      {
+        "timestamp": 1735648687.9369845,
+        "hoop_position": {
+          "x": 224,
+          "y": 307
+        },
+        "predicted_x": 276.88552476110726,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 69.68679349684862,
+          "power": 0.5464865784506321,
+          "distance": 218.59463138025285
+        },
+        "movement_metrics": {
+          "speed": 71.47093247926455,
+          "prediction_offset": 52.88552476110726
+        }
+      },
+      {
+        "timestamp": 1735648688.1538925,
+        "hoop_position": {
+          "x": 239,
+          "y": 307
+        },
+        "predicted_x": 289.6261264464515,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 66.62008225369784,
+          "power": 0.5583434778929902,
+          "distance": 223.3373911571961
+        },
+        "movement_metrics": {
+          "speed": 68.09869618873363,
+          "prediction_offset": 50.62612644645151
+        }
+      },
+      {
+        "timestamp": 1735648688.3714745,
+        "hoop_position": {
+          "x": 254,
+          "y": 307
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 63.77131939783213,
+          "power": 0.5713252138668483,
+          "distance": 228.53008554673934
+        },
+        "movement_metrics": {
+          "speed": 69.12997944869807,
+          "prediction_offset": 48
+        }
+      },
+      {
+        "timestamp": 1735648688.5869882,
+        "hoop_position": {
+          "x": 268,
+          "y": 307
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 63.77131939783213,
+          "power": 0.5713252138668483,
+          "distance": 228.53008554673934
+        },
+        "movement_metrics": {
+          "speed": 67.68478180370886,
+          "prediction_offset": 34
+        }
+      },
+      {
+        "timestamp": 1735648688.7868223,
+        "hoop_position": {
+          "x": 282,
+          "y": 307
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 63.77131939783213,
+          "power": 0.5713252138668483,
+          "distance": 228.53008554673934
+        },
+        "movement_metrics": {
+          "speed": 67.98623536389583,
+          "prediction_offset": 20
+        }
+      },
+      {
+        "timestamp": 1735648688.9880743,
+        "hoop_position": {
+          "x": 296,
+          "y": 307
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 63.77131939783213,
+          "power": 0.5713252138668483,
+          "distance": 228.53008554673934
+        },
+        "movement_metrics": {
+          "speed": 68.1945691889206,
+          "prediction_offset": 6
+        }
+      },
+      {
+        "timestamp": 1735648689.2038808,
+        "hoop_position": {
+          "x": 281,
+          "y": 337
+        },
+        "predicted_x": 291.6592234829283,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 60.613462472484564,
+          "power": 0.45,
+          "distance": 197.08905297486095
+        },
+        "movement_metrics": {
+          "speed": 23.37197534765421,
+          "prediction_offset": 10.659223482928326
+        }
+      },
+      {
+        "timestamp": 1735648689.4025888,
+        "hoop_position": {
+          "x": 268,
+          "y": 358
+        },
+        "predicted_x": 248.40186233271848,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 70.89140944048609,
+          "power": 0.45,
+          "distance": 161.1301851069811
+        },
+        "movement_metrics": {
+          "speed": -21.788265175047044,
+          "prediction_offset": -19.59813766728152
+        }
+      },
+      {
+        "timestamp": 1735648689.6025176,
+        "hoop_position": {
+          "x": 267,
+          "y": 361
+        },
+        "predicted_x": 267,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 64.39053046156255,
+          "power": 0.45,
+          "distance": 164.7938105633825
+        },
+        "movement_metrics": {
+          "speed": -46.64370295581497,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648689.801924,
+        "hoop_position": {
+          "x": 261,
+          "y": 361
+        },
+        "predicted_x": 233.5519402953514,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 75.83459227549594,
+          "power": 0.45,
+          "distance": 154.468860347295
+        },
+        "movement_metrics": {
+          "speed": -33.50456672335614,
+          "prediction_offset": -27.448059704648614
+        }
+      },
+      {
+        "timestamp": 1735648690.00277,
+        "hoop_position": {
+          "x": 252,
+          "y": 361
+        },
+        "predicted_x": 229.1553204318219,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 77.43797060948438,
+          "power": 0.45,
+          "distance": 153.60248067208605
+        },
+        "movement_metrics": {
+          "speed": -26.633850101758327,
+          "prediction_offset": -22.844679568178094
+        }
+      },
+      {
+        "timestamp": 1735648690.2035458,
+        "hoop_position": {
+          "x": 184,
+          "y": 362
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 121.95369655286491,
+          "power": 0.45,
+          "distance": 180.83417818543043
+        },
+        "movement_metrics": {
+          "speed": -137.86196687515988,
+          "prediction_offset": -84
+        }
+      },
+      {
+        "timestamp": 1735648690.4010525,
+        "hoop_position": {
+          "x": 202,
+          "y": 361
+        },
+        "predicted_x": 141.70617086443437,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 109.43866354697737,
+          "power": 0.45,
+          "distance": 162.22440683681864
+        },
+        "movement_metrics": {
+          "speed": -97.45347632173974,
+          "prediction_offset": -60.29382913556563
+        }
+      },
+      {
+        "timestamp": 1735648690.6045208,
+        "hoop_position": {
+          "x": 185,
+          "y": 362
+        },
+        "predicted_x": 106.05409731059908,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 120.33269304954679,
+          "power": 0.45,
+          "distance": 177.52387004993213
+        },
+        "movement_metrics": {
+          "speed": -110.36701893940436,
+          "prediction_offset": -78.94590268940092
+        }
+      },
+      {
+        "timestamp": 1735648690.8189812,
+        "hoop_position": {
+          "x": 171,
+          "y": 362
+        },
+        "predicted_x": 153.1147721443181,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 105.70489526264433,
+          "power": 0.45,
+          "distance": 157.4579151608155
+        },
+        "movement_metrics": {
+          "speed": -19.231683366689392,
+          "prediction_offset": -17.885227855681904
+        }
+      },
+      {
+        "timestamp": 1735648691.0198534,
+        "hoop_position": {
+          "x": 138,
+          "y": 362
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 121.95369655286491,
+          "power": 0.45,
+          "distance": 180.83417818543043
+        },
+        "movement_metrics": {
+          "speed": -104.37159597665776,
+          "prediction_offset": -38
+        }
+      },
+      {
+        "timestamp": 1735648691.2366085,
+        "hoop_position": {
+          "x": 137,
+          "y": 363
+        },
+        "predicted_x": 137,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 111.24498384724436,
+          "power": 0.45,
+          "distance": 162.16349774224778
+        },
+        "movement_metrics": {
+          "speed": -78.0590663819367,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648691.43601,
+        "hoop_position": {
+          "x": 121,
+          "y": 365
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 122.49197785976759,
+          "power": 0.45,
+          "distance": 178.35358140502814
+        },
+        "movement_metrics": {
+          "speed": -83.04574710546308,
+          "prediction_offset": -21
+        }
+      },
+      {
+        "timestamp": 1735648691.6385918,
+        "hoop_position": {
+          "x": 114,
+          "y": 365
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 122.49197785976759,
+          "power": 0.45,
+          "distance": 178.35358140502814
+        },
+        "movement_metrics": {
+          "speed": -39.80253232319197,
+          "prediction_offset": -14
+        }
+      },
+      {
+        "timestamp": 1735648691.8533404,
+        "hoop_position": {
+          "x": 101,
+          "y": 365
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 122.49197785976759,
+          "power": 0.45,
+          "distance": 178.35358140502814
+        },
+        "movement_metrics": {
+          "speed": -58.443330535650034,
+          "prediction_offset": -1
+        }
+      },
+      {
+        "timestamp": 1735648692.0528827,
+        "hoop_position": {
+          "x": 114,
+          "y": 365
+        },
+        "predicted_x": 112.31323801812779,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 119.10305559642582,
+          "power": 0.45,
+          "distance": 171.68093007328815
+        },
+        "movement_metrics": {
+          "speed": -9.980241763988365,
+          "prediction_offset": -1.686761981872209
+        }
+      },
+      {
+        "timestamp": 1735648692.252089,
+        "hoop_position": {
+          "x": 123,
+          "y": 365
+        },
+        "predicted_x": 139.12032186662074,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 110.82866846562696,
+          "power": 0.45,
+          "distance": 159.493243010137
+        },
+        "movement_metrics": {
+          "speed": 16.597495323314543,
+          "prediction_offset": 16.120321866620742
+        }
+      },
+      {
+        "timestamp": 1735648692.4535336,
+        "hoop_position": {
+          "x": 129,
+          "y": 365
+        },
+        "predicted_x": 165.2919572031069,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 101.65337932320085,
+          "power": 0.45,
+          "distance": 151.27479737347113
+        },
+        "movement_metrics": {
+          "speed": 46.704413735980474,
+          "prediction_offset": 36.291957203106904
+        }
+      },
+      {
+        "timestamp": 1735648692.675286,
+        "hoop_position": {
+          "x": 156,
+          "y": 365
+        },
+        "predicted_x": 204.93448150699362,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 86.46683416702498,
+          "power": 0.45,
+          "distance": 147.05264412695502
+        },
+        "movement_metrics": {
+          "speed": 65.57385299551285,
+          "prediction_offset": 48.93448150699362
+        }
+      },
+      {
+        "timestamp": 1735648692.8864834,
+        "hoop_position": {
+          "x": 171,
+          "y": 365
+        },
+        "predicted_x": 225.70638129766073,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 78.45942906525063,
+          "power": 0.45,
+          "distance": 149.06174987844938
+        },
+        "movement_metrics": {
+          "speed": 74.18862880247869,
+          "prediction_offset": 54.70638129766073
+        }
+      },
+      {
+        "timestamp": 1735648693.1019354,
+        "hoop_position": {
+          "x": 187,
+          "y": 347
+        },
+        "predicted_x": 251.6397199752166,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 70.93836285146206,
+          "power": 0.45,
+          "distance": 172.5960058609942
+        },
+        "movement_metrics": {
+          "speed": 89.01450742569641,
+          "prediction_offset": 64.6397199752166
+        }
+      },
+      {
+        "timestamp": 1735648693.3032808,
+        "hoop_position": {
+          "x": 200,
+          "y": 300
+        },
+        "predicted_x": 251.8668926905099,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 76.507616257722,
+          "power": 0.545042663307125,
+          "distance": 218.01706532285002
+        },
+        "movement_metrics": {
+          "speed": 69.95058610523866,
+          "prediction_offset": 51.8668926905099
+        }
+      },
+      {
+        "timestamp": 1735648693.504593,
+        "hoop_position": {
+          "x": 199,
+          "y": 278
+        },
+        "predicted_x": 199,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 90.48969559312923,
+          "power": 0.5850213671311502,
+          "distance": 234.00854685246006
+        },
+        "movement_metrics": {
+          "speed": 44.620245518063314,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648693.7189415,
+        "hoop_position": {
+          "x": 229,
+          "y": 278
+        },
+        "predicted_x": 278.5677739824547,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 71.6603528477822,
+          "power": 0.6163032916135589,
+          "distance": 246.52131664542355
+        },
+        "movement_metrics": {
+          "speed": 66.51906564545476,
+          "prediction_offset": 49.567773982454696
+        }
+      },
+      {
+        "timestamp": 1735648693.9182825,
+        "hoop_position": {
+          "x": 242,
+          "y": 278
+        },
+        "predicted_x": 291.71276445864817,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 70.81061135997788,
+          "power": 0.6274193455921754,
+          "distance": 250.96773823687016
+        },
+        "movement_metrics": {
+          "speed": 66.7354693412659,
+          "prediction_offset": 49.71276445864817
+        }
+      },
+      {
+        "timestamp": 1735648694.1200109,
+        "hoop_position": {
+          "x": 256,
+          "y": 278
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 68.65381635708749,
+          "power": 0.6371665794751008,
+          "distance": 254.86663179004034
+        },
+        "movement_metrics": {
+          "speed": 91.52469418658909,
+          "prediction_offset": 46
+        }
+      },
+      {
+        "timestamp": 1735648694.335982,
+        "hoop_position": {
+          "x": 271,
+          "y": 278
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 68.65381635708749,
+          "power": 0.6371665794751008,
+          "distance": 254.86663179004034
+        },
+        "movement_metrics": {
+          "speed": 68.0229403413142,
+          "prediction_offset": 31
+        }
+      },
+      {
+        "timestamp": 1735648694.5405054,
+        "hoop_position": {
+          "x": 287,
+          "y": 278
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 68.65381635708749,
+          "power": 0.6371665794751008,
+          "distance": 254.86663179004034
+        },
+        "movement_metrics": {
+          "speed": 72.36154770812745,
+          "prediction_offset": 15
+        }
+      },
+      {
+        "timestamp": 1735648694.7528944,
+        "hoop_position": {
+          "x": 293,
+          "y": 278
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 68.65381635708749,
+          "power": 0.6371665794751008,
+          "distance": 254.86663179004034
+        },
+        "movement_metrics": {
+          "speed": 58.644810794911685,
+          "prediction_offset": 9
+        }
+      },
+      {
+        "timestamp": 1735648694.9693925,
+        "hoop_position": {
+          "x": 278,
+          "y": 278
+        },
+        "predicted_x": 281.3071237616968,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 71.05814665798299,
+          "power": 0.6184922904070657,
+          "distance": 247.39691616282627
+        },
+        "movement_metrics": {
+          "speed": 12.398692181637054,
+          "prediction_offset": 3.3071237616968006
+        }
+      },
+      {
+        "timestamp": 1735648695.1692345,
+        "hoop_position": {
+          "x": 252,
+          "y": 295
+        },
+        "predicted_x": 208.77931263877434,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 87.94686182024685,
+          "power": 0.5428484923595843,
+          "distance": 217.13939694383373
+        },
+        "movement_metrics": {
+          "speed": -57.045802031680104,
+          "prediction_offset": -43.22068736122566
+        }
+      },
+      {
+        "timestamp": 1735648695.3691785,
+        "hoop_position": {
+          "x": 221,
+          "y": 314
+        },
+        "predicted_x": 136.8437757371057,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 107.95343055817506,
+          "power": 0.5203365564208827,
+          "distance": 208.13462256835308
+        },
+        "movement_metrics": {
+          "speed": -118.14361830282733,
+          "prediction_offset": -84.15622426289431
+        }
+      },
+      {
+        "timestamp": 1735648695.586624,
+        "hoop_position": {
+          "x": 187,
+          "y": 320
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 117.74624009040464,
+          "power": 0.542361733532151,
+          "distance": 216.9446934128604
+        },
+        "movement_metrics": {
+          "speed": -147.16910134208203,
+          "prediction_offset": -87
+        }
+      },
+      {
+        "timestamp": 1735648695.786289,
+        "hoop_position": {
+          "x": 156,
+          "y": 320
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 117.74624009040464,
+          "power": 0.542361733532151,
+          "distance": 216.9446934128604
+        },
+        "movement_metrics": {
+          "speed": -155.55483793606894,
+          "prediction_offset": -56
+        }
+      },
+      {
+        "timestamp": 1735648696.0029569,
+        "hoop_position": {
+          "x": 123,
+          "y": 320
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 117.74624009040464,
+          "power": 0.542361733532151,
+          "distance": 216.9446934128604
+        },
+        "movement_metrics": {
+          "speed": -154.64264953550727,
+          "prediction_offset": -23
+        }
+      },
+      {
+        "timestamp": 1735648696.2036695,
+        "hoop_position": {
+          "x": 107,
+          "y": 320
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 117.74624009040464,
+          "power": 0.542361733532151,
+          "distance": 216.9446934128604
+        },
+        "movement_metrics": {
+          "speed": -129.09425945477193,
+          "prediction_offset": -7
+        }
+      },
+      {
+        "timestamp": 1735648696.4192014,
+        "hoop_position": {
+          "x": 126,
+          "y": 320
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 117.74624009040464,
+          "power": 0.542361733532151,
+          "distance": 216.9446934128604
+        },
+        "movement_metrics": {
+          "speed": -47.95624583085803,
+          "prediction_offset": -26
+        }
+      },
+      {
+        "timestamp": 1735648696.6223078,
+        "hoop_position": {
+          "x": 144,
+          "y": 320
+        },
+        "predicted_x": 170.677089063264,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 96.9747000651738,
+          "power": 0.45,
+          "distance": 194.37972869534832
+        },
+        "movement_metrics": {
+          "speed": 32.35386427352834,
+          "prediction_offset": 26.677089063263992
+        }
+      },
+      {
+        "timestamp": 1735648696.837436,
+        "hoop_position": {
+          "x": 163,
+          "y": 320
+        },
+        "predicted_x": 227.20498986393392,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 80.22804553523734,
+          "power": 0.45,
+          "distance": 193.7800337851371
+        },
+        "movement_metrics": {
+          "speed": 88.36565651333422,
+          "prediction_offset": 64.20498986393392
+        }
+      },
+      {
+        "timestamp": 1735648697.0532045,
+        "hoop_position": {
+          "x": 182,
+          "y": 320
+        },
+        "predicted_x": 246.1833877182923,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 74.75752420636988,
+          "power": 0.45,
+          "distance": 197.24486945343224
+        },
+        "movement_metrics": {
+          "speed": 88.33341450491385,
+          "prediction_offset": 64.1833877182923
+        }
+      },
+      {
+        "timestamp": 1735648697.2691798,
+        "hoop_position": {
+          "x": 201,
+          "y": 285
+        },
+        "predicted_x": 265.0381162601696,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 74.24590961265399,
+          "power": 0.5896496859054906,
+          "distance": 235.85987436219625
+        },
+        "movement_metrics": {
+          "speed": 88.11659143308896,
+          "prediction_offset": 64.0381162601696
+        }
+      },
+      {
+        "timestamp": 1735648697.4872694,
+        "hoop_position": {
+          "x": 200,
+          "y": 269
+        },
+        "predicted_x": 200,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 90.2357837698766,
+          "power": 0.6075051440111433,
+          "distance": 243.00205760445732
+        },
+        "movement_metrics": {
+          "speed": 57.14835523006709,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648697.7048862,
+        "hoop_position": {
+          "x": 239,
+          "y": 268
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 69.51365250212046,
+          "power": 0.6601941002462836,
+          "distance": 264.0776400985134
+        },
+        "movement_metrics": {
+          "speed": 87.53395500688318,
+          "prediction_offset": 63
+        }
+      },
+      {
+        "timestamp": 1735648697.9279373,
+        "hoop_position": {
+          "x": 259,
+          "y": 268
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 69.51365250212046,
+          "power": 0.6601941002462836,
+          "distance": 264.0776400985134
+        },
+        "movement_metrics": {
+          "speed": 88.09813315409751,
+          "prediction_offset": 43
+        }
+      },
+      {
+        "timestamp": 1735648698.14469,
+        "hoop_position": {
+          "x": 278,
+          "y": 268
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 69.51365250212046,
+          "power": 0.6601941002462836,
+          "distance": 264.0776400985134
+        },
+        "movement_metrics": {
+          "speed": 118.84571494817304,
+          "prediction_offset": 24
+        }
+      },
+      {
+        "timestamp": 1735648698.3599744,
+        "hoop_position": {
+          "x": 296,
+          "y": 268
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 69.51365250212046,
+          "power": 0.6601941002462836,
+          "distance": 264.0776400985134
+        },
+        "movement_metrics": {
+          "speed": 86.97779626794068,
+          "prediction_offset": 6
+        }
+      },
+      {
+        "timestamp": 1735648698.5687869,
+        "hoop_position": {
+          "x": 276,
+          "y": 268
+        },
+        "predicted_x": 287.8590106059036,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 72.40531032940945,
+          "power": 0.6474975276180427,
+          "distance": 258.9990110472171
+        },
+        "movement_metrics": {
+          "speed": 25.162702396871097,
+          "prediction_offset": 11.85901060590362
+        }
+      },
+      {
+        "timestamp": 1735648698.785485,
+        "hoop_position": {
+          "x": 257,
+          "y": 268
+        },
+        "predicted_x": 229.7004066137337,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 83.29143144821275,
+          "power": 0.6142053470735258,
+          "distance": 245.68213882941032
+        },
+        "movement_metrics": {
+          "speed": -33.28297520338255,
+          "prediction_offset": -27.29959338626631
+        }
+      },
+      {
+        "timestamp": 1735648699.0053742,
+        "hoop_position": {
+          "x": 238,
+          "y": 268
+        },
+        "predicted_x": 172.72982715894653,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 96.60889998703614,
+          "power": 0.6140806272004466,
+          "distance": 245.63225088017867
+        },
+        "movement_metrics": {
+          "speed": -89.9554818523186,
+          "prediction_offset": -65.27017284105347
+        }
+      },
+      {
+        "timestamp": 1735648699.218983,
+        "hoop_position": {
+          "x": 218,
+          "y": 318
+        },
+        "predicted_x": 153.2101258374078,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 101.83868312669921,
+          "power": 0.45,
+          "distance": 199.79957976051
+        },
+        "movement_metrics": {
+          "speed": -89.23861815312269,
+          "prediction_offset": -64.78987416259221
+        }
+      },
+      {
+        "timestamp": 1735648699.419039,
+        "hoop_position": {
+          "x": 202,
+          "y": 348
+        },
+        "predicted_x": 138.93023544891363,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 108.73036000196085,
+          "power": 0.45,
+          "distance": 175.35294600156365
+        },
+        "movement_metrics": {
+          "speed": -86.67129037475577,
+          "prediction_offset": -63.069764551086365
+        }
+      },
+      {
+        "timestamp": 1735648699.6181252,
+        "hoop_position": {
+          "x": 184,
+          "y": 352
+        },
+        "predicted_x": 120.03557685363907,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.84067138939078,
+          "power": 0.45,
+          "distance": 179.3188161220762
+        },
+        "movement_metrics": {
+          "speed": -88.00660171098646,
+          "prediction_offset": -63.96442314636093
+        }
+      },
+      {
+        "timestamp": 1735648699.817844,
+        "hoop_position": {
+          "x": 166,
+          "y": 353
+        },
+        "predicted_x": 102.81777279071821,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 119.69525899125112,
+          "power": 0.45,
+          "distance": 186.87094407578465
+        },
+        "movement_metrics": {
+          "speed": -86.83914508848027,
+          "prediction_offset": -63.18222720928179
+        }
+      },
+      {
+        "timestamp": 1735648700.0187206,
+        "hoop_position": {
+          "x": 149,
+          "y": 353
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 120.42453450025559,
+          "power": 0.45,
+          "distance": 188.36666371733614
+        },
+        "movement_metrics": {
+          "speed": -88.38962755291692,
+          "prediction_offset": -49
+        }
+      },
+      {
+        "timestamp": 1735648700.2193956,
+        "hoop_position": {
+          "x": 131,
+          "y": 353
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 120.42453450025559,
+          "power": 0.45,
+          "distance": 188.36666371733614
+        },
+        "movement_metrics": {
+          "speed": -88.15101575912217,
+          "prediction_offset": -31
+        }
+      },
+      {
+        "timestamp": 1735648700.4209964,
+        "hoop_position": {
+          "x": 114,
+          "y": 353
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 120.42453450025559,
+          "power": 0.45,
+          "distance": 188.36666371733614
+        },
+        "movement_metrics": {
+          "speed": -86.2171188564572,
+          "prediction_offset": -14
+        }
+      },
+      {
+        "timestamp": 1735648700.6386552,
+        "hoop_position": {
+          "x": 108,
+          "y": 353
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 120.42453450025559,
+          "power": 0.45,
+          "distance": 188.36666371733614
+        },
+        "movement_metrics": {
+          "speed": -67.19613969883363,
+          "prediction_offset": -8
+        }
+      },
+      {
+        "timestamp": 1735648700.853391,
+        "hoop_position": {
+          "x": 128,
+          "y": 353
+        },
+        "predicted_x": 128.81173575023467,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 112.4187251125721,
+          "power": 0.45,
+          "distance": 174.62000313650768
+        },
+        "movement_metrics": {
+          "speed": -6.251140671291542,
+          "prediction_offset": 0.8117357502346749
+        }
+      },
+      {
+        "timestamp": 1735648701.0677886,
+        "hoop_position": {
+          "x": 147,
+          "y": 351
+        },
+        "predicted_x": 186.4362157702099,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 93.16881042924967,
+          "power": 0.45,
+          "distance": 161.65736547120852
+        },
+        "movement_metrics": {
+          "speed": 51.39733697046254,
+          "prediction_offset": 39.43621577020991
+        }
+      },
+      {
+        "timestamp": 1735648701.268811,
+        "hoop_position": {
+          "x": 164,
+          "y": 343
+        },
+        "predicted_x": 228.47942695279337,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 78.76452276859673,
+          "power": 0.45,
+          "distance": 171.21950503857295
+        },
+        "movement_metrics": {
+          "speed": 88.77526410864682,
+          "prediction_offset": 64.47942695279337
+        }
+      },
+      {
+        "timestamp": 1735648701.485059,
+        "hoop_position": {
+          "x": 183,
+          "y": 339
+        },
+        "predicted_x": 246.3011961589528,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 73.32618788256816,
+          "power": 0.45,
+          "distance": 178.83287833458343
+        },
+        "movement_metrics": {
+          "speed": 87.01671068500418,
+          "prediction_offset": 63.30119615895279
+        }
+      },
+      {
+        "timestamp": 1735648701.6856759,
+        "hoop_position": {
+          "x": 201,
+          "y": 339
+        },
+        "predicted_x": 264.5475128300059,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 67.8303701459908,
+          "power": 0.45,
+          "distance": 184.30216055944587
+        },
+        "movement_metrics": {
+          "speed": 87.38434750747153,
+          "prediction_offset": 63.54751283000593
+        }
+      },
+      {
+        "timestamp": 1735648701.91905,
+        "hoop_position": {
+          "x": 221,
+          "y": 338
+        },
+        "predicted_x": 284.800239127612,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 62.2840422491857,
+          "power": 0.45,
+          "distance": 193.12814418889067
+        },
+        "movement_metrics": {
+          "speed": 87.76155093673425,
+          "prediction_offset": 63.800239127611974
+        }
+      },
+      {
+        "timestamp": 1735648702.1228514,
+        "hoop_position": {
+          "x": 239,
+          "y": 339
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 59.722975061750226,
+          "power": 0.5008118409143298,
+          "distance": 200.32473636573192
+        },
+        "movement_metrics": {
+          "speed": 87.91462107474952,
+          "prediction_offset": 63
+        }
+      },
+      {
+        "timestamp": 1735648702.340409,
+        "hoop_position": {
+          "x": 258,
+          "y": 339
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 59.722975061750226,
+          "power": 0.5008118409143298,
+          "distance": 200.32473636573192
+        },
+        "movement_metrics": {
+          "speed": 87.1179174114945,
+          "prediction_offset": 44
+        }
+      },
+      {
+        "timestamp": 1735648702.5515013,
+        "hoop_position": {
+          "x": 277,
+          "y": 339
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 59.722975061750226,
+          "power": 0.5008118409143298,
+          "distance": 200.32473636573192
+        },
+        "movement_metrics": {
+          "speed": 88.55416493201012,
+          "prediction_offset": 25
+        }
+      },
+      {
+        "timestamp": 1735648702.7686207,
+        "hoop_position": {
+          "x": 294,
+          "y": 339
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 59.722975061750226,
+          "power": 0.5008118409143298,
+          "distance": 200.32473636573192
+        },
+        "movement_metrics": {
+          "speed": 85.21304215648861,
+          "prediction_offset": 8
+        }
+      },
+      {
+        "timestamp": 1735648702.9702477,
+        "hoop_position": {
+          "x": 280,
+          "y": 339
+        },
+        "predicted_x": 297.0811499965552,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 58.952978979861335,
+          "power": 0.45,
+          "distance": 197.89034181753425
+        },
+        "movement_metrics": {
+          "speed": 32.95694029336597,
+          "prediction_offset": 17.08114999655521
+        }
+      },
+      {
+        "timestamp": 1735648703.185929,
+        "hoop_position": {
+          "x": 261,
+          "y": 347
+        },
+        "predicted_x": 238.3052637036477,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 75.26005063796337,
+          "power": 0.45,
+          "distance": 169.16466149878553
+        },
+        "movement_metrics": {
+          "speed": -26.410054173660154,
+          "prediction_offset": -22.69473629635229
+        }
+      },
+      {
+        "timestamp": 1735648703.385223,
+        "hoop_position": {
+          "x": 244,
+          "y": 354
+        },
+        "predicted_x": 184.76813398248322,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 93.86560845996605,
+          "power": 0.45,
+          "distance": 158.83158840234086
+        },
+        "movement_metrics": {
+          "speed": -80.943083608234,
+          "prediction_offset": -59.23186601751678
+        }
+      },
+      {
+        "timestamp": 1735648703.587163,
+        "hoop_position": {
+          "x": 226,
+          "y": 356
+        },
+        "predicted_x": 162.36841799205726,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 101.90881965165698,
+          "power": 0.45,
+          "distance": 160.71216235380695
+        },
+        "movement_metrics": {
+          "speed": -87.50982389245185,
+          "prediction_offset": -63.63158200794274
+        }
+      },
+      {
+        "timestamp": 1735648703.8014734,
+        "hoop_position": {
+          "x": 206,
+          "y": 356
+        },
+        "predicted_x": 141.2004640937937,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 108.97334480659504,
+          "power": 0.45,
+          "distance": 167.06880167942086
+        },
+        "movement_metrics": {
+          "speed": -89.25303866597955,
+          "prediction_offset": -64.7995359062063
+        }
+      },
+      {
+        "timestamp": 1735648704.0020993,
+        "hoop_position": {
+          "x": 190,
+          "y": 356
+        },
+        "predicted_x": 126.44013245839923,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 113.5453681864609,
+          "power": 0.45,
+          "distance": 172.90220891538968
+        },
+        "movement_metrics": {
+          "speed": -87.40278737552353,
+          "prediction_offset": -63.55986754160077
+        }
+      },
+      {
+        "timestamp": 1735648704.2022843,
+        "hoop_position": {
+          "x": 171,
+          "y": 356
+        },
+        "predicted_x": 106.14997663710767,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 119.30014390399965,
+          "power": 0.45,
+          "distance": 182.57197740053434
+        },
+        "movement_metrics": {
+          "speed": -89.32839307894376,
+          "prediction_offset": -64.85002336289233
+        }
+      },
+      {
+        "timestamp": 1735648704.4180605,
+        "hoop_position": {
+          "x": 153,
+          "y": 356
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 120.920469013385,
+          "power": 0.45,
+          "distance": 185.84133017173548
+        },
+        "movement_metrics": {
+          "speed": -86.02745450438967,
+          "prediction_offset": -53
+        }
+      },
+      {
+        "timestamp": 1735648704.6197476,
+        "hoop_position": {
+          "x": 136,
+          "y": 356
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 120.920469013385,
+          "power": 0.45,
+          "distance": 185.84133017173548
+        },
+        "movement_metrics": {
+          "speed": -87.54030745900282,
+          "prediction_offset": -36
+        }
+      },
+      {
+        "timestamp": 1735648704.8374612,
+        "hoop_position": {
+          "x": 117,
+          "y": 356
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 120.920469013385,
+          "power": 0.45,
+          "distance": 185.84133017173548
+        },
+        "movement_metrics": {
+          "speed": -84.99312105272617,
+          "prediction_offset": -17
+        }
+      },
+      {
+        "timestamp": 1735648705.0645144,
+        "hoop_position": {
+          "x": 106,
+          "y": 356
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 120.920469013385,
+          "power": 0.45,
+          "distance": 185.84133017173548
+        },
+        "movement_metrics": {
+          "speed": -73.33546758007735,
+          "prediction_offset": -6
+        }
+      },
+      {
+        "timestamp": 1735648705.2711854,
+        "hoop_position": {
+          "x": 125,
+          "y": 353
+        },
+        "predicted_x": 120.22160349066519,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.93240167307283,
+          "power": 0.45,
+          "distance": 178.34278606834457
+        },
+        "movement_metrics": {
+          "speed": -14.594621655723591,
+          "prediction_offset": -4.7783965093348115
+        }
+      },
+      {
+        "timestamp": 1735648705.4866104,
+        "hoop_position": {
+          "x": 144,
+          "y": 352
+        },
+        "predicted_x": 178.4095374489255,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 96.03649270095356,
+          "power": 0.45,
+          "distance": 161.5869084990226
+        },
+        "movement_metrics": {
+          "speed": 43.894832013321626,
+          "prediction_offset": 34.409537448925505
+        }
+      },
+      {
+        "timestamp": 1735648705.701621,
+        "hoop_position": {
+          "x": 163,
+          "y": 352
+        },
+        "predicted_x": 227.96478063248634,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 78.4338403277183,
+          "power": 0.45,
+          "distance": 162.2562769034163
+        },
+        "movement_metrics": {
+          "speed": 89.4996725858005,
+          "prediction_offset": 64.96478063248634
+        }
+      },
+      {
+        "timestamp": 1735648705.919533,
+        "hoop_position": {
+          "x": 182,
+          "y": 352
+        },
+        "predicted_x": 245.90564905875664,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 72.32267723296938,
+          "power": 0.45,
+          "distance": 166.18218110672458
+        },
+        "movement_metrics": {
+          "speed": 87.91887919217409,
+          "prediction_offset": 63.90564905875664
+        }
+      },
+      {
+        "timestamp": 1735648706.1350045,
+        "hoop_position": {
+          "x": 201,
+          "y": 352
+        },
+        "predicted_x": 264.9013989907683,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 66.22903567486827,
+          "power": 0.45,
+          "distance": 172.288678655846
+        },
+        "movement_metrics": {
+          "speed": 87.9125358071169,
+          "prediction_offset": 63.901398990768314
+        }
+      },
+      {
+        "timestamp": 1735648706.3352938,
+        "hoop_position": {
+          "x": 218,
+          "y": 352
+        },
+        "predicted_x": 281.1218602250762,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 61.40004907652999,
+          "power": 0.45,
+          "distance": 178.93996894469007
+        },
+        "movement_metrics": {
+          "speed": 86.74904511205405,
+          "prediction_offset": 63.121860225076205
+        }
+      },
+      {
+        "timestamp": 1735648706.535842,
+        "hoop_position": {
+          "x": 236,
+          "y": 352
+        },
+        "predicted_x": 299.69422349242205,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 56.33210012347701,
+          "power": 0.45,
+          "distance": 187.9908235812912
+        },
+        "movement_metrics": {
+          "speed": 87.60331864540602,
+          "prediction_offset": 63.694223492422054
+        }
+      },
+      {
+        "timestamp": 1735648706.7525184,
+        "hoop_position": {
+          "x": 254,
+          "y": 352
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 55.737830703874096,
+          "power": 0.45,
+          "distance": 189.21152184790438
+        },
+        "movement_metrics": {
+          "speed": 85.901468779516,
+          "prediction_offset": 48
+        }
+      },
+      {
+        "timestamp": 1735648706.969065,
+        "hoop_position": {
+          "x": 274,
+          "y": 352
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 55.737830703874096,
+          "power": 0.45,
+          "distance": 189.21152184790438
+        },
+        "movement_metrics": {
+          "speed": 88.39535355201905,
+          "prediction_offset": 28
+        }
+      },
+      {
+        "timestamp": 1735648707.1870143,
+        "hoop_position": {
+          "x": 293,
+          "y": 338
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 59.86655895418449,
+          "power": 0.5029724147505508,
+          "distance": 201.1889659002203
+        },
+        "movement_metrics": {
+          "speed": 87.53608846929637,
+          "prediction_offset": 9
+        }
+      },
+      {
+        "timestamp": 1735648707.4013453,
+        "hoop_position": {
+          "x": 280,
+          "y": 324
+        },
+        "predicted_x": 301.5501411357944,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 61.86029416652533,
+          "power": 0.5330005328469908,
+          "distance": 213.2002131387963
+        },
+        "movement_metrics": {
+          "speed": 39.627076322081145,
+          "prediction_offset": 21.550141135794377
+        }
+      },
+      {
+        "timestamp": 1735648707.6183994,
+        "hoop_position": {
+          "x": 261,
+          "y": 321
+        },
+        "predicted_x": 242.37366493786274,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 75.7776476101159,
+          "power": 0.45,
+          "distance": 195.42973200204347
+        },
+        "movement_metrics": {
+          "speed": -20.33781352557798,
+          "prediction_offset": -18.626335062137258
+        }
+      },
+      {
+        "timestamp": 1735648707.835685,
+        "hoop_position": {
+          "x": 240,
+          "y": 321
+        },
+        "predicted_x": 180.3198212860337,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 94.1795239870885,
+          "power": 0.45,
+          "distance": 192.1162923638742
+        },
+        "movement_metrics": {
+          "speed": -81.61220703577062,
+          "prediction_offset": -59.68017871396631
+        }
+      },
+      {
+        "timestamp": 1735648708.0503771,
+        "hoop_position": {
+          "x": 221,
+          "y": 321
+        },
+        "predicted_x": 155.10111543239975,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 101.51243414398131,
+          "power": 0.45,
+          "distance": 196.43754123015765
+        },
+        "movement_metrics": {
+          "speed": -90.89385756358244,
+          "prediction_offset": -65.89888456760025
+        }
+      },
+      {
+        "timestamp": 1735648708.252032,
+        "hoop_position": {
+          "x": 204,
+          "y": 321
+        },
+        "predicted_x": 138.8232266585353,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 108.03177039738672,
+          "power": 0.5021637627753761,
+          "distance": 200.86550511015045
+        },
+        "movement_metrics": {
+          "speed": -89.81607961412641,
+          "prediction_offset": -65.1767733414647
+        }
+      },
+      {
+        "timestamp": 1735648708.4694228,
+        "hoop_position": {
+          "x": 185,
+          "y": 321
+        },
+        "predicted_x": 121.88833781480506,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 112.49919902146107,
+          "power": 0.5168392828874877,
+          "distance": 206.73571315499507
+        },
+        "movement_metrics": {
+          "speed": -86.73382415700739,
+          "prediction_offset": -63.111662185194945
+        }
+      },
+      {
+        "timestamp": 1735648708.6860142,
+        "hoop_position": {
+          "x": 166,
+          "y": 321
+        },
+        "predicted_x": 103.06165048993805,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 117.14721898338561,
+          "power": 0.5366150872876377,
+          "distance": 214.6460349150551
+        },
+        "movement_metrics": {
+          "speed": -86.47514852248052,
+          "prediction_offset": -62.938349510061954
+        }
+      },
+      {
+        "timestamp": 1735648708.9038546,
+        "hoop_position": {
+          "x": 147,
+          "y": 321
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 117.8696984731564,
+          "power": 0.5401504420066691,
+          "distance": 216.06017680266763
+        },
+        "movement_metrics": {
+          "speed": -87.4476050897291,
+          "prediction_offset": -47
+        }
+      },
+      {
+        "timestamp": 1735648709.1188426,
+        "hoop_position": {
+          "x": 128,
+          "y": 311
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 116.67895913737111,
+          "power": 0.562372207705893,
+          "distance": 224.94888308235718
+        },
+        "movement_metrics": {
+          "speed": -87.77321039882652,
+          "prediction_offset": -28
+        }
+      },
+      {
+        "timestamp": 1735648709.317915,
+        "hoop_position": {
+          "x": 111,
+          "y": 294
+        },
+        "predicted_x": 100,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 114.8584192594786,
+          "power": 0.6006506888366981,
+          "distance": 240.26027553467927
+        },
+        "movement_metrics": {
+          "speed": -86.99763890513249,
+          "prediction_offset": -11
+        }
+      },
+      {
+        "timestamp": 1735648709.5194802,
+        "hoop_position": {
+          "x": 110,
+          "y": 288
+        },
+        "predicted_x": 110,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 112.10944834375168,
+          "power": 0.604447061370969,
+          "distance": 241.7788245483876
+        },
+        "movement_metrics": {
+          "speed": -59.578094800754,
+          "prediction_offset": 0
+        }
+      },
+      {
+        "timestamp": 1735648709.7348995,
+        "hoop_position": {
+          "x": 129,
+          "y": 288
+        },
+        "predicted_x": 133.51823192461836,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 106.76534239525473,
+          "power": 0.5848599673350215,
+          "distance": 233.94398693400862
+        },
+        "movement_metrics": {
+          "speed": -0.7190568289278095,
+          "prediction_offset": 4.518231924618362
+        }
+      },
+      {
+        "timestamp": 1735648709.9346058,
+        "hoop_position": {
+          "x": 147,
+          "y": 288
+        },
+        "predicted_x": 190.71958259616832,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 92.6277298733819,
+          "power": 0.560589460869076,
+          "distance": 224.2357843476304
+        },
+        "movement_metrics": {
+          "speed": 57.790421785325854,
+          "prediction_offset": 43.71958259616832
+        }
+      },
+      {
+        "timestamp": 1735648710.133947,
+        "hoop_position": {
+          "x": 164,
+          "y": 288
+        },
+        "predicted_x": 227.87366231826277,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 83.15882466272112,
+          "power": 0.5640157008363997,
+          "distance": 225.60628033455987
+        },
+        "movement_metrics": {
+          "speed": 87.8711377884519,
+          "prediction_offset": 63.873662318262774
+        }
+      },
+      {
+        "timestamp": 1735648710.3362563,
+        "hoop_position": {
+          "x": 182,
+          "y": 288
+        },
+        "predicted_x": 246.04620088352144,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 78.62952801141846,
+          "power": 0.5712112142962016,
+          "distance": 228.4844857184806
+        },
+        "movement_metrics": {
+          "speed": 88.12865803510662,
+          "prediction_offset": 64.04620088352144
+        }
+      },
+      {
+        "timestamp": 1735648710.550082,
+        "hoop_position": {
+          "x": 199,
+          "y": 288
+        },
+        "predicted_x": 260.6725369642792,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 75.0831021683698,
+          "power": 0.5795300448841785,
+          "distance": 231.8120179536714
+        },
+        "movement_metrics": {
+          "speed": 84.58587606608832,
+          "prediction_offset": 61.672536964279175
+        }
+      },
+      {
+        "timestamp": 1735648710.7537296,
+        "hoop_position": {
+          "x": 217,
+          "y": 288
+        },
+        "predicted_x": 279.3664332687198,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 70.71760300881331,
+          "power": 0.5932816461389814,
+          "distance": 237.31265845559253
+        },
+        "movement_metrics": {
+          "speed": 85.62154219211907,
+          "prediction_offset": 62.36643326871979
+        }
+      },
+      {
+        "timestamp": 1735648710.968079,
+        "hoop_position": {
+          "x": 236,
+          "y": 288
+        },
+        "predicted_x": 298.2922043709439,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 66.52275610297326,
+          "power": 0.6105416295765461,
+          "distance": 244.21665183061845
+        },
+        "movement_metrics": {
+          "speed": 85.51075279245363,
+          "prediction_offset": 62.29220437094392
+        }
+      },
+      {
+        "timestamp": 1735648711.184896,
+        "hoop_position": {
+          "x": 255,
+          "y": 274
+        },
+        "predicted_x": 302,
+        "ball_position": {
+          "x": 201,
+          "y": 512
+        },
+        "shot_params": {
+          "angle": 69.00510108966616,
+          "power": 0.6463600003094252,
+          "distance": 258.54400012377005
+        },
+        "movement_metrics": {
+          "speed": 88.21993219565525,
+          "prediction_offset": 47
+        }
+      }
+    ]
+  }
+}

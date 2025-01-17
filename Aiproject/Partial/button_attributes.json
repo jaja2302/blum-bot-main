@@ -23,6 +23,10 @@
         "go_versus_player_100m": {
             "x": 313,
             "y": 531
+        },
+        "bola": {
+            "x": 198,
+            "y": 497
         }
     },
     "window_info": {

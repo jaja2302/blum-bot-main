@@ -1,23 +1,31 @@
 import numpy as np
 import pyautogui
 from PIL import Image
+from PIL import ImageGrab
 
 class ScreenCapture:
     def __init__(self):
         self.game_region = None
 
-    def capture_window(self, window_info):
+    def capture_window(self, window_info, downscale=1):
         """Capture screenshot of the Telegram window"""
         try:
-            # Capture the window area
-            screenshot = pyautogui.screenshot(
-                region=(
-                    window_info['left'],
-                    window_info['top'],
-                    window_info['width'],
-                    window_info['height']
+            # Capture dengan resolusi lebih rendah
+            width = window_info['width'] // downscale
+            height = window_info['height'] // downscale
+            
+            screenshot = ImageGrab.grab(
+                bbox=(
+                    window_info['left'], 
+                    window_info['top'], 
+                    window_info['left'] + window_info['width'],
+                    window_info['top'] + window_info['height']
                 )
             )
+            
+            if downscale > 1:
+                screenshot = screenshot.resize((width, height), Image.NEAREST)
+                
             return np.array(screenshot)
         except Exception as e:
             print(f"Error capturing screen: {e}")

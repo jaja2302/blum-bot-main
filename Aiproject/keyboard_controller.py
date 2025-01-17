@@ -1,23 +1,23 @@
 import keyboard
 import time
-import sys
 import pyautogui
 
 class KeyboardController:
     def __init__(self):
         self.is_running = True
         self.is_paused = False
-        self.fast_mode = True  # Default mode cepat
-        self.betting_amount = '1m'  # Default betting amount
+        self.betting_amount = '1m'
+        self.debug_shoot = False
+        self.fast_mode = True  # Default to fast mode
         
-        # Set up keyboard event handlers
+        # Set up keyboard handlers
         keyboard.on_press_key('s', lambda _: self.stop_program())
         keyboard.on_press_key('esc', lambda _: self.stop_program())
         keyboard.on_press_key('p', lambda _: self.toggle_pause())
         keyboard.on_press_key('r', lambda _: self.toggle_pause())
-        keyboard.on_press_key('m', lambda _: self.toggle_mode())  # Tambah handler mode
+        keyboard.on_press_key('d', lambda _: self.toggle_debug_shoot())
+        keyboard.on_press_key('m', lambda _: self.toggle_mode())
         
-        # Tambahkan betting options
         self.betting_options = {
             '1': '1m',
             '2': '10m',
@@ -25,83 +25,65 @@ class KeyboardController:
         }
 
     def stop_program(self):
-        """Immediately stop the program"""
         print("\nMenghentikan program...")
         self.is_running = False
-        sys.exit(0)  # Force exit
 
     def toggle_pause(self):
-        """Toggle pause state"""
         self.is_paused = not self.is_paused
         print("\nProgram di-pause..." if self.is_paused else "\nMelanjutkan program...")
 
     def is_stopped(self):
-        """Check if program should stop"""
         return not self.is_running
 
     def is_game_paused(self):
-        return self.is_paused 
-
-    def press_space(self):
-        """Tekan tombol spasi untuk memulai game baru"""
-        try:
-            keyboard.press_and_release('space')
-            time.sleep(0.1)  # Delay kecil setelah menekan spasi
-        except Exception as e:
-            print(f"Error menekan spasi: {e}") 
-
-    def toggle_mode(self):
-        """Toggle between fast and normal mode"""
-        self.fast_mode = not self.fast_mode
-        mode = "CEPAT" if self.fast_mode else "NORMAL"
-        print(f"\nMode diubah ke: {mode}")
-
-    def get_current_mode(self):
-        """Return current shooting mode"""
-        return self.fast_mode 
+        return self.is_paused
 
     def click_at(self, x, y):
-        """Melakukan klik mouse pada posisi x,y"""
         try:
-            current_pos = pyautogui.position()  # Simpan posisi mouse sekarang
-            
-            # Gerakkan mouse, klik, dan kembalikan ke posisi semula
+            current_pos = pyautogui.position()
             pyautogui.moveTo(x, y, duration=0.1)
             pyautogui.click()
             pyautogui.moveTo(current_pos.x, current_pos.y, duration=0.1)
-            
         except Exception as e:
             print(f"Error saat melakukan klik: {e}")
 
-    def set_betting_amount(self, amount):
-        """Set betting amount (1m/10m/100m)"""
-        self.betting_amount = amount
-        
     def get_betting_amount(self):
-        """Get current betting amount"""
-        return self.betting_amount 
+        return self.betting_amount
 
     def get_betting_input(self):
-        """Handle betting amount input from user"""
         print("\nPilih jumlah betting:")
         print("1 - untuk 1m")
-        print("2 - untuk 10m")
+        print("2 - untuk 10m") 
         print("3 - untuk 100m")
         
         while True:
             choice = input("Pilihan anda (1/2/3): ")
             if choice in self.betting_options:
-                betting_amount = self.betting_options[choice]
-                self.set_betting_amount(betting_amount)
-                print(f"Betting amount diset ke: {betting_amount}")
-                return betting_amount
+                self.betting_amount = self.betting_options[choice]
+                print(f"Betting amount diset ke: {self.betting_amount}")
+                return self.betting_amount
             print("Input tidak valid! Pilih 1, 2, atau 3")
-            
+
     def print_controls(self):
-        """Print control information"""
         print("\nKontrol:")
-        print("S - Stop program")
-        print("P - Pause program")
-        print("R - Resume program")
-        print("M - Ganti mode (NORMAL/CEPAT)")
-        print("Space - Play game") 
+        print("S/ESC - Stop program")
+        print("P/R - Pause/Resume program")
+        print("Space - Play game")
+        print("D - Toggle debug shoot")
+        print("M - Toggle mode (Cepat/Lambat)")
+
+    def toggle_debug_shoot(self):
+        self.debug_shoot = not self.debug_shoot
+        print("\nMode debug shoot diaktifkan..." if self.debug_shoot else "\nMode debug shoot dimatikan...")
+
+    def is_debug_shoot(self):
+        return self.debug_shoot 
+
+    def get_current_mode(self):
+        """Returns whether fast mode is enabled"""
+        return self.fast_mode
+
+    def toggle_mode(self):
+        """Toggles between fast and slow mode"""
+        self.fast_mode = not self.fast_mode
+        print(f"\nMode: {'CEPAT' if self.fast_mode else 'LAMBAT'}") 
