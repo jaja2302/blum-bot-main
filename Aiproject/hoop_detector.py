@@ -23,24 +23,19 @@ class HoopDetector:
         self.frame_skip = 0
         
     def detect_hoop(self, screenshot):
-        """Optimized hoop detection without visualization"""
+        """Optimized lightweight hoop detection"""
         try:
-            # Frame skipping for performance
             if self.frame_skip > 0:
                 self.frame_skip -= 1
                 return self._predict_position()
             
-            # Optimized detection area
-            detection_area = screenshot[self.DETECTION_START_Y:self.DETECTION_END_Y]
+            # Reduced detection area
+            detection_area = screenshot[self.DETECTION_START_Y:self.DETECTION_END_Y:2, ::2]
             
-            # Enhanced color filtering
+            # Simple color filtering
             hoop_mask = cv2.inRange(detection_area, 
                                    np.array([140, 0, 0]), 
-                                   np.array([255, 60, 60]))
-            
-            # Improved noise reduction
-            kernel = np.ones((2,2), np.uint8)
-            hoop_mask = cv2.morphologyEx(hoop_mask, cv2.MORPH_OPEN, kernel)
+                                   np.array([255, 50, 50]))
             
             contours, _ = cv2.findContours(hoop_mask, cv2.RETR_EXTERNAL, 
                                          cv2.CHAIN_APPROX_SIMPLE)
@@ -49,34 +44,24 @@ class HoopDetector:
                 largest = max(contours, key=cv2.contourArea)
                 area = cv2.contourArea(largest)
                 
-                # Refined area thresholds
-                if 350 < area < 800:
+                if 80 < area < 400:  # Adjusted for downscaled image
                     M = cv2.moments(largest)
                     if M["m00"] > 0:
-                        cx = int(M["m10"] / M["m00"])
-                        cy = int(M["m01"] / M["m00"])
+                        cx = int(M["m10"] / M["m00"]) * 2  # Scale back up
+                        cy = int(M["m01"] / M["m00"]) * 2
                         position = (cx, cy + self.DETECTION_START_Y)
                         
                         self._update_motion(position)
                         self.last_valid_pos = position
                         self.missed_detections = 0
                         
-                        # Improved frame skipping logic
-                        speed = abs(self.velocity[0])
-                        if speed < 1.5:
-                            self.frame_skip = 3
-                        elif speed < 4:
-                            self.frame_skip = 2
-                        else:
-                            self.frame_skip = 1
+                        # Simple frame skip
+                        self.frame_skip = 2 if abs(self.velocity[0]) < 2 else 1
                         
                         return position
             
             self.missed_detections += 1
-            if self.missed_detections < 4:
-                return self._predict_position()
-            
-            return None
+            return self._predict_position() if self.missed_detections < 3 else None
             
         except Exception:
             return self._predict_position() if self.last_valid_pos else None

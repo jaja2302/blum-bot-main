@@ -85,9 +85,7 @@ def main():
                             # Gunakan debug shoot
                             gameplay_controller.debug_shoot_straight(ball_pos)
                         else:
-                            action = gameplay_controller.get_action(screenshot, hoop_pos)
-                            if action:
-                                gameplay_controller.execute_action(action, window_info)
+                            success = gameplay_controller.shoot(screenshot, hoop_pos, window_info)
                     elif result and result['status'] == 'game_over' and result.get('should_claim'):
                         print("\nPermainan selesai! Membersihkan state...")
                         game_detector.stop_game()

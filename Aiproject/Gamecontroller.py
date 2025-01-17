@@ -1,289 +1,194 @@
-import numpy as np
 import math
 import time
-from collections import deque
 from pynput.mouse import Button, Controller
-import os
-import json
-from pathlib import Path
+from collections import deque
 
 class GameplayController:
     def __init__(self):
-        try:
-            json_path = os.path.join(os.path.dirname(__file__), 'partial/setting_controller.json')
-            with open(json_path, 'r') as f:
-                self.setting_config = json.load(f)
-        except Exception as e:
-            print(f"Error loading settings: {e}")
-            raise ValueError("Settings could not be loaded")
-
-        # Load settings
-        ri_config = self.setting_config['ri_agent']
-        swipe_config = self.setting_config['swipe_agent']
-
-        # Swipe settings (unchanged)
+        # Mouse controller
         self.mouse = Controller()
-        self.base_power = swipe_config['base_power']
-        self.last_shot_time = 0
-        self.shot_cooldown = 0.1
-        self.max_retries = 2
-        self.shot_cooldown_fast = swipe_config['shot_cooldown_fast']
-        self.swipe_duration_fast = swipe_config['swipe_duration_fast']
-        self.shot_cooldown_slow = swipe_config['shot_cooldown_slow']
-        self.swipe_duration_slow = swipe_config['swipe_duration_slow']
-
-        # Optimized RI agent settings
-        self.speed_memory = deque(maxlen=3)  # Reduced from original
-        self.speed_history = deque(maxlen=10)  # Reduced for less memory usage
-        self.speed_state = 'normal'
-        self.speed_thresholds = ri_config['speed_states']
         
-        # Enhanced prediction factors with better medium speed handling
-        self.prediction_factors = {
-            'very_slow': 0.45,
-            'slow': 0.52,      
-            'normal': 0.58,    # Slightly reduced
-            'medium': 0.62,    # Adjusted for better medium speed accuracy
-            'fast': 0.72      
-        }
+        # Game parameters (disesuaikan dengan window Telegram)
+        self.SCREEN_WIDTH = 800
+        self.SCREEN_HEIGHT = 600
+        self.HOOP_Y_MIN = 210    # Batas atas dari log
+        self.HOOP_Y_MAX = 335    # Batas bawah dari log
+        self.BALL_Y_OFFSET = 220
         
-        # Lead time compensation with refined medium speed values
-        self.lead_time_compensation = {
-            'very_slow': 0.08,
-            'slow': 0.12,
-            'normal': 0.14,    # Slightly reduced
-            'medium': 0.16,    # Reduced for better medium speed control
-            'fast': 0.22
-        }
+        # Shot parameters
+        self.POWER_BASE = 290    # Sedikit dikurangi untuk kontrol lebih baik
+        self.MIN_POWER = 0.70    # Minimum power dinaikkan
+        self.MAX_POWER = 0.92    # Maximum power diturunkan
         
-        # Add speed transition dampening
-        self.speed_dampening = {
-            'very_slow': 1.0,
-            'slow': 0.95,
-            'normal': 0.90,
-            'medium': 0.85,
-            'fast': 0.80
-        }
+        # Movement thresholds (disesuaikan dengan karakteristik pergerakan)
+        self.MAX_HOOP_SPEED = 6.0  # Dari analisis log
+        self.DIRECTION_CHANGE_THRESHOLD = 0.8
         
-        # Position tracking
+        # Prediction parameters - disesuaikan untuk prediksi lebih agresif
+        self.PREDICTION_BASE_TIME = 0.12  # Ditingkatkan dari 0.08
+        self.PREDICTION_SPEED_FACTOR = 0.03  # Ditingkatkan dari 0.02
+        self.MAX_PREDICTION_TIME = 0.15   # Ditingkatkan dari 0.12
+        
+        # Mode settings - percepat sedikit cooldown
+        self.shot_cooldown_fast = 0.08  # Dipercepat dari 0.09
+        self.shot_cooldown_slow = 0.6
+        self.swipe_duration_fast = 0.11
+        self.swipe_duration_slow = 0.2
+        
+        # Core settings
+        self.base_power = self.POWER_BASE
+        self.swipe_duration = self.swipe_duration_slow  # Default to slow mode
+        self.shot_cooldown = self.shot_cooldown_slow    # Default to slow mode
+        
+        # State tracking
         self.last_pos = None
         self.last_time = None
-        
-        # Game state
-        self.game_start_time = None
+        self.last_shot_time = 0  # Initialize this
+        self.last_speed = 0
+        self.speed_history = deque(maxlen=3)
+        self.direction_history = deque(maxlen=2)
 
-    def execute_action(self, action, window_info):
+    def shoot(self, game_screen, hoop_pos, window_info):
         current_time = time.time()
         if current_time - self.last_shot_time < self.shot_cooldown:
             return False
-            
-        angle, power = action
-        distance = power * self.base_power
-        
-        ball_pos = (
-            window_info['left'] + window_info['width'] // 2,
-            window_info['top'] + window_info['height'] - 220
-        )
-        
-        target_x = ball_pos[0] + distance * math.cos(math.radians(angle))
-        target_y = ball_pos[1] - distance * math.sin(math.radians(angle))
-        
-        success = self.swipe(ball_pos[0], ball_pos[1], target_x, target_y)
-        if success:
-            self.last_shot_time = current_time
-        return success
 
-    def get_action(self, game_screen, hoop_pos):
         try:
             if game_screen is None or hoop_pos is None:
-                return (45, 0.6)
+                return False
 
             x, y = hoop_pos
-            current_time = time.time()
-
-            if not self.game_start_time:
-                self.game_start_time = current_time
-
-            # Calculate speed and update state
+            
+            # Enhanced prediction for random movement
             predicted_x = x
             if self.last_pos and self.last_time:
                 dt = current_time - self.last_time
                 if dt > 0:
-                    speed = (x - self.last_pos[0]) / dt
-                    self.speed_memory.append(speed)
-                    self.speed_history.append(abs(speed))
+                    dx = x - self.last_pos[0]
+                    current_speed = dx / dt
+                    
+                    # Track direction changes
+                    current_direction = 1 if dx > 0 else -1
+                    if self.direction_history and current_direction != self.direction_history[-1]:
+                        # Pada perubahan arah, gunakan prediksi minimal
+                        predicted_x = x + (current_speed * 0.08)  # Prediksi minimal 80ms
+                    else:
+                        # Update speed history
+                        self.speed_history.append(current_speed)
+                        
+                        # Weighted average untuk speed (lebih berat ke speed terbaru)
+                        weights = [0.5, 0.3, 0.2][:len(self.speed_history)]
+                        total_weight = sum(weights)
+                        weights = [w/total_weight for w in weights]
+                        avg_speed = sum(w * s for w, s in zip(weights, reversed(self.speed_history)))
+                        
+                        # Aggressive prediction
+                        prediction_time = min(
+                            self.MAX_PREDICTION_TIME,
+                            self.PREDICTION_BASE_TIME + abs(avg_speed) * self.PREDICTION_SPEED_FACTOR
+                        )
+                        
+                        predicted_x = x + (avg_speed * prediction_time)
+                        
+                        # Increased prediction limits
+                        max_prediction = 15 if abs(avg_speed) < 3 else 12  # Ditingkatkan dari 12/8
+                        if abs(predicted_x - x) > max_prediction:
+                            predicted_x = x + (max_prediction * (1 if avg_speed > 0 else -1))
+                        
+                        # Additional speed-based offset
+                        if abs(avg_speed) > 2:
+                            extra_offset = min(abs(avg_speed), 4)  # Max 4 pixel extra
+                            predicted_x += extra_offset * (1 if avg_speed > 0 else -1)
+                    
+                    self.direction_history.append(current_direction)
+                    
+                    # Boundary check
+                    predicted_x = max(100, min(predicted_x, self.SCREEN_WIDTH - 100))
+                    
+                    self.last_speed = current_speed
 
-                    # Enhanced speed state determination with smoothing
-                    if len(self.speed_history) >= 3:
-                        recent_speeds = list(self.speed_history)[-3:]
-                        avg_speed = sum(recent_speeds) / 3
-                        
-                        # Add trend detection
-                        speed_trend = 0
-                        if len(recent_speeds) >= 2:
-                            speed_trend = recent_speeds[-1] - recent_speeds[0]
-                        
-                        # Adjust thresholds based on trend
-                        trend_factor = 1.0 + (speed_trend * 0.1)
-                        
-                        if avg_speed < 60 * trend_factor:
-                            new_state = 'very_slow'
-                        elif avg_speed < 70 * trend_factor:
-                            new_state = 'slow'
-                        elif avg_speed < 85 * trend_factor:
-                            new_state = 'normal'
-                        elif avg_speed < 120 * trend_factor:
-                            new_state = 'medium'
-                        else:
-                            new_state = 'fast'
-                            
-                        # Smooth state transitions
-                        if new_state != self.speed_state:
-                            # Only change state if we detect the same new state multiple times
-                            if not hasattr(self, 'state_change_counter'):
-                                self.state_change_counter = {}
-                            
-                            if new_state not in self.state_change_counter:
-                                self.state_change_counter[new_state] = 1
-                            else:
-                                self.state_change_counter[new_state] += 1
-                            
-                            required_counts = {
-                                'very_slow': 2,
-                                'slow': 2,
-                                'normal': 3,
-                                'medium': 3,
-                                'fast': 2
-                            }
-                            
-                            if self.state_change_counter.get(new_state, 0) >= required_counts[new_state]:
-                                self.speed_state = new_state
-                                self.state_change_counter.clear()
-
-                    # Enhanced prediction calculation with smoothed transitions
-                    if len(self.speed_memory) >= 2:
-                        avg_speed = sum(self.speed_memory) / len(self.speed_memory)
-                        
-                        # Add system latency compensation with dampening
-                        lead_time = self.lead_time_compensation[self.speed_state]
-                        dampening = self.speed_dampening[self.speed_state]
-                        
-                        # Calculate base prediction
-                        base_prediction = avg_speed * (self.prediction_factors[self.speed_state] * dampening + lead_time)
-                        
-                        # Add direction-based compensation
-                        direction = 1 if avg_speed > 0 else -1
-                        direction_factor = min(abs(avg_speed) / 100, 1.0)  # Normalize speed influence
-                        extra_offset = direction * (abs(avg_speed) * 0.12 * direction_factor)  # Reduced from 0.15
-                        
-                        # Apply predictions with game phase adjustment
-                        game_time = time.time() - self.game_start_time if self.game_start_time else 0
-                        if game_time < 5:  # Early game adjustment
-                            base_prediction *= 0.85
-                            extra_offset *= 0.8
-                        
-                        predicted_x = x + base_prediction + extra_offset
-                        
-                        # Ensure prediction stays within bounds
-                        predicted_x = min(max(predicted_x, 100), game_screen.shape[1] - 100)
-
-            self.last_pos = hoop_pos
+            self.last_pos = (x, y)
             self.last_time = current_time
-
-            # Simplified shooting angle and power calculation
+            
+            # Shot calculations
             ball_x = game_screen.shape[1] // 2
-            ball_y = game_screen.shape[0] - 200
-
+            ball_y = game_screen.shape[0] - self.BALL_Y_OFFSET
+            
             dx = predicted_x - ball_x
             dy = ball_y - y
             distance = math.sqrt(dx*dx + dy*dy)
-
-            # Enhanced angle adjustment with dynamic compensation
-            angle = math.degrees(math.atan2(dy, dx))
             
-            # Dynamic angle adjustment based on distance and speed
-            speed_magnitude = abs(sum(self.speed_memory) / len(self.speed_memory)) if self.speed_memory else 0
+            # Angle calculation with height compensation
+            base_angle = math.degrees(math.atan2(dy, dx))
+            height_factor = (y - self.HOOP_Y_MIN) / (self.HOOP_Y_MAX - self.HOOP_Y_MIN)
             
+            # Dynamic angle adjustments
+            angle = base_angle
             if distance > 300:
-                angle += 2 + (speed_magnitude * 0.01)  # Add extra angle for faster speeds
+                angle += 2.8 + (height_factor * 0.8)
             elif distance > 250:
-                angle += 1.5 + (speed_magnitude * 0.008)
+                angle += 2.2 + (height_factor * 0.6)
             elif distance < 200:
-                angle -= 1 + (speed_magnitude * 0.005)
-                
-            # Additional minor adjustment for extreme sides
-            if predicted_x > game_screen.shape[1] * 0.7:  # Right side
-                angle += 0.8
-            elif predicted_x < game_screen.shape[1] * 0.3:  # Left side
-                angle -= 0.8
-
-            # Simplified power calculation
-            power = min(0.95, max(0.5, (distance / 300) * (self.base_power / 400)))
-            if distance > 300:
-                power *= 1.05
-
-            return (angle, power)
+                angle -= 1.5 + (height_factor * 0.4)
+            
+            # Power calculation with height consideration
+            power_factor = distance / (self.SCREEN_HEIGHT * 0.55)
+            power = min(self.MAX_POWER, max(self.MIN_POWER, power_factor))
+            
+            # Height-based power adjustment
+            power *= (1 + (height_factor - 0.5) * 0.1)
+            
+            # Execute shot
+            ball_pos = (
+                window_info['left'] + window_info['width'] // 2,
+                window_info['top'] + window_info['height'] - self.BALL_Y_OFFSET
+            )
+            
+            shot_distance = power * self.base_power
+            target_x = ball_pos[0] + shot_distance * math.cos(math.radians(angle))
+            target_y = ball_pos[1] - shot_distance * math.sin(math.radians(angle))
+            
+            success = self.swipe(ball_pos[0], ball_pos[1], target_x, target_y)
+            if success:
+                self.last_shot_time = current_time
+            return success
 
         except Exception as e:
-            print(f"Error in get_action: {e}")
-            return (45, 0.6)
-
-    def set_mode(self, fast_mode):
-        self.shot_cooldown = self.shot_cooldown_fast if fast_mode else self.shot_cooldown_slow
-        self.swipe_duration = self.swipe_duration_fast if fast_mode else self.swipe_duration_slow
-
-    def reset_state(self):
-        """Reset all game state variables for a new game"""
-        # Reset timing variables
-        self.last_shot_time = 0
-        self.game_start_time = None
-        self.last_time = None
-        
-        # Reset position tracking
-        self.last_pos = None
-        
-        # Reset speed tracking
-        self.speed_memory.clear()
-        self.speed_history.clear()
-        self.speed_state = 'normal'
-        
-        # Release mouse button just in case
-        self.mouse.release(Button.left)
-        
-        print("Game state reset completed")
+            print(f"Error in shoot calculation: {e}")
+            return False
 
     def swipe(self, start_x, start_y, end_x, end_y):
-        """Optimized swipe action for CPU-only systems"""
+        """Execute balanced swipe motion"""
         try:
-            # Reset mouse state
             self.mouse.release(Button.left)
-            time.sleep(0.02)
+            time.sleep(0.02)  # Sedikit lebih lama
             
-            # Set initial position
             self.mouse.position = (start_x, start_y)
             time.sleep(0.02)
             
             self.mouse.press(Button.left)
             
-            # Simplified movement with fewer steps
-            steps = 10  # Reduced number of steps for better performance
-            duration = self.swipe_duration
+            # Moderate steps for balance
+            steps = 9  # Tambah 1 step
+            
+            # Add slight curve for better lift
+            curve_height = 0.9  # Sedikit lebih tinggi
             
             for i in range(steps):
                 progress = i / steps
+                # Smooth curve untuk mengangkat bola
+                curve = math.sin(progress * math.pi) * curve_height
                 
-                # Linear interpolation for smoother movement
                 current_x = int(start_x + (end_x - start_x) * progress)
-                current_y = int(start_y + (end_y - start_y) * progress)
+                current_y = int(start_y + (end_y - start_y) * progress - curve)
                 
                 self.mouse.position = (current_x, current_y)
-                time.sleep(duration / steps)
+                time.sleep(self.swipe_duration / steps)
             
-            # Ensure we reach the final position
             self.mouse.position = (end_x, end_y)
+            time.sleep(0.01)  # Tambah sedikit delay
             self.mouse.release(Button.left)
             
-            # Quick return to start
             time.sleep(0.02)
             self.mouse.position = (start_x, start_y)
             
@@ -293,3 +198,18 @@ class GameplayController:
             print(f"Swipe error: {e}")
             self.mouse.release(Button.left)
             return False
+
+    def set_mode(self, fast_mode):
+        """Set shooting mode between fast and slow"""
+        self.shot_cooldown = self.shot_cooldown_fast if fast_mode else self.shot_cooldown_slow
+        self.swipe_duration = self.swipe_duration_fast if fast_mode else self.swipe_duration_slow
+
+    def reset_state(self):
+        """Reset controller state"""
+        self.last_pos = None
+        self.last_time = None
+        self.last_shot_time = 0
+        self.last_speed = 0
+        self.speed_history.clear()
+        self.direction_history.clear()
+        self.mouse.release(Button.left)
