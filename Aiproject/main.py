@@ -82,8 +82,8 @@ def main():
                         hoop_pos = result['hoop_position']
                         
                         if keyboard_ctrl.is_debug_shoot():
-                            # Gunakan debug shoot
-                            gameplay_controller.debug_shoot_straight(ball_pos)
+                            # Gunakan shoot_straight untuk debug
+                            success = gameplay_controller.shoot_straight(screenshot, window_info)
                         else:
                             success = gameplay_controller.shoot(screenshot, hoop_pos, window_info)
                     elif result and result['status'] == 'game_over' and result.get('should_claim'):

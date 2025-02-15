@@ -1,0 +1,27 @@
+{
+    "corners": {
+        "top_left": {
+            "x": 998,
+            "y": 193
+        },
+        "top_right": {
+            "x": 1321,
+            "y": 194
+        },
+        "bottom_left": {
+            "x": 1000,
+            "y": 587
+        },
+        "bottom_right": {
+            "x": 1324,
+            "y": 586
+        }
+    },
+    "window_info": {
+        "left": 956,
+        "top": 7,
+        "width": 402,
+        "height": 712
+    },
+    "cell_size": 35
+}

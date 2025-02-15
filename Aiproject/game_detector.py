@@ -80,8 +80,7 @@ class GameDetector:
     def stop_game(self):
         """Reset flag game, timer, dan state"""
         self.reset_state()
-        self.game_stats.cleanup_game()  # Tambahkan method cleanup di GameStats
-        
+
     def get_claim_button_pos(self, window_info):
         """Menghitung posisi absolut tombol claim"""
         if not self.button_config:
